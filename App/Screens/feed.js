@@ -16,6 +16,47 @@ class Feed extends React.Component {
     this.loadFeed();
   };
 
+  addToFlatlist = (notificationsList, data, message) => {
+    var that = this;
+    var messageObj = data[message];
+    console.log("the new message object is " + message);
+    database
+      .ref("Users")
+      .child("sample-user-id") //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .once("value")
+      .then(function(snapshot2) {
+        if (snapshot2.val()) {
+          var userData = snapshot2.val();
+          // console.log(
+          //   "this data should pop up twice because the user should be searched twice " +
+          //     userData
+          // );
+
+          console.log(
+            "the new message spread-points is " + messageObj["spreadPoints"]
+          );
+          notificationsList.push({
+            id: message,
+            sender: messageObj.sender,
+            type: messageObj.type,
+            timeSent: that.timeConverter(messageObj["time-sent"]),
+            text: messageObj.text,
+            spreadPoints: messageObj["spread-points"],
+            senderAvatar: userData.avatar,
+            senderName: userData.username
+          });
+          console.log(message + " and the message type is " + messageObj.type);
+
+          that.setState({
+            list_of_notifications: notificationsList,
+            refresh: false,
+            loading: true
+          });
+        }
+      })
+      .catch(error => console.log(error));
+  };
+
   loadFeed = () => {
     this.setState({
       refresh: true,
@@ -32,34 +73,12 @@ class Feed extends React.Component {
       .then(function(snapshot) {
         if (snapshot.val()) {
           data = snapshot.val();
+          // console.log("The snapshot.val() is " + data[message]);
           //make sure to add in bit about finding users once it's actually based on id--need to do another snapshot and look up users by id, then use that snapshot to get the username
           var notificationsList = that.state.list_of_notifications;
 
           for (var message in data) {
-            var messageObj = data[message];
-            console.log(messageObj);
-            database
-              .ref("Users")
-              .child("sample-user-id") //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
-              .once("value")
-              .then(function(snapshot) {
-                if (snapshot.val()) {
-                  var userData = snapshot.val();
-                  console.log(userData);
-                  notificationsList.push({
-                    id: message,
-                    sender: messageObj.sender,
-                    type: messageObj.type,
-                    text: messageObj.text,
-                    senderAvatar: userData.avatar
-                  });
-                  that.setState({
-                    list_of_notifications: notificationsList,
-                    refresh: false,
-                    loading: true
-                  });
-                }
-              });
+            that.addToFlatlist(notificationsList, data, message);
           }
         }
       })
@@ -77,6 +96,46 @@ class Feed extends React.Component {
     //   list_of_notifications: [8, 7, 6, 5, 4],
     //   refresh: false
     // });
+  };
+
+  pluralCheck = s => {
+    if (s == 1) {
+      return " ago";
+    } else {
+      return "s ago";
+    }
+  };
+
+  timeConverter = timestamp => {
+    var a = new Date(timestamp * 1000);
+    var seconds = Math.floor((new Date() - a) / 1000);
+
+    var interval = Math.floor(seconds / 3153600);
+    if (interval > 1) {
+      return interval + " year" + this.pluralCheck(interval);
+    }
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+      return interval + " month" + this.pluralCheck(interval);
+    }
+
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+      return interval + " day" + this.pluralCheck(interval);
+    }
+
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+      return interval + " hour" + this.pluralCheck(interval);
+    }
+
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+      return interval + " minute" + this.pluralCheck(interval);
+    }
+
+    return Math.floor(seconds) + " second" + this.pluralCheck(seconds);
   };
 
   render() {
@@ -114,15 +173,14 @@ class Feed extends React.Component {
                 // justifyContent: "center",
                 // alignItems: "center",
                 flexDirection: "row",
-                flexWrap: "wrap"
+                flexWrap: "wrap",
+                height: 100
               }}
               key={index}
             >
               <Image
                 source={{
-                  url:
-                    "https://source.unsplash.com/random/500x" +
-                    Math.floor(Math.random() * 800 + 500)
+                  url: item.senderAvatar
                 }}
                 style={{
                   resizeMode: "cover",
@@ -138,8 +196,12 @@ class Feed extends React.Component {
                   alignSelf: "center"
                 }}
               >
-                Testername just sent you a compliment
+                {item.senderName} just sent you a {item.type}
               </Text>
+
+              <Text>{item.timeSent}</Text>
+
+              <Text style={{ display: "block" }}>{item.spreadPoints}</Text>
             </View>
           )}
         />
