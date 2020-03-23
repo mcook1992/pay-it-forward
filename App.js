@@ -26,6 +26,12 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import Feed from "./App/Screens/feed";
 import Profile from "./App/Screens/profile";
 import Upload from "../pay-it-forward/App/Screens/upload";
+import {
+  f,
+  database,
+  auth,
+  storage
+} from "../pay-it-forward/App/Screens/config/config";
 
 // function Feed() {
 //   return (
@@ -109,26 +115,39 @@ function MyTabs() {
   );
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
-  );
-}
-
-// export default class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-//   }
-//   render() {
-//     return (
-//       <NavigationContainer>
-//         <MyTabs />
-//       </NavigationContainer>
-//     );
-//   }
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <MyTabs />
+//     </NavigationContainer>
+//   );
 // }
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.login();
+  }
+
+  login = async () => {
+    try {
+      let user = await auth.signInWithEmailAndPassword(
+        "testuser1@testing.com",
+        "fakepassword"
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  render() {
+    return (
+      <NavigationContainer>
+        <MyTabs />
+      </NavigationContainer>
+    );
+  }
+}
 
 // const styles = StyleSheet.create({
 //   container: {
