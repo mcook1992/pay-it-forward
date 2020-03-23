@@ -41,11 +41,15 @@ class Feed extends React.Component {
             type: messageObj.type,
             timeSent: that.timeConverter(messageObj["time-sent"]),
             text: messageObj.text,
-            spreadPoints: messageObj["spread-points"],
+            spreadPoints: messageObj["spread-points"].toString(),
             senderAvatar: userData.avatar,
             senderName: userData.username
           });
-          console.log(message + " and the message type is " + messageObj.type);
+          // console.log(message + " and the message type is " + messageObj.type);
+          console.log(
+            "and the spreadpoints to string value is " +
+              messageObj["spread-points"].toString()
+          );
 
           that.setState({
             list_of_notifications: notificationsList,
@@ -198,10 +202,8 @@ class Feed extends React.Component {
               >
                 {item.senderName} just sent you a {item.type}
               </Text>
-
               <Text>{item.timeSent}</Text>
-
-              <Text style={{ display: "block" }}>{item.spreadPoints}</Text>
+              <Text> Fire emoji{item.spreadPoints}</Text>
             </View>
           )}
         />

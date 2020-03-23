@@ -1,10 +1,25 @@
 import React from "react";
-import { Flatlist, Stylesheet, text, View, Image } from "react-native";
+import { Flatlist, Stylesheet, Text, View, Image } from "react-native";
+import { f, database, auth, storage } from "../Screens/config/config";
 
 class Upload extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isLoggedIn: false
+    };
   }
+
+  componentDidMount = () => {
+    var that = this;
+    f.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        that.setState({
+          isLoggedIn: true
+        });
+      }
+    });
+  };
 
   render() {
     return (
@@ -20,7 +35,11 @@ class Upload extends React.Component {
           alignItems: "center"
         }}
       >
-        <Text>Feed</Text>
+        {this.state.isLoggedIn == true ? (
+          <Text>Upload</Text>
+        ) : (
+          <Text>You're not logged in!</Text>
+        )}
       </View>
     );
   }

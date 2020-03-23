@@ -25,6 +25,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import Feed from "./App/Screens/feed";
 import Profile from "./App/Screens/profile";
+import Upload from "../pay-it-forward/App/Screens/upload";
 
 // function Feed() {
 //   return (
@@ -71,12 +72,26 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Notifications"
+        name="Uddates"
         component={Notifications}
         options={{
           tabBarLabel: "Updates",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
+          )
+        }}
+      />
+      <Tab.Screen
+        name="Upload"
+        component={Upload}
+        options={{
+          tabBarLabel: "Upload",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="email-open-outline"
+              color={color}
+              size={size}
+            />
           )
         }}
       />
