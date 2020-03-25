@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
-class Profile extends React.Component {
+class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -141,4 +141,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default UserProfile;

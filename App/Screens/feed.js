@@ -1,5 +1,12 @@
 import React from "react";
-import { FlatList, Stylesheet, Text, View, Image } from "react-native";
+import {
+  TouchableOpacity,
+  FlatList,
+  Stylesheet,
+  Text,
+  View,
+  Image
+} from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
 class Feed extends React.Component {
@@ -193,15 +200,25 @@ class Feed extends React.Component {
                   margin: 5
                 }}
               />
-              <Text
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center"
-                }}
+
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate("Message", {
+                    messageID: item.id,
+                    message: item
+                  })
+                }
               >
-                {item.senderName} just sent you a {item.type}
-              </Text>
+                <Text
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    alignSelf: "center"
+                  }}
+                >
+                  {item.senderName} just sent you a {item.type}
+                </Text>
+              </TouchableOpacity>
               <Text>{item.timeSent}</Text>
               <Text> Fire emoji{item.spreadPoints}</Text>
             </View>

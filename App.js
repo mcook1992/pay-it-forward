@@ -22,16 +22,21 @@ import * as React from "react";
 import { FlatList, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import Feed from "./App/Screens/feed";
 import Profile from "./App/Screens/profile";
 import Upload from "../pay-it-forward/App/Screens/upload";
+import UserProfile from "./App/Screens/userProfile";
+// import Message from "../pay-it-forward/App/Screens/message";
+import Comments from "./App/Screens/comments";
 import {
   f,
   database,
   auth,
   storage
 } from "../pay-it-forward/App/Screens/config/config";
+import Message from "./App/Screens/message";
 
 // function Feed() {
 //   return (
@@ -56,8 +61,28 @@ function Notifications() {
     </View>
   );
 }
+// function UserProfile() {
+//   return (
+//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+//       <Text>User Profile</Text>
+//     </View>
+//   );
+// }
 
 const Tab = createBottomTabNavigator();
+
+const Stack = createStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="Home" component={MyTabs} />
+      <Stack.Screen name="User Profile" component={UserProfile} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Message" component={Message} />
+    </Stack.Navigator>
+  );
+}
 
 function MyTabs() {
   return (
@@ -143,7 +168,7 @@ export default class App extends React.Component {
   render() {
     return (
       <NavigationContainer>
-        <MyTabs />
+        <MyStack />
       </NavigationContainer>
     );
   }

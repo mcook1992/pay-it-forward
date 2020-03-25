@@ -2,7 +2,7 @@ import React from "react";
 import { Flatlist, Stylesheet, Text, View, Image } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
-class Upload extends React.Component {
+class Comments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,4 +46,4 @@ class Upload extends React.Component {
   }
 }
 
-export default Upload;
+export default Comments;

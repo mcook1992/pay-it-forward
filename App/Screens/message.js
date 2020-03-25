@@ -1,25 +1,29 @@
 import React from "react";
-import { Flatlist, Stylesheet, Text, View, Image } from "react-native";
+import {
+  TouchableOpacity,
+  Flatlist,
+  Stylesheet,
+  Text,
+  View,
+  Image
+} from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
-class Upload extends React.Component {
+class Message extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      loaded: true
       // parentPostID: this.props.route.params.parentPostId
     };
   }
 
   componentDidMount = () => {
     var that = this;
-    f.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        that.setState({
-          isLoggedIn: true
-        });
-      }
-    });
+  };
+
+  checkParams = () => {
+    var that = this;
   };
 
   render() {
@@ -36,8 +40,15 @@ class Upload extends React.Component {
           alignItems: "center"
         }}
       >
-        {this.state.isLoggedIn == true ? (
-          <Text>Upload </Text>
+        {this.state.loaded == true ? (
+          <View>
+            <TouchableOpacity>
+              <Text>Message</Text>
+              <Text>{this.props.route.params.message.id}</Text>
+              <Text>{this.props.route.params.message.sender}</Text>
+              <Text>{this.props.route.params.message.text}</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <Text>You're not logged in!</Text>
         )}
@@ -46,4 +57,4 @@ class Upload extends React.Component {
   }
 }
 
-export default Upload;
+export default Message;
