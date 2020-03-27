@@ -77,7 +77,7 @@ function MyStack() {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Home" component={MyTabs} />
-      <Stack.Screen name="User Profile" component={UserProfile} />
+      <Stack.Screen name="UserProfile" component={UserProfile} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Message" component={Message} />
     </Stack.Navigator>

@@ -13,19 +13,13 @@ class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      user: this.props.route.params.user,
+      loading: false
     };
   }
 
   componentDidMount = () => {
     var that = this;
-    f.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        that.setState({
-          isLoggedIn: true
-        });
-      }
-    });
   };
 
   render() {
@@ -42,7 +36,7 @@ class UserProfile extends React.Component {
           // alignItems: "center"
         }}
       >
-        {this.state.isLoggedIn == true ? (
+        {this.state.loading == false ? (
           <View style={{ flex: 1 }}>
             <View
               style={{
@@ -76,7 +70,7 @@ class UserProfile extends React.Component {
               />
               <View style={{ marginLeft: 30 }}>
                 <Text>Name</Text>
-                <Text>Username</Text>
+                <Text>{this.state.user.username} </Text>
               </View>
             </View>
             <View style={{ paddingBottom: 20, borderBottomWidth: 1 }}>

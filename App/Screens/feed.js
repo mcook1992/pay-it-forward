@@ -26,10 +26,11 @@ class Feed extends React.Component {
   addToFlatlist = (notificationsList, data, message) => {
     var that = this;
     var messageObj = data[message];
+
     console.log("the new message object is " + message);
     database
       .ref("Users")
-      .child("sample-user-id") //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .child(messageObj.sender.id) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
       .once("value")
       .then(function(snapshot2) {
         if (snapshot2.val()) {

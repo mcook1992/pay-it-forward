@@ -42,12 +42,20 @@ class Message extends React.Component {
       >
         {this.state.loaded == true ? (
           <View>
+            <Text>Message</Text>
+            <Text>{this.props.route.params.message.id}</Text>
             <TouchableOpacity>
-              <Text>Message</Text>
-              <Text>{this.props.route.params.message.id}</Text>
-              <Text>{this.props.route.params.message.sender}</Text>
-              <Text>{this.props.route.params.message.text}</Text>
+              <Text
+                onPress={() =>
+                  this.props.navigation.navigate("UserProfile", {
+                    user: this.props.route.params.message.sender
+                  })
+                }
+              >
+                {this.props.route.params.message.sender.username}
+              </Text>
             </TouchableOpacity>
+            <Text>{this.props.route.params.message.text}</Text>
           </View>
         ) : (
           <Text>You're not logged in!</Text>
