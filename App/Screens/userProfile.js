@@ -20,6 +20,33 @@ class UserProfile extends React.Component {
 
   componentDidMount = () => {
     var that = this;
+    this.getUserInfo();
+  };
+
+  checkPararms = () => {
+    var params = this.props.route.params.user;
+    if (params) {
+      this.setState({ user: this.props.route.params.user });
+    } else {
+      alert("No user info passing through!");
+    }
+  };
+
+  getUserInfo = () => {
+    var that = this;
+    database
+      .ref("Users")
+      .child(this.state.user.id) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .once("value")
+      .then(function(snapshot) {
+        if (snapshot.val()) {
+          var userData = snapshot.val();
+          that.setState({
+            username: userData.username,
+            userAvatar: userData.avatar
+          });
+        }
+      });
   };
 
   render() {
@@ -49,6 +76,14 @@ class UserProfile extends React.Component {
                 borderBottomWidth: 0.5
               }}
             >
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("pressed go back");
+                }}
+              >
+                <Text>Back</Text>
+              </TouchableOpacity>
+
               <Text>Profile</Text>
             </View>
             <View
@@ -60,7 +95,7 @@ class UserProfile extends React.Component {
               }}
             >
               <Image
-                source={{ url: "http://i.pravatar.cc/300" }}
+                source={{ url: this.state.userAvatar }}
                 style={{
                   marginLeft: 10,
                   width: 100,
@@ -78,30 +113,6 @@ class UserProfile extends React.Component {
                 style={{
                   marginTop: 10,
                   marginHorizontal: 40,
-                  paddingVertical: 15,
-                  borderRadius: 20,
-                  borderColor: "grey",
-                  borderWidth: 1.5
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>Logout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  marginTop: 10,
-                  marginHorizontal: 40,
-                  paddingVertical: 15,
-                  borderRadius: 20,
-                  borderColor: "grey",
-                  borderWidth: 1.5
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>Update Profile</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  marginTop: 10,
-                  marginHorizontal: 40,
                   paddingVertical: 20,
                   backgroundColor: "orange",
                   borderRadius: 20,
@@ -110,11 +121,11 @@ class UserProfile extends React.Component {
                 }}
                 onPress={() =>
                   this.props.navigation.navigate("Upload", {
-                    parentPostId: "blahblahblah"
+                    recipient: this.state.user
                   })
                 }
               >
-                <Text style={{ textAlign: "center" }}>Upload New</Text>
+                <Text style={{ textAlign: "center" }}>Send a message!</Text>
               </TouchableOpacity>
             </View>
             <View
@@ -124,7 +135,7 @@ class UserProfile extends React.Component {
                 alignItems: "center"
               }}
             >
-              <Text>Other Stuff Here</Text>
+              <Text>Other stuff</Text>
             </View>
           </View>
         ) : (

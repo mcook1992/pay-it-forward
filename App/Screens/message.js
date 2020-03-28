@@ -14,6 +14,7 @@ class Message extends React.Component {
     super(props);
     this.state = {
       loaded: true
+
       // parentPostID: this.props.route.params.parentPostId
     };
   }
