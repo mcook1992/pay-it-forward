@@ -67,24 +67,26 @@ class UserProfile extends React.Component {
           <View style={{ flex: 1 }}>
             <View
               style={{
+                flexDirection: "row",
                 height: 70,
                 paddingTop: 30,
                 backgroundColor: "white",
                 borderColor: "lightgrey",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
                 borderBottomWidth: 0.5
               }}
             >
               <TouchableOpacity
                 onPress={() => {
-                  console.log("pressed go back");
+                  this.props.navigation.goBack();
                 }}
               >
-                <Text>Back</Text>
+                <Text style={{ paddingLeft: 10 }}>Back</Text>
               </TouchableOpacity>
 
               <Text>Profile</Text>
+              <Text style={{ width: 40 }}></Text>
             </View>
             <View
               style={{

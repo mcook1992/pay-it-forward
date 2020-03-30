@@ -31,24 +31,56 @@ class Message extends React.Component {
     return (
       <View
         style={{
-          flex: 1,
-          height: 70,
-          paddingTop: 30,
-          backgroundColor: "white",
-          borderColor: "lightgrey",
-          borderBottomWidth: 0.5,
-          justifyContent: "center",
-          alignItems: "center"
+          flex: 1
+          // height: 70,
+          // paddingTop: 30,
+          // backgroundColor: "white",
+          // borderColor: "lightgrey",
+          // borderBottomWidth: 0.5,
+          // justifyContent: "center",
+          // alignItems: "center"
         }}
       >
+        <View
+          style={{
+            flexDirection: "row",
+            height: 70,
+            paddingTop: 30,
+            backgroundColor: "white",
+            borderColor: "lightgrey",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottomWidth: 0.5
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <Text style={{ paddingLeft: 10 }}>Back</Text>
+          </TouchableOpacity>
+          <Text>Message</Text>
+          <Text style={{ width: 40 }}></Text>
+        </View>
         {this.state.loaded == true ? (
-          <View>
+          <View
+            style={{
+              paddingTop: 30,
+              paddingBottom: 30,
+              backgroundColor: "white",
+              borderColor: "lightgrey",
+              borderBottomWidth: 0.5,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
             <Text>Message</Text>
             <Text>{this.props.route.params.message.id}</Text>
             <TouchableOpacity>
               <Text
                 onPress={() =>
-                  this.props.navigation.navigate("UserProfile", {
+                  this.props.navigation.push("UserProfile", {
                     user: this.props.route.params.message.sender
                   })
                 }
@@ -57,6 +89,42 @@ class Message extends React.Component {
               </Text>
             </TouchableOpacity>
             <Text>{this.props.route.params.message.text}</Text>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginHorizontal: 40,
+                paddingVertical: 20,
+                backgroundColor: "orange",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5
+              }}
+              onPress={() =>
+                this.props.navigation.navigate("Upload", {
+                  recipient: this.state.user
+                })
+              }
+            >
+              <Text style={{ textAlign: "center" }}>Send a thank you</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginHorizontal: 40,
+                paddingVertical: 20,
+                backgroundColor: "orange",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5
+              }}
+              onPress={() =>
+                this.props.navigation.navigate("Upload", {
+                  recipient: this.state.user
+                })
+              }
+            >
+              <Text style={{ textAlign: "center" }}>Pay it forward</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <Text>You're not logged in!</Text>

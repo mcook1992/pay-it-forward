@@ -204,7 +204,7 @@ class Feed extends React.Component {
 
               <TouchableOpacity
                 onPress={() =>
-                  this.props.navigation.navigate("Message", {
+                  this.props.navigation.push("Message", {
                     messageID: item.id,
                     message: item
                   })
