@@ -1,12 +1,33 @@
 import React from "react";
-import { Flatlist, Stylesheet, Text, View, Image } from "react-native";
+import {
+  TouchableOpacity,
+  Flatlist,
+  Stylesheet,
+  Text,
+  View,
+  Image,
+  Button
+} from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
+import { Dropdown } from "react-native-material-dropdown";
 
 class Upload extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      menuOptions: [
+        {
+          value: "Compliment"
+        },
+        {
+          value: "Gratitude"
+        },
+        {
+          value: "Positive Message"
+        },
+        { value: "Apology" }
+      ]
       // parentPostID: this.props.route.params.parentPostId
     };
   }
@@ -37,7 +58,30 @@ class Upload extends React.Component {
         }}
       >
         {this.state.isLoggedIn == true ? (
-          <Text>Upload </Text>
+          <View>
+            <View>
+              <Dropdown
+                style={{ width: 40 }}
+                label="Cnoose a message type"
+                data={this.state.menuOptions}
+              />
+            </View>
+
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 20, paddingBottom: 20 }}>Upload </Text>
+
+              <Button
+                title="Upload media from your phone"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+              />
+              <Button
+                title="Use media from our program"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+              />
+            </View>
+          </View>
         ) : (
           <Text>You're not logged in!</Text>
         )}
