@@ -1,6 +1,7 @@
 import React from "react";
 import {
   TouchableOpacity,
+  TextInput,
   Flatlist,
   Stylesheet,
   Text,
@@ -16,7 +17,7 @@ class Upload extends React.Component {
     super(props);
     this.state = {
       isLoggedIn: false,
-      menuOptions: [
+      messageTypeMenuOptions: [
         {
           value: "Compliment"
         },
@@ -27,7 +28,8 @@ class Upload extends React.Component {
           value: "Positive Message"
         },
         { value: "Apology" }
-      ]
+      ],
+      messageType: "Compliment"
       // parentPostID: this.props.route.params.parentPostId
     };
   }
@@ -57,19 +59,50 @@ class Upload extends React.Component {
           alignItems: "center"
         }}
       >
+        <View
+          style={{
+            height: 70,
+            paddingTop: 30,
+            backgroundColor: "white",
+            borderColor: "lightgrey",
+            justifyContent: "center",
+            alignItems: "center",
+            borderBottomWidth: 0.5
+          }}
+        >
+          <Text>Upload</Text>
+        </View>
         {this.state.isLoggedIn == true ? (
           <View>
             <View>
               <Dropdown
                 style={{ width: 40 }}
                 label="Cnoose a message type"
-                data={this.state.menuOptions}
+                data={this.state.messageTypeMenuOptions}
+                onChangeText={value => {
+                  this.setState({
+                    messageType: value
+                  });
+                  console.log(this.state.messageType);
+                }}
               />
             </View>
 
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={{ fontSize: 20, paddingBottom: 20 }}>Upload </Text>
-
+              <View>
+                <Text>Enter message below</Text>
+                <TextInput
+                  style={{
+                    height: 300,
+                    width: 300,
+                    backgroundColor: "white",
+                    borderColor: "black",
+                    borderWidth: 3,
+                    padding: 20,
+                    margin: 20
+                  }}
+                ></TextInput>
+              </View>
               <Button
                 title="Upload media from your phone"
                 color="#841584"
