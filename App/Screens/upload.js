@@ -87,8 +87,9 @@ class Upload extends React.Component {
       });
 
       if (data.length > 0) {
-        const contact = data[1];
+        const contact = data[0];
         console.log(contact);
+        this.setState({ contacts: data });
       }
     }
 
@@ -224,12 +225,15 @@ class Upload extends React.Component {
               <View>
                 <Text>Enter recipient below or</Text>
                 <TouchableOpacity
-                  onPress={() =>
+                  onPress={() => {
+                    console.log(
+                      "The current contact are ... " + this.state.contacts
+                    );
                     this.props.navigation.navigate("Contacts", {
                       returnData: this.returnData.bind(this),
                       contacts: this.state.contacts,
-                    })
-                  }
+                    });
+                  }}
                 >
                   <Text>Add contacts from your phone</Text>
                 </TouchableOpacity>
