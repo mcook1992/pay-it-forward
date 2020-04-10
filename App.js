@@ -35,9 +35,10 @@ import {
   f,
   database,
   auth,
-  storage
+  storage,
 } from "../pay-it-forward/App/Screens/config/config";
 import Message from "./App/Screens/message";
+import ChooseImagesFromPrograms from "./App/Screens/selectPictureFromProgram";
 
 // function Feed() {
 //   return (
@@ -82,6 +83,10 @@ function MyStack() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Message" component={Message} />
       <Stack.Screen name="Contacts" component={Contacts_for_Upload} />
+      <Stack.Screen
+        name="ChooseImagesFromPrograms"
+        component={ChooseImagesFromPrograms}
+      />
     </Stack.Navigator>
   );
 }
@@ -91,7 +96,7 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Feed"
       tabBarOptions={{
-        activeTintColor: "#e91e63"
+        activeTintColor: "#e91e63",
       }}
     >
       <Tab.Screen
@@ -101,7 +106,7 @@ function MyTabs() {
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
-          )
+          ),
         }}
       />
       <Tab.Screen
@@ -111,7 +116,7 @@ function MyTabs() {
           tabBarLabel: "Updates",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
-          )
+          ),
         }}
       />
       <Tab.Screen
@@ -125,7 +130,7 @@ function MyTabs() {
               color={color}
               size={size}
             />
-          )
+          ),
         }}
       />
       <Tab.Screen
@@ -135,7 +140,7 @@ function MyTabs() {
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
-          )
+          ),
         }}
       />
     </Tab.Navigator>

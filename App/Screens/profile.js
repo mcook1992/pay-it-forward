@@ -5,7 +5,7 @@ import {
   Stylesheet,
   Text,
   View,
-  Image
+  Image,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
@@ -13,16 +13,16 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
     };
   }
 
   componentDidMount = () => {
     var that = this;
-    f.auth().onAuthStateChanged(function(user) {
+    f.auth().onAuthStateChanged(function (user) {
       if (user) {
         that.setState({
-          isLoggedIn: true
+          isLoggedIn: true,
         });
       }
     });
@@ -32,7 +32,7 @@ class Profile extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
           // height: 70,
           // paddingTop: 30,
           // backgroundColor: "white",
@@ -52,7 +52,7 @@ class Profile extends React.Component {
                 borderColor: "lightgrey",
                 justifyContent: "center",
                 alignItems: "center",
-                borderBottomWidth: 0.5
+                borderBottomWidth: 0.5,
               }}
             >
               <Text>Profile</Text>
@@ -62,7 +62,7 @@ class Profile extends React.Component {
                 justifyContent: "space-evently",
                 alignItems: "center",
                 flexDirection: "row",
-                paddingVertical: 10
+                paddingVertical: 10,
               }}
             >
               <Image
@@ -71,7 +71,7 @@ class Profile extends React.Component {
                   marginLeft: 10,
                   width: 100,
                   height: 100,
-                  borderRadius: 50
+                  borderRadius: 50,
                 }}
               />
               <View style={{ marginLeft: 30 }}>
@@ -87,7 +87,7 @@ class Profile extends React.Component {
                   paddingVertical: 15,
                   borderRadius: 20,
                   borderColor: "grey",
-                  borderWidth: 1.5
+                  borderWidth: 1.5,
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Logout</Text>
@@ -99,7 +99,7 @@ class Profile extends React.Component {
                   paddingVertical: 15,
                   borderRadius: 20,
                   borderColor: "grey",
-                  borderWidth: 1.5
+                  borderWidth: 1.5,
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Update Profile</Text>
@@ -112,11 +112,11 @@ class Profile extends React.Component {
                   backgroundColor: "orange",
                   borderRadius: 20,
                   borderColor: "grey",
-                  borderWidth: 1.5
+                  borderWidth: 1.5,
                 }}
                 onPress={() =>
                   this.props.navigation.navigate("Upload", {
-                    parentPostId: "blahblahblah"
+                    parentPostId: "blahblahblah",
                   })
                 }
               >
@@ -127,7 +127,7 @@ class Profile extends React.Component {
               style={{
                 flex: 1,
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Text>Other Stuff Here</Text>

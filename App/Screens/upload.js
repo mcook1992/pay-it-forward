@@ -23,7 +23,12 @@ class Upload extends React.Component {
     this.state = {
       isLoggedIn: false,
       messageText: "",
-      recipient: "none",
+      imageSelected: false,
+      imageSelectedURI: "",
+      imageLodaing: false,
+      postUploaded: false,
+      recipient: [],
+      recipientChosen: false,
       contacts: [],
       postID: this.uniqueID(),
       messageTypeMenuOptions: [
@@ -41,16 +46,22 @@ class Upload extends React.Component {
       messageType: "Compliment",
       // parentPostID: this.props.route.params.parentPostId
     };
-    alert(this.state.postID);
+    // alert(this.state.postID);
+    console.log();
   }
 
   componentDidMount = () => {
     var that = this;
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
-        that.setState({
-          isLoggedIn: true,
-        });
+        that.setState(
+          {
+            isLoggedIn: true,
+          },
+          function () {
+            console.log(user.uid);
+          }
+        );
       }
     });
     this._checkContactPermissions();
@@ -64,7 +75,17 @@ class Upload extends React.Component {
   };
 
   returnData = (recipientInfo) => {
-    this.setState({ recipient: recipientInfo });
+    // var newVar = this.state.recipient;
+    // newArray.push(recipientInfo);
+
+    this.setState(
+      { recipient: recipientInfo, recipientChosen: true },
+      function () {
+        console.log(
+          "The new state recipient info is... " + this.state.recipient
+        );
+      }
+    );
   };
 
   onSubmitMessage = (e) => {
@@ -150,7 +171,11 @@ class Upload extends React.Component {
 
     if (!result.cancelled) {
       console.log("upload an image");
-      this.uploadImage(result.uri);
+      this.setState({
+        imageSelected: true,
+        imageSelectedURI: result.uri,
+      });
+      // this.uploadImage(result.uri);
     } else {
       console.log("cancelled");
     }
@@ -173,6 +198,13 @@ class Upload extends React.Component {
 
     var snapshot = ref.put(blob).on("state_changed", (snapshot) => {
       console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
+    });
+  };
+
+  selectMediaData = async (url) => {
+    this.setState({
+      imageSelected: true,
+      imageSelectedURI: url,
     });
   };
 
@@ -223,35 +255,50 @@ class Upload extends React.Component {
 
             <View style={{ flex: 1, alignItems: "center" }}>
               <View>
-                <Text>Enter recipient below or</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log(
-                      "The current contact are ... " + this.state.contacts
-                    );
-                    this.props.navigation.navigate("Contacts", {
-                      returnData: this.returnData.bind(this),
-                      contacts: this.state.contacts,
-                    });
-                  }}
-                >
-                  <Text>Add contacts from your phone</Text>
-                </TouchableOpacity>
-                <TextInput
-                  style={{
-                    height: 30,
-                    width: 300,
-                    backgroundColor: "white",
-                    borderColor: "black",
-                    borderWidth: 1,
-                    margin: 20,
-                    textAlignVertical: "top",
-                  }}
-                  onChangeText={(text) => {
-                    this.setState({ recipient: text });
-                    console.log(this.state.recipient);
-                  }}
-                ></TextInput>
+                {this.state.recipientChosen == true ? (
+                  <View>
+                    <Text>Recipient: {this.state.recipient.contactName}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({ recipientChosen: false, recipient: "" })
+                      }
+                    >
+                      <Text>Change Recipient</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View>
+                    <Text>Enter recipient below or</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log(
+                          "The current contact are ... " + this.state.contacts
+                        );
+                        this.props.navigation.navigate("Contacts", {
+                          returnData: this.returnData.bind(this),
+                          contacts: this.state.contacts,
+                        });
+                      }}
+                    >
+                      <Text>Add contacts from your phone</Text>
+                    </TouchableOpacity>
+                    <TextInput
+                      style={{
+                        height: 30,
+                        width: 300,
+                        backgroundColor: "white",
+                        borderColor: "black",
+                        borderWidth: 1,
+                        margin: 20,
+                        textAlignVertical: "top",
+                      }}
+                      onChangeText={(text) => {
+                        this.setState({ recipient: text });
+                        console.log(this.state.recipient);
+                      }}
+                    ></TextInput>
+                  </View>
+                )}
                 <Text>Enter message below</Text>
                 <TextInput
                   style={{
@@ -268,23 +315,67 @@ class Upload extends React.Component {
                   }}
                 ></TextInput>
               </View>
-              <Button
-                title="Upload media from your phone"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-                onPress={this.findNewImage}
-              />
-              <Button
-                title="Use media from our program"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                title="Send message!"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-                onPress={this.onSubmitMessage}
-              />
+              {this.state.imageSelected == false ? (
+                <View>
+                  <Button
+                    title="Upload media from your phone"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    onPress={this.findNewImage}
+                  />
+                  <Button
+                    title="Use media from our program"
+                    onPress={() =>
+                      this.props.navigation.navigate(
+                        "ChooseImagesFromPrograms",
+                        {
+                          saveImageData: this.selectMediaData.bind(this),
+                        }
+                      )
+                    }
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                  />
+                  <Button
+                    title="Send message!"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    onPress={this.onSubmitMessage}
+                  />
+                </View>
+              ) : (
+                <View>
+                  <Text>Image Selected</Text>
+
+                  {this.imageSelectedURI != "" ? (
+                    <View>
+                      <Image
+                        source={{ uri: this.state.imageSelectedURI }}
+                        style={{ width: 100, height: 100, marginTop: 20 }}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({
+                            imageSelected: false,
+                            imageSelectedURI: "",
+                          })
+                        }
+                      >
+                        <Text>Remove or Change Image</Text>
+                      </TouchableOpacity>
+                      <Button
+                        title="Send message!"
+                        color="#841584"
+                        accessibilityLabel="Learn more about this purple button"
+                        onPress={this.onSubmitMessage}
+                      />
+                    </View>
+                  ) : (
+                    <Image source={{ url: "http://i.pravatar.cc/300" }} />
+                  )}
+                </View>
+              )}
             </View>
           </View>
         ) : (

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, FlatList, ActivityIndicator, Button } from "react-native";
 import { ListItem, SearchBar } from "react-native-elements";
 import { f, database, auth, storage } from "../Screens/config/config";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 class Contacts_for_Upload extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class Contacts_for_Upload extends React.Component {
       loading: false,
       data: [],
       error: null,
+      // recipientSelected: "none",
     };
 
     this.arrayholder = [];
@@ -40,27 +42,27 @@ class Contacts_for_Upload extends React.Component {
         newElement.email = element.phoneNumbers[0].number;
       } else if (element.phoneNumbers.length > 1) {
         console.log("element.phoneNumbers.length is greater than 1");
-        newElement.name = {
-          first: element.firstName,
-          last: element.lastName,
-        };
-        newElement.email = element.phoneNumbers[0].number;
+        // newElement.name = {
+        //   first: element.firstName,
+        //   last: element.lastName,
+        // };
+        // newElement.email = element.phoneNumbers[0].number;
 
         //ADD Code below back in tktk--it was working fine!
-        // element.phoneNumbers.forEach((numberArray) => {
-        //   if (
-        //     numberArray.label == "mobile" ||
-        //     numberArray.label == "work" ||
-        //     numberArray.label == "home"
-        //   ) {
-        //     //this code is repetitive--extract later
-        //     newElement.name = {
-        //       first: element.firstName,
-        //       last: element.lastName,
-        //     };
-        //     newElement.email = numberArray.number;
-        //   }
-        // });
+        element.phoneNumbers.forEach((numberArray) => {
+          if (
+            numberArray.label == "mobile" ||
+            numberArray.label == "work" ||
+            numberArray.label == "home"
+          ) {
+            //this code is repetitive--extract later
+            newElement.name = {
+              first: element.firstName,
+              last: element.lastName,
+            };
+            newElement.email = numberArray.number;
+          }
+        });
       } else {
         newElement.name = {
           first: element.firstName,
@@ -71,11 +73,11 @@ class Contacts_for_Upload extends React.Component {
       sortedArray.push(newElement);
     });
 
-    console.log("The new sorted array is ");
-    console.log(sortedArray[0]);
-    console.log(sortedArray[1]);
-    console.log(sortedArray[2]);
-    console.log(sortedArray[3]);
+    // console.log("The new sorted array is ");
+    // console.log(sortedArray[0]);
+    // console.log(sortedArray[1]);
+    // console.log(sortedArray[2]);
+    // console.log(sortedArray[3]);
     // console.log("the new test array is ");
     // console.log(this.state.testData[0]);
 
@@ -177,11 +179,31 @@ class Contacts_for_Upload extends React.Component {
         <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
-            <ListItem
-              // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={item.email}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                var recipientObject = {
+                  contactInfo: item.email,
+                  contactName: item.name.first + " " + item.name.last,
+                };
+                this.setState(
+                  {
+                    recipientSelected: recipientObject,
+                  },
+                  function () {
+                    this.props.route.params.returnData(
+                      this.state.recipientSelected
+                    );
+                    this.props.navigation.goBack();
+                  }
+                );
+              }}
+            >
+              <ListItem
+                // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
+                title={`${item.name.first} ${item.name.last}`}
+                subtitle={item.email}
+              />
+            </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent={this.renderSeparator}
