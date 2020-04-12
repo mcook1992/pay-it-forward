@@ -1,6 +1,7 @@
 import React from "react";
 import {
   TouchableOpacity,
+  ActivityIndicator,
   TextInput,
   Flatlist,
   Stylesheet,
@@ -23,14 +24,20 @@ class Upload extends React.Component {
     this.state = {
       isLoggedIn: false,
       messageText: "",
-      imageSelected: false,
+      imageSelectedFromDevice: false,
+      imageSelectedFromProgram: false,
       imageSelectedURI: "",
-      imageLodaing: false,
+      pictureUploadingProgress: 0,
+      postUploadingProgress: 0,
+      parentMessages: [],
+      childMessages: [],
+      postLodaing: false,
       postUploaded: false,
       recipient: [],
+      userID: "",
       recipientChosen: false,
       contacts: [],
-      postID: this.uniqueID(),
+      postID: "",
       messageTypeMenuOptions: [
         {
           value: "Compliment",
@@ -52,6 +59,7 @@ class Upload extends React.Component {
 
   componentDidMount = () => {
     var that = this;
+    var postID = this.uniqueID();
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
         that.setState(
@@ -60,6 +68,10 @@ class Upload extends React.Component {
           },
           function () {
             console.log(user.uid);
+            that.setState({
+              userID: user.uid,
+              postID: postID,
+            });
           }
         );
       }
@@ -172,7 +184,7 @@ class Upload extends React.Component {
     if (!result.cancelled) {
       console.log("upload an image");
       this.setState({
-        imageSelected: true,
+        imageSelectedFromDevice: true,
         imageSelectedURI: result.uri,
       });
       // this.uploadImage(result.uri);
@@ -181,7 +193,18 @@ class Upload extends React.Component {
     }
   };
 
+  uploadNewPost = async () => {
+    if (this.state.imageSelectedFromDevice == true) {
+      this.uploadImage(this.state.imageSelectedURI);
+
+      // console.log(response);
+    }
+  };
+
   uploadImage = async (uri) => {
+    var returnValue = "error";
+    this.setState({ postLodaing: true });
+    console.log("Upload image called");
     var that = this;
     var userID = f.auth().currentUser.uid;
     var postID = this.state.postID;
@@ -194,18 +217,78 @@ class Upload extends React.Component {
     const blob = await response.blob();
     var filePath = postID + "." + that.state.currentMediaType;
 
-    const ref = storage.ref("user/" + userID + "/img").child(filePath);
+    var imageUploadTask = storage
+      .ref("user/" + userID + "/img")
+      .child(filePath)
+      .put(blob);
 
-    var snapshot = ref.put(blob).on("state_changed", (snapshot) => {
-      console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
-    });
+    imageUploadTask.on(
+      "state_changed",
+      function (snapshot) {
+        var progress = (
+          (snapshot.bytesTransferred / snapshot.totalBytes) *
+          100
+        ).toFixed(0);
+        that.setState({
+          progress: progress,
+        });
+        console.log("Progress is " + progress + "% complete");
+      },
+      function (error) {
+        console.log("Error! -- " + error);
+      },
+      function () {
+        that.setState({
+          pictureUploadingProgress: 100,
+          postLodaing: false,
+        });
+        imageUploadTask.snapshot.ref
+          .getDownloadURL()
+          .then(function (downloadURL) {
+            alert(downloadURL);
+            that.uploadNewPostWithPhoneImage(downloadURL);
+          });
+      }
+    );
+
+    // var snapshot = ref.put(blob).on("state_changed", (snapshot) => {
+    //   console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
+    // });
+  };
+
+  uploadNewPostWithPhoneImage = (phoneImageDownloadLink) => {
+    var that = this;
+    f.database()
+      .ref("Messages/" + that.state.postID)
+      .set({
+        type: that.state.messageType,
+        text: that.state.messageText,
+        sender: that.state.userID,
+        recipient: that.state.recipient,
+        imageURL: phoneImageDownloadLink,
+      });
   };
 
   selectMediaData = async (url) => {
     this.setState({
-      imageSelected: true,
+      imageSelectedFromProgram: true,
       imageSelectedURI: url,
     });
+  };
+
+  // tktktk
+
+  writeUserData = (userId, name, email, imageUrl) => {
+    var that = this;
+    firebase
+      .database()
+      .ref("messages/" + that.state.uniqueID)
+      .set({
+        type: that.state.messageType,
+        text: that.state.messageText,
+        sender: that.state.userID,
+        recipient: that.state.recipient,
+      });
   };
 
   render() {
@@ -315,7 +398,8 @@ class Upload extends React.Component {
                   }}
                 ></TextInput>
               </View>
-              {this.state.imageSelected == false ? (
+              {this.state.imageSelectedFromDevice == false &&
+              this.state.imageSelectedFromProgram == false ? (
                 <View>
                   <Button
                     title="Upload media from your phone"
@@ -357,19 +441,25 @@ class Upload extends React.Component {
                       <TouchableOpacity
                         onPress={() =>
                           this.setState({
-                            imageSelected: false,
+                            imageSelectedFromDevice: false,
+                            imageSelectedFromProgram: false,
                             imageSelectedURI: "",
                           })
                         }
                       >
                         <Text>Remove or Change Image</Text>
                       </TouchableOpacity>
-                      <Button
-                        title="Send message!"
-                        color="#841584"
-                        accessibilityLabel="Learn more about this purple button"
-                        onPress={this.onSubmitMessage}
-                      />
+
+                      {this.state.postLodaing == true ? (
+                        <ActivityIndicator size="small" color="blue" />
+                      ) : (
+                        <Button
+                          title="Send message!"
+                          color="#841584"
+                          accessibilityLabel="Learn more about this purple button"
+                          onPress={this.uploadNewPost}
+                        />
+                      )}
                     </View>
                   ) : (
                     <Image source={{ url: "http://i.pravatar.cc/300" }} />
