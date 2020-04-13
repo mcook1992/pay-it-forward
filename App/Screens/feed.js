@@ -5,7 +5,7 @@ import {
   Stylesheet,
   Text,
   View,
-  Image
+  Image,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
@@ -15,7 +15,7 @@ class Feed extends React.Component {
     this.state = {
       list_of_notifications: [],
       refresh: false,
-      loading: true
+      loading: true,
     };
   }
 
@@ -32,7 +32,7 @@ class Feed extends React.Component {
       .ref("Users")
       .child(messageObj.sender.id) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
       .once("value")
-      .then(function(snapshot2) {
+      .then(function (snapshot2) {
         if (snapshot2.val()) {
           var userData = snapshot2.val();
           // console.log(
@@ -51,7 +51,7 @@ class Feed extends React.Component {
             text: messageObj.text,
             spreadPoints: messageObj["spread-points"].toString(),
             senderAvatar: userData.avatar,
-            senderName: userData.username
+            senderName: userData.username,
           });
           // console.log(message + " and the message type is " + messageObj.type);
           console.log(
@@ -62,18 +62,18 @@ class Feed extends React.Component {
           that.setState({
             list_of_notifications: notificationsList,
             refresh: false,
-            loading: true
+            loading: true,
           });
         }
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   };
 
   loadFeed = () => {
     this.setState({
       refresh: true,
       loading: false,
-      list_of_notifications: []
+      list_of_notifications: [],
     });
 
     var that = this;
@@ -82,7 +82,7 @@ class Feed extends React.Component {
       .ref("Messages")
       .orderByChild("time-sent")
       .once("value")
-      .then(function(snapshot) {
+      .then(function (snapshot) {
         if (snapshot.val()) {
           data = snapshot.val();
           // console.log("The snapshot.val() is " + data[message]);
@@ -94,7 +94,7 @@ class Feed extends React.Component {
           }
         }
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   };
 
   loadNew = () => {
@@ -110,7 +110,7 @@ class Feed extends React.Component {
     // });
   };
 
-  pluralCheck = s => {
+  pluralCheck = (s) => {
     if (s == 1) {
       return " ago";
     } else {
@@ -118,7 +118,7 @@ class Feed extends React.Component {
     }
   };
 
-  timeConverter = timestamp => {
+  timeConverter = (timestamp) => {
     var a = new Date(timestamp * 1000);
     var seconds = Math.floor((new Date() - a) / 1000);
 
@@ -154,7 +154,7 @@ class Feed extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
         }}
       >
         <View
@@ -165,7 +165,7 @@ class Feed extends React.Component {
             borderColor: "lightgrey",
             justifyContent: "center",
             alignItems: "center",
-            borderBottomWidth: 0.5
+            borderBottomWidth: 0.5,
           }}
         >
           <Text>Feed</Text>
@@ -186,19 +186,19 @@ class Feed extends React.Component {
                 // alignItems: "center",
                 flexDirection: "row",
                 flexWrap: "wrap",
-                height: 100
+                height: 100,
               }}
               key={index}
             >
               <Image
                 source={{
-                  url: item.senderAvatar
+                  url: item.senderAvatar,
                 }}
                 style={{
                   resizeMode: "cover",
                   width: "10%",
                   height: 40,
-                  margin: 5
+                  margin: 5,
                 }}
               />
 
@@ -206,7 +206,7 @@ class Feed extends React.Component {
                 onPress={() =>
                   this.props.navigation.push("Message", {
                     messageID: item.id,
-                    message: item
+                    message: item,
                   })
                 }
               >
@@ -214,7 +214,7 @@ class Feed extends React.Component {
                   style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    alignSelf: "center"
+                    alignSelf: "center",
                   }}
                 >
                   {item.senderName} just sent you a {item.type}

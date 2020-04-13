@@ -202,7 +202,7 @@ class Upload extends React.Component {
   };
 
   uploadImage = async (uri) => {
-    var returnValue = "error";
+    // var returnValue = "error";
     this.setState({ postLodaing: true });
     console.log("Upload image called");
     var that = this;
@@ -245,7 +245,7 @@ class Upload extends React.Component {
         imageUploadTask.snapshot.ref
           .getDownloadURL()
           .then(function (downloadURL) {
-            alert(downloadURL);
+            // alert(downloadURL);
             that.uploadNewPostWithPhoneImage(downloadURL);
           });
       }
@@ -256,8 +256,23 @@ class Upload extends React.Component {
     // });
   };
 
+  testFunction = async () => {
+    // ref.child('users').orderByChild('name').equalTo('Alex')
+
+    f.database()
+      .ref("/Users/")
+      .orderByChild("username")
+      .equalTo("test-username-2")
+      .once("value")
+      .then(function (snapshot) {
+        console.log(snapshot);
+      });
+  };
+
   uploadNewPostWithPhoneImage = (phoneImageDownloadLink) => {
     var that = this;
+
+    //if the recipient exists
     f.database()
       .ref("Messages/" + that.state.postID)
       .set({
@@ -266,6 +281,7 @@ class Upload extends React.Component {
         sender: that.state.userID,
         recipient: that.state.recipient,
         imageURL: phoneImageDownloadLink,
+        parentMessages: this.state.parentMessages,
       });
   };
 
@@ -425,6 +441,12 @@ class Upload extends React.Component {
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
                     onPress={this.onSubmitMessage}
+                  />
+                  <Button
+                    title="Test button!"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    onPress={this.testFunction}
                   />
                 </View>
               ) : (
