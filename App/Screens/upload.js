@@ -345,7 +345,10 @@ class Upload extends React.Component {
 
   checkForUserByPhoneNumber = async (filteredPhoneNumberString) => {
     var that = this;
-    console.log("In the checkforUserByPhoneNumber function");
+    console.log(
+      "In the checkforUserByPhoneNumber function and the string is " +
+        filteredPhoneNumberString
+    );
 
     f.database()
       .ref("/Users/")
@@ -355,8 +358,12 @@ class Upload extends React.Component {
       .then(function (snapshot) {
         console.log("snapshot is" + snapshot.val());
 
-        // for (const property in snapshot) {
-        //   console.log(`${property}: ${snapshot[property]}`);
+        // for (const property in snapshot.val()) {
+        //   var testElem = snapshot.val();
+        //   console.log(`${property}: ${testElem[property]}`);
+        //   console.log([
+        //     testElem[[property]].phone + "  " + testElem[property].username,
+        //   ]);
         // }
         //if the username exists
         if (snapshot.val()) {
