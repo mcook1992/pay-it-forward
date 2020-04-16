@@ -54,7 +54,7 @@ class Upload extends React.Component {
       // parentPostID: this.props.route.params.parentPostId
     };
     // alert(this.state.postID);
-    console.log();
+    // console.log();
   }
 
   componentDidMount = () => {
@@ -121,7 +121,7 @@ class Upload extends React.Component {
 
       if (data.length > 0) {
         const contact = data[0];
-        console.log(contact);
+        // console.log(contact);
         this.setState({ contacts: data });
       }
     }
@@ -269,10 +269,124 @@ class Upload extends React.Component {
       });
   };
 
+  //tktktk
+
+  findUserByUsername = () => {
+    var that = this;
+
+    f.database()
+      .ref("/Users/")
+      .orderByChild("username")
+      .equalTo(this.state.recipient)
+      .once("value")
+      .then(function (snapshot) {
+        // for (const property in snapshot) {
+        //   console.log(`${property}: ${snapshot[property]}`);
+        // }
+        //if the username exists
+        if (snapshot.val()) {
+          console.log("username exists!");
+        } else {
+          console.log("username doesn't exist! Checking phone numbers");
+          that.dealWithPhoneNumber(that.state.recipient);
+        }
+      });
+  };
+
+  dealWithPhoneNumber = (phoneNumberString) => {
+    var newPhoneNumberArray = [];
+    var counter = 0;
+    console.log(
+      "We'rein the deal with phone number function and the string is " +
+        phoneNumberString
+    );
+
+    for (var i = 0; i < phoneNumberString.length; i++) {
+      var element = phoneNumberString.charAt(i);
+      console.log(element);
+      var isItNotANumber = isNaN(element);
+      if (isItNotANumber == false) {
+        console.log("We're in the if loop");
+
+        //dealing with adding array of strings together
+        if (counter == 0) {
+          newPhoneNumberArray[0] = element;
+          counter++;
+        } else {
+          newPhoneNumberArray[0] = newPhoneNumberArray[0] + element;
+          counter++;
+          console.log(
+            newPhoneNumberArray + " is the array and the counter is " + counter
+          );
+          if (counter == phoneNumberString.length) {
+            this.checkForUserByPhoneNumber(newPhoneNumberArray[0]);
+          }
+        }
+      } else {
+        alert("Not a phone number");
+        return;
+      }
+    }
+
+    // phoneNumberString.forEach((element) => {
+    //   if (element.isNaN() == false) {
+    //     newPhoneNumberArray.push(element);
+    //     counter++;
+    //     console.log(newPhoneNumberArray + " is the array and " + counter51);
+    //     if (counter == phoneNumberString.length) {
+    //       this.checkForUserByPhoneNumber(newPhoneNumberArray);
+    //     }
+    //   } else {
+    //     alert("Not a phone number");
+    //     return;
+    //   }
+    // });
+  };
+
+  checkForUserByPhoneNumber = async (filteredPhoneNumberString) => {
+    var that = this;
+    console.log("In the checkforUserByPhoneNumber function");
+
+    f.database()
+      .ref("/Users/")
+      .orderByChild("phone")
+      .equalTo(filteredPhoneNumberString)
+      .once("value")
+      .then(function (snapshot) {
+        console.log("snapshot is" + snapshot.val());
+
+        // for (const property in snapshot) {
+        //   console.log(`${property}: ${snapshot[property]}`);
+        // }
+        //if the username exists
+        if (snapshot.val()) {
+          console.log("user found by phone number exists!");
+        } else {
+          console.log(
+            " no user with this phone Number existsuser doesn't exist!"
+          );
+
+          if (filteredPhoneNumberString.length == 10) {
+            console.log(
+              "This is a real phone number! Send to Twilio with a 1 added in front!"
+            );
+            //this.SendToTwilio
+          } else if (filteredPhoneNumberString.length == 11) {
+            console.log(
+              "This is a real phone number with area code. Send to Twilio with no additions"
+            );
+          } else {
+            console.log(
+              "Unfortunately, we can't support this phone number. We can only support phone numbers in the US, with the proper area code"
+            );
+          }
+        }
+      });
+  };
+
   uploadNewPostWithPhoneImage = (phoneImageDownloadLink) => {
     var that = this;
 
-    //if the recipient exists
     f.database()
       .ref("Messages/" + that.state.postID)
       .set({
@@ -296,8 +410,7 @@ class Upload extends React.Component {
 
   writeUserData = (userId, name, email, imageUrl) => {
     var that = this;
-    firebase
-      .database()
+    f.database()
       .ref("messages/" + that.state.uniqueID)
       .set({
         type: that.state.messageType,
@@ -347,7 +460,7 @@ class Upload extends React.Component {
                   this.setState({
                     messageType: value,
                   });
-                  console.log(this.state.messageType);
+                  // console.log(this.state.messageType);
                 }}
               />
             </View>
@@ -393,7 +506,7 @@ class Upload extends React.Component {
                       }}
                       onChangeText={(text) => {
                         this.setState({ recipient: text });
-                        console.log(this.state.recipient);
+                        // console.log(this.state.recipient);
                       }}
                     ></TextInput>
                   </View>
@@ -446,7 +559,7 @@ class Upload extends React.Component {
                     title="Test button!"
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
-                    onPress={this.testFunction}
+                    onPress={this.findUserByUsername}
                   />
                 </View>
               ) : (
