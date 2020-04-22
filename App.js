@@ -39,6 +39,8 @@ import {
 } from "../pay-it-forward/App/Screens/config/config";
 import Message from "./App/Screens/message";
 import ChooseImagesFromPrograms from "./App/Screens/selectPictureFromProgram";
+import friendContactUpload from "./App/Screens/friendsListContacts";
+import basicHomePage from "./App/Screens/baseHomePage";
 
 // function Feed() {
 //   return (
@@ -83,10 +85,13 @@ function MyStack() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Message" component={Message} />
       <Stack.Screen name="Contacts" component={Contacts_for_Upload} />
+      <Stack.Screen name="FriendsList" component={friendContactUpload} />
       <Stack.Screen
         name="ChooseImagesFromPrograms"
         component={ChooseImagesFromPrograms}
       />
+      <Stack.Screen name="basicHomePage" component={basicHomePage} />
+      <Stack.Screen name="Upload" component={Upload} />
     </Stack.Navigator>
   );
 }
@@ -110,7 +115,7 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Uddates"
+        name="Updates"
         component={Notifications}
         options={{
           tabBarLabel: "Updates",
@@ -120,10 +125,10 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Upload"
-        component={Upload}
+        name="basicHomePage"
+        component={basicHomePage}
         options={{
-          tabBarLabel: "Upload",
+          tabBarLabel: "HomePage",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="email-open-outline"

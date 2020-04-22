@@ -216,14 +216,14 @@ class Contacts_for_Upload extends React.Component {
 
 export default Contacts_for_Upload;
 
-{
-  /* <Button
+// {
+/* <Button
           title="Go back"
           color="#841584"
           accessibilityLabel="Learn more about this purple button"
           onPress={this.returnToPreviousScreen}
         /> */
-}
+// }
 
 // returnToPreviousScreen = () => {
 //   this.props.route.params.returnData(this.state.selectedRecipient);

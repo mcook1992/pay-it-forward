@@ -3,7 +3,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
-  Flatlist,
+  FlatList,
   Stylesheet,
   Text,
   View,
@@ -17,6 +17,7 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 // import Contacts from "react-native-contacts";
 import * as Contacts from "expo-contacts";
+import BootstrapStyleSheet from "react-native-bootstrap-styles";
 
 class Upload extends React.Component {
   constructor(props) {
@@ -38,6 +39,8 @@ class Upload extends React.Component {
       recipientChosen: false,
       contacts: [],
       postID: "",
+      showFriendList: false,
+      friendsData: ["test-user-2", "test-user-1"],
       messageTypeMenuOptions: [
         {
           value: "Compliment",
@@ -53,6 +56,9 @@ class Upload extends React.Component {
       messageType: "Compliment",
       // parentPostID: this.props.route.params.parentPostId
     };
+
+    this.returnData = this.returnData.bind(this);
+    this.testFunctionChooseFriend = this.testFunctionChooseFriend.bind(this);
     // alert(this.state.postID);
     // console.log();
   }
@@ -62,6 +68,9 @@ class Upload extends React.Component {
     var postID = this.uniqueID();
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
+        var recipientData = that.props.route.params.selectedContact;
+        console.log(recipientData);
+
         that.setState(
           {
             isLoggedIn: true,
@@ -69,8 +78,11 @@ class Upload extends React.Component {
           function () {
             console.log(user.uid);
             that.setState({
+              isLoggedIn: true,
               userID: user.uid,
               postID: postID,
+              recipientChosen: true,
+              recipient: recipientData,
             });
           }
         );
@@ -98,6 +110,21 @@ class Upload extends React.Component {
         );
       }
     );
+  };
+
+  testFunctionChooseFriend = (recipient) => {
+    console.log(
+      "In the test function " +
+        this.state.recipientChosen +
+        "  " +
+        this.state.showFriendList
+    );
+    this.setState({
+      recipientChosen: true,
+      recipient: recipient,
+      showFriendList: false,
+    });
+    console.log(this.state.recipientChosen + "  " + this.state.showFriendList);
   };
 
   onSubmitMessage = (e) => {
@@ -474,50 +501,15 @@ class Upload extends React.Component {
 
             <View style={{ flex: 1, alignItems: "center" }}>
               <View>
-                {this.state.recipientChosen == true ? (
-                  <View>
-                    <Text>Recipient: {this.state.recipient.contactName}</Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.setState({ recipientChosen: false, recipient: "" })
-                      }
-                    >
-                      <Text>Change Recipient</Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <View>
-                    <Text>Enter recipient below or</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log(
-                          "The current contact are ... " + this.state.contacts
-                        );
-                        this.props.navigation.navigate("Contacts", {
-                          returnData: this.returnData.bind(this),
-                          contacts: this.state.contacts,
-                        });
-                      }}
-                    >
-                      <Text>Add contacts from your phone</Text>
-                    </TouchableOpacity>
-                    <TextInput
-                      style={{
-                        height: 30,
-                        width: 300,
-                        backgroundColor: "white",
-                        borderColor: "black",
-                        borderWidth: 1,
-                        margin: 20,
-                        textAlignVertical: "top",
-                      }}
-                      onChangeText={(text) => {
-                        this.setState({ recipient: text });
-                        // console.log(this.state.recipient);
-                      }}
-                    ></TextInput>
-                  </View>
-                )}
+                <View>
+                  <Text>Recipient: {this.state.recipient.name}</Text>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.goBack()}
+                  >
+                    <Text>Change Recipient</Text>
+                  </TouchableOpacity>
+                </View>
+
                 <Text>Enter message below</Text>
                 <TextInput
                   style={{
@@ -567,6 +559,15 @@ class Upload extends React.Component {
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
                     onPress={this.findUserByUsername}
+                  />
+                  <Button
+                    title="Test button for friend search!"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    onPress={() =>
+                      this.props.navigation.navigate("FriendsList")
+                    }
+                    //tktktk
                   />
                 </View>
               ) : (
