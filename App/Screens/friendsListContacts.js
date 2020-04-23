@@ -14,6 +14,7 @@ class friendContactUpload extends React.Component {
       loading: false,
       data: [],
       error: null,
+      phoneNumberArray: [],
       // recipientSelected: "none",
     };
 
@@ -44,6 +45,7 @@ class friendContactUpload extends React.Component {
               }
               that.setState({ data: arrayOfFriends });
               that.arrayholder = arrayOfFriends;
+              that.combineDataArrays();
               console.log("the new state is  " + that.state.data);
             }
           });
@@ -64,12 +66,33 @@ class friendContactUpload extends React.Component {
       if (data.length > 0) {
         // const contact = data[0];
         // console.log(contact);
-        var dataFromContacts = this.sortData(data);
-        console.log(dataFromContacts[0].contactInfo);
+        // var dataFromContacts = this.sortData(data);
+        this.sortData(data);
+        // console.log(dataFromContacts[0].contactInfo);
         //after this, combine two arrays
         this.setState({ loading: false });
       }
     }
+  };
+
+  combineDataArrays = () => {
+    var newCombinedArray = [];
+
+    console.log("We're in the combine array function");
+
+    this.state.data.forEach((element) => {
+      var newElement = { name: element.name, contactInfo: element.username };
+      console.log(element.name);
+
+      newCombinedArray.push(newElement);
+    });
+
+    this.state.phoneNumberArray.forEach((element) => {
+      newCombinedArray.push(element);
+    });
+
+    this.setState({ data: newCombinedArray });
+    this.arrayholder = newCombinedArray;
   };
 
   sortData = (paramData) => {
@@ -81,11 +104,11 @@ class friendContactUpload extends React.Component {
       var newElement = {};
       newElement.name = element.firstName + " " + element.lastName;
 
-      console.log("We have an empty element");
-      console.log(element.phoneNumbers);
+      // console.log("We have an empty element");
+      // console.log(element.phoneNumbers);
 
       if (element.phoneNumbers.length == 1) {
-        console.log("The element is  " + element);
+        // console.log("The element is  " + element);
 
         newElement.contactInfo = element.phoneNumbers[0].digits;
       } else if (element.phoneNumbers.length > 1) {
@@ -95,7 +118,8 @@ class friendContactUpload extends React.Component {
           if (
             numberArray.label == "mobile" ||
             numberArray.label == "main" ||
-            numberArray.label == "iPhone"
+            numberArray.label == "iPhone" ||
+            numberArray.label == "other"
           ) {
             //this code is repetitive--extract later
 
@@ -107,8 +131,9 @@ class friendContactUpload extends React.Component {
       }
       sortedArray.push(newElement);
     });
-
-    return sortedArray;
+    console.log("Sorted array looks like " + sortedArray[0]);
+    this.setState({ phoneNumberArray: sortedArray });
+    // return sortedArray;
   };
 
   renderSeparator = () => {
@@ -136,7 +161,8 @@ class friendContactUpload extends React.Component {
       //set up data array so that there is a name and a "contact info"
       //set up this function so that it takes name and contact info
       console.log("They array holder item is " + item);
-      const itemData = item.toUpperCase();
+      const totalItemData = item.name + " " + item.contactInfo;
+      const itemData = totalItemData.toUpperCase();
       const textData = text.toUpperCase();
 
       return itemData.indexOf(textData) > -1;
@@ -200,14 +226,17 @@ class friendContactUpload extends React.Component {
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.navigate("Upload", {
-                  selectedContact: { name: item, contactInfo: item },
+                  selectedContact: {
+                    name: item.name,
+                    contactInfo: item.username,
+                  },
                 });
               }}
             >
               <ListItem
                 // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-                title={item}
-                subtitle={item}
+                title={item.name}
+                subtitle={item.contactInfo}
               />
             </TouchableOpacity>
           )}
