@@ -58,7 +58,7 @@ class Upload extends React.Component {
     };
 
     this.returnData = this.returnData.bind(this);
-    this.testFunctionChooseFriend = this.testFunctionChooseFriend.bind(this);
+
     // alert(this.state.postID);
     // console.log();
   }
@@ -88,7 +88,7 @@ class Upload extends React.Component {
         );
       }
     });
-    this._checkContactPermissions();
+    // this._checkContactPermissions();
     // Contacts.getAll((err, contacts) => {
     //   if (err === "denied") {
     //     // error
@@ -112,50 +112,17 @@ class Upload extends React.Component {
     );
   };
 
-  testFunctionChooseFriend = (recipient) => {
-    console.log(
-      "In the test function " +
-        this.state.recipientChosen +
-        "  " +
-        this.state.showFriendList
-    );
-    this.setState({
-      recipientChosen: true,
-      recipient: recipient,
-      showFriendList: false,
-    });
-    console.log(this.state.recipientChosen + "  " + this.state.showFriendList);
-  };
-
   onSubmitMessage = (e) => {
     e.preventDefault();
     console.log(
       "current state is " +
         this.state.messageText +
         " and " +
-        this.state.recipient
+        this.state.recipient.contactInfo
     );
   };
 
   //image/media related functions:
-
-  _checkContactPermissions = async () => {
-    const { status } = await Contacts.requestPermissionsAsync();
-    if (status === "granted") {
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
-      });
-
-      if (data.length > 0) {
-        const contact = data[0];
-        // console.log(contact);
-        this.setState({ contacts: data });
-      }
-    }
-
-    // const { contactsStatus } = await Permissions.askAsync(Permissions.CONTACTS);
-    // this.setState({ contactsStatus: contactsStatus });
-  };
 
   _checkPermissions = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -221,10 +188,15 @@ class Upload extends React.Component {
   };
 
   uploadNewPost = async () => {
+    //tktktk
     if (this.state.imageSelectedFromDevice == true) {
       this.uploadImage(this.state.imageSelectedURI);
 
       // console.log(response);
+    } else if (this.state.imageSelectedFromProgram == true) {
+      this.uploadNewPostWithPhoneImage(this.state.imageSelectedURI);
+    } else {
+      this.uploadNewPostWithPhoneImage("No image selected");
     }
   };
 
@@ -283,19 +255,6 @@ class Upload extends React.Component {
     // });
   };
 
-  testFunction = async () => {
-    // ref.child('users').orderByChild('name').equalTo('Alex')
-
-    f.database()
-      .ref("/Users/")
-      .orderByChild("username")
-      .equalTo("test-username-2")
-      .once("value")
-      .then(function (snapshot) {
-        console.log(snapshot);
-      });
-  };
-
   //tktktk
 
   findUserByUsername = () => {
@@ -304,7 +263,7 @@ class Upload extends React.Component {
     f.database()
       .ref("/Users/")
       .orderByChild("username")
-      .equalTo(this.state.recipient)
+      .equalTo(that.state.recipient.contactInfo)
       .once("value")
       .then(function (snapshot) {
         // for (const property in snapshot) {
@@ -313,9 +272,10 @@ class Upload extends React.Component {
         //if the username exists
         if (snapshot.val()) {
           console.log("username exists!");
+          that.uploadNewPost();
         } else {
           console.log("username doesn't exist! Checking phone numbers");
-          that.dealWithPhoneNumber(that.state.recipient);
+          that.dealWithPhoneNumber(that.state.recipient.contactInfo);
         }
       });
   };
@@ -395,6 +355,9 @@ class Upload extends React.Component {
         //if the username exists
         if (snapshot.val()) {
           console.log("user found by phone number exists!");
+          //set state here so that the recipient is different
+          that.uploadNewPost();
+          //add friend to friendslist
         } else {
           console.log(
             " no user with this phone Number existsuser doesn't exist!"
@@ -404,22 +367,27 @@ class Upload extends React.Component {
             console.log(
               "This is a real phone number! Send to Twilio with a 1 added in front!"
             );
+            that.uploadNewPost();
             //this.SendToTwilio
           } else if (filteredPhoneNumberString.length == 11) {
             console.log(
-              "This is a real phone number with area code. Send to Twilio with no additions"
+              "This is a real phone number with country code. Send to Twilio with no additions"
             );
+            that.uploadNewPost();
           } else {
             console.log(
               "Unfortunately, we can't support this phone number. We can only support phone numbers in the US, with the proper area code"
             );
+            alert("Cannot send! Invalid phonenumber");
           }
         }
       });
   };
 
-  uploadNewPostWithPhoneImage = (phoneImageDownloadLink) => {
+  uploadNewPostWithPhoneImage = (photoDownloadURL) => {
     var that = this;
+    var date = new Date();
+    var timestamp = date.getTime();
 
     f.database()
       .ref("Messages/" + that.state.postID)
@@ -427,9 +395,10 @@ class Upload extends React.Component {
         type: that.state.messageType,
         text: that.state.messageText,
         sender: that.state.userID,
-        recipient: that.state.recipient,
-        imageURL: phoneImageDownloadLink,
-        parentMessages: this.state.parentMessages,
+        recipient: that.state.recipient.contactInfo,
+        imageURL: photoDownloadURL,
+        parentMessages: that.state.parentMessages,
+        timeSent: timestamp,
       });
   };
 
@@ -552,22 +521,13 @@ class Upload extends React.Component {
                     title="Send message!"
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
-                    onPress={this.onSubmitMessage}
+                    onPress={this.uploadNewPost}
                   />
                   <Button
                     title="Test button!"
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
                     onPress={this.findUserByUsername}
-                  />
-                  <Button
-                    title="Test button for friend search!"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    onPress={() =>
-                      this.props.navigation.navigate("FriendsList")
-                    }
-                    //tktktk
                   />
                 </View>
               ) : (

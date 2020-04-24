@@ -23,6 +23,11 @@ class friendContactUpload extends React.Component {
 
   componentDidMount() {
     this._checkContactPermissions();
+
+    // this.makeRemoteRequest();
+  }
+
+  grabFriendsFromOnline = async () => {
     var that = this;
     var arrayOfFriends = [];
     f.auth().onAuthStateChanged(function (user) {
@@ -51,9 +56,7 @@ class friendContactUpload extends React.Component {
           });
       }
     });
-
-    // this.makeRemoteRequest();
-  }
+  };
 
   _checkContactPermissions = async () => {
     this.setState({ loading: true });
@@ -71,7 +74,11 @@ class friendContactUpload extends React.Component {
         // console.log(dataFromContacts[0].contactInfo);
         //after this, combine two arrays
         this.setState({ loading: false });
+      } else {
+        this.grabFriendsFromOnline();
       }
+    } else {
+      this.grabFriendsFromOnline();
     }
   };
 
@@ -133,6 +140,7 @@ class friendContactUpload extends React.Component {
     });
     console.log("Sorted array looks like " + sortedArray[0]);
     this.setState({ phoneNumberArray: sortedArray });
+    this.grabFriendsFromOnline();
     // return sortedArray;
   };
 
@@ -228,7 +236,7 @@ class friendContactUpload extends React.Component {
                 this.props.navigation.navigate("Upload", {
                   selectedContact: {
                     name: item.name,
-                    contactInfo: item.username,
+                    contactInfo: item.contactInfo,
                   },
                 });
               }}

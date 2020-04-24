@@ -30,7 +30,7 @@ class Feed extends React.Component {
     console.log("the new message object is " + message);
     database
       .ref("Users")
-      .child(messageObj.sender.id) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .child(messageObj.sender) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
       .once("value")
       .then(function (snapshot2) {
         if (snapshot2.val()) {
@@ -47,7 +47,7 @@ class Feed extends React.Component {
             id: message,
             sender: messageObj.sender,
             type: messageObj.type,
-            timeSent: that.timeConverter(messageObj["time-sent"]),
+            timeSent: that.timeConverter(messageObj["timeSent"]),
             text: messageObj.text,
             spreadPoints: messageObj["spread-points"].toString(),
             senderAvatar: userData.avatar,
@@ -80,9 +80,10 @@ class Feed extends React.Component {
 
     database
       .ref("Messages")
-      .orderByChild("time-sent")
+      .orderByChild("timeSent")
       .once("value")
       .then(function (snapshot) {
+        console.log("made it to the then function");
         if (snapshot.val()) {
           data = snapshot.val();
           // console.log("The snapshot.val() is " + data[message]);
@@ -119,7 +120,7 @@ class Feed extends React.Component {
   };
 
   timeConverter = (timestamp) => {
-    var a = new Date(timestamp * 1000);
+    var a = new Date(timestamp);
     var seconds = Math.floor((new Date() - a) / 1000);
 
     var interval = Math.floor(seconds / 3153600);
@@ -146,8 +147,9 @@ class Feed extends React.Component {
     if (interval > 1) {
       return interval + " minute" + this.pluralCheck(interval);
     }
+    interval = Math.floor(seconds);
 
-    return Math.floor(seconds) + " second" + this.pluralCheck(seconds);
+    return interval + " second" + this.pluralCheck(interval);
   };
 
   render() {
