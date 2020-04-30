@@ -5,7 +5,7 @@ import {
   Stylesheet,
   Text,
   View,
-  Image
+  Image,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
@@ -13,7 +13,7 @@ class Message extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: true
+      loaded: true,
 
       // parentPostID: this.props.route.params.parentPostId
     };
@@ -31,7 +31,7 @@ class Message extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
           // height: 70,
           // paddingTop: 30,
           // backgroundColor: "white",
@@ -50,7 +50,7 @@ class Message extends React.Component {
             borderColor: "lightgrey",
             justifyContent: "space-between",
             alignItems: "center",
-            borderBottomWidth: 0.5
+            borderBottomWidth: 0.5,
           }}
         >
           <TouchableOpacity
@@ -72,7 +72,7 @@ class Message extends React.Component {
               borderColor: "lightgrey",
               borderBottomWidth: 0.5,
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <Text>Message</Text>
@@ -81,7 +81,7 @@ class Message extends React.Component {
               <Text
                 onPress={() =>
                   this.props.navigation.push("UserProfile", {
-                    user: this.props.route.params.message.sender
+                    user: this.props.route.params.message.sender,
                   })
                 }
               >
@@ -97,11 +97,11 @@ class Message extends React.Component {
                 backgroundColor: "orange",
                 borderRadius: 20,
                 borderColor: "grey",
-                borderWidth: 1.5
+                borderWidth: 1.5,
               }}
               onPress={() =>
                 this.props.navigation.navigate("Upload", {
-                  recipient: this.state.user
+                  message: this.props.route.params.message,
                 })
               }
             >
@@ -115,11 +115,11 @@ class Message extends React.Component {
                 backgroundColor: "orange",
                 borderRadius: 20,
                 borderColor: "grey",
-                borderWidth: 1.5
+                borderWidth: 1.5,
               }}
               onPress={() =>
-                this.props.navigation.navigate("Upload", {
-                  recipient: this.state.user
+                this.props.navigation.navigate("FriendsList", {
+                  message: this.props.route.params.message,
                 })
               }
             >

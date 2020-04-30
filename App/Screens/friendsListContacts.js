@@ -23,6 +23,10 @@ class friendContactUpload extends React.Component {
 
   componentDidMount() {
     this._checkContactPermissions();
+    if (this.props.route.params.message) {
+      this.setState({ anyMessageInfo: this.props.route.params.message });
+      console.log("Set new background message info");
+    }
 
     // this.makeRemoteRequest();
   }
@@ -228,30 +232,62 @@ class friendContactUpload extends React.Component {
           <Text>Choose a recipient</Text>
           <Text style={{ width: 40 }}></Text>
         </View>
-        <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate("Upload", {
-                  selectedContact: {
-                    name: item.name,
-                    contactInfo: item.contactInfo,
-                  },
-                });
-              }}
-            >
-              <ListItem
-                // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-                title={item.name}
-                subtitle={item.contactInfo}
-              />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-          ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.renderHeader}
-        />
+
+        {this.state.anyMessageInfo != undefined ? (
+          <View>
+            <Text>We have some message info</Text>
+            <FlatList
+              data={this.state.data}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("Upload", {
+                      selectedContact: {
+                        name: item.name,
+                        contactInfo: item.contactInfo,
+                      },
+                      message: this.state.anyMessageInfo,
+                    });
+                  }}
+                >
+                  <ListItem
+                    // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
+                    title={item.name}
+                    subtitle={item.contactInfo}
+                  />
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              ItemSeparatorComponent={this.renderSeparator}
+              ListHeaderComponent={this.renderHeader}
+            />
+          </View>
+        ) : (
+          <FlatList
+            data={this.state.data}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Upload", {
+                    selectedContact: {
+                      name: item.name,
+                      contactInfo: item.contactInfo,
+                    },
+                  });
+                }}
+              >
+                <ListItem
+                  // leftAvatar={{ source: { uri: item.picture.thumbnail } }}
+                  title={item.name}
+                  subtitle={item.contactInfo}
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={this.renderHeader}
+          />
+        )}
       </View>
     );
   }

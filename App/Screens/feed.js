@@ -30,7 +30,7 @@ class Feed extends React.Component {
     console.log("the new message object is " + message);
     database
       .ref("Users")
-      .child(messageObj.sender) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .child(messageObj.sender)
       .once("value")
       .then(function (snapshot2) {
         if (snapshot2.val()) {
@@ -40,24 +40,18 @@ class Feed extends React.Component {
           //     userData
           // );
 
-          console.log(
-            "the new message spread-points is " + messageObj["spreadPoints"]
-          );
           notificationsList.push({
             id: message,
             sender: messageObj.sender,
             type: messageObj.type,
             timeSent: that.timeConverter(messageObj["timeSent"]),
             text: messageObj.text,
-            spreadPoints: messageObj["spread-points"].toString(),
+            spreadPoints: messageObj["spreadPoints"].toString(),
+            parentMessages: messageObj.parentMessages,
             senderAvatar: userData.avatar,
             senderName: userData.username,
           });
           // console.log(message + " and the message type is " + messageObj.type);
-          console.log(
-            "and the spreadpoints to string value is " +
-              messageObj["spread-points"].toString()
-          );
 
           that.setState({
             list_of_notifications: notificationsList,

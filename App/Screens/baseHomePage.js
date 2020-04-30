@@ -82,7 +82,7 @@ class basicHomePage extends React.Component {
             })
           }
         >
-          <Text style={{ textAlign: "center" }}>Send a message!</Text>
+          <Text style={{ textAlign: "center" }}>Browse!</Text>
         </TouchableOpacity>
       </View>
     );

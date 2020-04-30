@@ -69,7 +69,7 @@ class Upload extends React.Component {
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
         var recipientData = that.props.route.params.selectedContact;
-        console.log(recipientData);
+        // console.log(recipientData);
 
         that.setState(
           {
@@ -88,6 +88,28 @@ class Upload extends React.Component {
         );
       }
     });
+    //if this is based on another message like pay it forward or thank you
+    if (this.props.route.params.message) {
+      var newArray = [];
+      newArray.push(this.props.route.params.message.id);
+      console.log("Making new array " + newArray);
+
+      if (this.props.route.params.message.parentMessages) {
+        console.log(
+          "Setting pay it forward/thank you info " +
+            this.props.route.params.message.parentMessages[0].id // now we need to make a function that says IF there are aprent messsages to add a spread-point to each parent message and add thsi child message to each parent message
+        );
+        this.props.route.params.message.parentMessages.forEach((element) => {
+          console.log("Going through parent elements " + element.id);
+          newArray.push(element.id);
+        });
+      }
+
+      this.setState({
+        parentMessages: newArray,
+        payItForward: true,
+      });
+    }
     // this._checkContactPermissions();
     // Contacts.getAll((err, contacts) => {
     //   if (err === "denied") {
@@ -272,7 +294,15 @@ class Upload extends React.Component {
         //if the username exists
         if (snapshot.val()) {
           console.log("username exists!");
-          that.uploadNewPost();
+          var userData = snapshot.val();
+          for (var key in userData) {
+            console.log(
+              "user found by phone number exists! and the key is... " + key
+            );
+            that.setState({ recipientID: key });
+            //set state here so that the recipient is different
+            that.uploadNewPost();
+          }
         } else {
           console.log("username doesn't exist! Checking phone numbers");
           that.dealWithPhoneNumber(that.state.recipient.contactInfo);
@@ -314,20 +344,6 @@ class Upload extends React.Component {
         return;
       }
     }
-
-    // phoneNumberString.forEach((element) => {
-    //   if (element.isNaN() == false) {
-    //     newPhoneNumberArray.push(element);
-    //     counter++;
-    //     console.log(newPhoneNumberArray + " is the array and " + counter51);
-    //     if (counter == phoneNumberString.length) {
-    //       this.checkForUserByPhoneNumber(newPhoneNumberArray);
-    //     }
-    //   } else {
-    //     alert("Not a phone number");
-    //     return;
-    //   }
-    // });
   };
 
   checkForUserByPhoneNumber = async (filteredPhoneNumberString) => {
@@ -344,19 +360,18 @@ class Upload extends React.Component {
       .once("value")
       .then(function (snapshot) {
         console.log("snapshot is" + snapshot.val());
-
-        // for (const property in snapshot.val()) {
-        //   var testElem = snapshot.val();
-        //   console.log(`${property}: ${testElem[property]}`);
-        //   console.log([
-        //     testElem[[property]].phone + "  " + testElem[property].username,
-        //   ]);
-        // }
         //if the username exists
         if (snapshot.val()) {
-          console.log("user found by phone number exists!");
-          //set state here so that the recipient is different
-          that.uploadNewPost();
+          var userData = snapshot.val();
+          for (var key in userData) {
+            console.log(
+              "user found by phone number exists! and the key is... " + key
+            );
+            that.setState({ recipientID: key });
+            //set state here so that the recipient is different
+            that.uploadNewPost();
+          }
+
           //add friend to friendslist
         } else {
           console.log(
@@ -388,18 +403,91 @@ class Upload extends React.Component {
     var that = this;
     var date = new Date();
     var timestamp = date.getTime();
+    //if the recipient matches an existing user account
+    if (this.state.recipientID) {
+      //tktktk
+      f.database()
+        .ref(
+          "Users/" +
+            that.state.recipientID +
+            "/messagesReceived/" +
+            that.state.postID
+        )
+        .set({
+          timeSent: timestamp,
+        });
+      f.database()
+        .ref("Messages/" + that.state.postID)
+        .set({
+          type: that.state.messageType,
+          text: that.state.messageText,
+          sender: that.state.userID,
+          recipient: that.state.recipient.contactInfo,
+          imageURL: photoDownloadURL,
+          parentMessages: that.state.parentMessages,
+          timeSent: timestamp,
+          spreadPoints: 1,
+        });
 
-    f.database()
-      .ref("Messages/" + that.state.postID)
-      .set({
-        type: that.state.messageType,
-        text: that.state.messageText,
-        sender: that.state.userID,
-        recipient: that.state.recipient.contactInfo,
-        imageURL: photoDownloadURL,
-        parentMessages: that.state.parentMessages,
-        timeSent: timestamp,
-      });
+      this.addingPointsToParentMessages();
+    } else {
+      f.database()
+        .ref("Messages/" + that.state.postID)
+        .set({
+          type: that.state.messageType,
+          text: that.state.messageText,
+          sender: that.state.userID,
+          recipient: that.state.recipient.contactInfo,
+          imageURL: photoDownloadURL,
+          parentMessages: that.state.parentMessages,
+          timeSent: timestamp,
+          spreadPoints: 1,
+        });
+    }
+  };
+
+  //adding spread points
+
+  addingPointsToParentMessages = async () => {
+    var that = this;
+    this.state.parentMessages.forEach((element) => {
+      console.log("In the adding points function " + this.state.parentMessages);
+      console.log(element);
+      f.database()
+        .ref("Messages/" + element)
+        .once("value")
+        .then(function (message) {
+          // console.log(message.val());
+          var messageObject = message.val();
+          console.log(messageObject.spreadPoints);
+          var newSpreadPoints = messageObject.spreadPoints + 1;
+          //updating child messages as well
+          that.addChildMessages();
+
+          //updating indvidual message spreadpoint and child messages
+          f.database()
+            .ref("Messages/" + element)
+            .update({
+              spreadPoints: newSpreadPoints,
+            });
+          //updating the users overall spreadpoints (who sent og message)
+          f.database()
+            .ref("Users/" + messageObject.sender)
+            .once("value")
+            .then(function (user) {
+              var newUser = user.val();
+              console.log(
+                "The new user is " + newUser + " " + newUser.currentPoints
+              );
+              //setting old points to current pointss
+              var oldPoints = newUser.currentPoints;
+              var currentPoints = newUser.currentPoints + 1;
+              f.database()
+                .ref("Users/" + messageObject.sender)
+                .update({ oldPoints: oldPoints, currentPoints: currentPoints });
+            });
+        });
+    });
   };
 
   selectMediaData = async (url) => {
@@ -409,19 +497,31 @@ class Upload extends React.Component {
     });
   };
 
-  // tktktk
-
-  writeUserData = (userId, name, email, imageUrl) => {
+  addChildMessages = async () => {
     var that = this;
     f.database()
-      .ref("messages/" + that.state.uniqueID)
-      .set({
-        type: that.state.messageType,
-        text: that.state.messageText,
-        sender: that.state.userID,
-        recipient: that.state.recipient,
+      .ref("Messages/" + that.props.route.params.message.id)
+      .once("value")
+      .then(function (message) {
+        var newChildMessageArray = [];
+        if (message.val()) {
+          console.log("We're adding a child to a parent message");
+          var messageObject = message.val();
+          if (messageObject.childMessages) {
+            newChildMessageArray = messageObject.childMessages;
+          }
+          newChildMessageArray.push(that.state.postID);
+          f.database()
+            .ref("Messages/" + that.props.route.params.message.id)
+            .update({
+              childMessages: newChildMessageArray,
+            });
+        }
       });
+
+    //updating indvidual message spreadpoint and child messages
   };
+  // tktktk
 
   render() {
     return (
@@ -528,6 +628,12 @@ class Upload extends React.Component {
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
                     onPress={this.findUserByUsername}
+                  />
+                  <Button
+                    title="Test button 2 (adding spreadPoints)!"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    onPress={this.addingPointsToParentMessages}
                   />
                 </View>
               ) : (
