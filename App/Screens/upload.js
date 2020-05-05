@@ -18,6 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 // import Contacts from "react-native-contacts";
 import * as Contacts from "expo-contacts";
 import BootstrapStyleSheet from "react-native-bootstrap-styles";
+//ttt
 
 class Upload extends React.Component {
   constructor(props) {
@@ -91,7 +92,7 @@ class Upload extends React.Component {
     //if this is based on another message like pay it forward or thank you
     if (this.props.route.params.message) {
       var newArray = [];
-      newArray.push(this.props.route.params.message.id);
+      newArray.push({ id: this.props.route.params.message.id });
       console.log("Making new array " + newArray);
 
       if (this.props.route.params.message.parentMessages) {
@@ -101,7 +102,7 @@ class Upload extends React.Component {
         );
         this.props.route.params.message.parentMessages.forEach((element) => {
           console.log("Going through parent elements " + element.id);
-          newArray.push(element.id);
+          newArray.push({ id: element.id });
         });
       }
 
@@ -294,12 +295,14 @@ class Upload extends React.Component {
         //if the username exists
         if (snapshot.val()) {
           console.log("username exists!");
+
           var userData = snapshot.val();
           for (var key in userData) {
             console.log(
-              "user found by phone number exists! and the key is... " + key
+              "user found by username exists! and the key is... " + key
             );
             that.setState({ recipientID: key });
+            console.log("the recipient ID is ... " + that.state.recipientID);
             //set state here so that the recipient is different
             that.uploadNewPost();
           }
@@ -368,8 +371,10 @@ class Upload extends React.Component {
               "user found by phone number exists! and the key is... " + key
             );
             that.setState({ recipientID: key });
+            // console.log("the recipient ID is ... " + that.state.recipientID);
             //set state here so that the recipient is different
             that.uploadNewPost();
+            that.addContactToFriendsList();
           }
 
           //add friend to friendslist
@@ -405,17 +410,7 @@ class Upload extends React.Component {
     var timestamp = date.getTime();
     //if the recipient matches an existing user account
     if (this.state.recipientID) {
-      //tktktk
-      f.database()
-        .ref(
-          "Users/" +
-            that.state.recipientID +
-            "/messagesReceived/" +
-            that.state.postID
-        )
-        .set({
-          timeSent: timestamp,
-        });
+      console.log("We're in the recipientID part of uploading a post");
       f.database()
         .ref("Messages/" + that.state.postID)
         .set({
@@ -428,8 +423,8 @@ class Upload extends React.Component {
           timeSent: timestamp,
           spreadPoints: 1,
         });
-
-      this.addingPointsToParentMessages();
+      //tktktktktk
+      this.addingPostsToPostsReceived();
     } else {
       f.database()
         .ref("Messages/" + that.state.postID)
@@ -444,50 +439,149 @@ class Upload extends React.Component {
           spreadPoints: 1,
         });
     }
+    this.addingPointsToParentMessages();
+    this.addingPostsToPostsSent();
+  };
+
+  addingPostsToPostsSent = async () => {
+    console.log("in adding posts sent function");
+    var that = this;
+    f.database()
+      .ref("Users/" + that.state.userID)
+      .once("value")
+      .then(function (user) {
+        console.log("user posts sent thing happening ... " + user.val());
+        var newPostsSentArray = [];
+        //if the user already has some sent posts
+
+        if (user.val().postsSent) {
+          newPostsSentArray = user.val().postsSent;
+        }
+
+        newPostsSentArray.push({ id: that.state.postID });
+
+        f.database()
+          .ref("Users/" + that.state.userID)
+          .update({ postsSent: newPostsSentArray });
+      });
+
+    //tktktk
+  };
+
+  addingPostsToPostsReceived = async () => {
+    console.log("in the adding posts to received function");
+    var that = this;
+    if (that.state.recipientID) {
+      console.log("In the adding posts to received function with a recip ID");
+      f.database()
+        .ref("Users/" + that.state.recipientID)
+        .once("value")
+        .then(function (user) {
+          var newPostsReceivedArray = [];
+          //if the user has already received a post...otherwise, don't bother
+
+          if (user.val().postsReceived) {
+            newPostsReceivedArray = user.val().postsReceived;
+          }
+
+          newPostsReceivedArray.push({ id: that.state.postID });
+
+          f.database()
+            .ref("Users/" + that.state.recipientID)
+            .update({ postsReceived: newPostsReceivedArray });
+        });
+    }
+    //tktktk
+  };
+
+  //adding friends to friendlist if they have another account
+
+  addContactToFriendsList = async () => {
+    var that = this;
+
+    //find the new friend by their id
+
+    f.database()
+      .ref("Users/" + that.state.recipientID)
+      .once("value")
+      .then(function (newFriend) {
+        if (newFriend.val()) {
+          var friendObject = newFriend.val();
+          var newElement = {
+            name: friendObject.name,
+            username: friendObject.username,
+            id: that.state.recipientID,
+          };
+          //find current user by id
+          f.database()
+            .ref("Users/" + that.state.userID)
+            .once("value")
+            .then(function (user) {
+              if (user.val()) {
+                var newUserFriendsArray = [];
+                if (user.val().friendsList) {
+                  newUserFriendsArray = user.val().friendsList;
+                }
+                newUserFriendsArray.push(newElement);
+                //add the new recipient to new user's friends list
+                f.database()
+                  .ref("Users/" + that.state.userID)
+                  .update({ friendsList: newUserFriendsArray });
+              }
+            });
+        }
+      });
   };
 
   //adding spread points
 
   addingPointsToParentMessages = async () => {
     var that = this;
-    this.state.parentMessages.forEach((element) => {
-      console.log("In the adding points function " + this.state.parentMessages);
-      console.log(element);
-      f.database()
-        .ref("Messages/" + element)
-        .once("value")
-        .then(function (message) {
-          // console.log(message.val());
-          var messageObject = message.val();
-          console.log(messageObject.spreadPoints);
-          var newSpreadPoints = messageObject.spreadPoints + 1;
-          //updating child messages as well
-          that.addChildMessages();
+    if (that.state.parentMessages) {
+      this.state.parentMessages.forEach((element) => {
+        console.log(
+          "In the adding points function " + this.state.parentMessages
+        );
+        console.log(element);
+        f.database()
+          .ref("Messages/" + element.id)
+          .once("value")
+          .then(function (message) {
+            // console.log(message.val());
+            var messageObject = message.val();
+            console.log(messageObject.spreadPoints);
+            var newSpreadPoints = messageObject.spreadPoints + 1;
+            //updating child messages as well
+            that.addChildMessages();
 
-          //updating indvidual message spreadpoint and child messages
-          f.database()
-            .ref("Messages/" + element)
-            .update({
-              spreadPoints: newSpreadPoints,
-            });
-          //updating the users overall spreadpoints (who sent og message)
-          f.database()
-            .ref("Users/" + messageObject.sender)
-            .once("value")
-            .then(function (user) {
-              var newUser = user.val();
-              console.log(
-                "The new user is " + newUser + " " + newUser.currentPoints
-              );
-              //setting old points to current pointss
-              var oldPoints = newUser.currentPoints;
-              var currentPoints = newUser.currentPoints + 1;
-              f.database()
-                .ref("Users/" + messageObject.sender)
-                .update({ oldPoints: oldPoints, currentPoints: currentPoints });
-            });
-        });
-    });
+            //updating indvidual message spreadpoint and child messages
+            f.database()
+              .ref("Messages/" + element.id)
+              .update({
+                spreadPoints: newSpreadPoints,
+              });
+            //updating the users overall spreadpoints (who sent og message)
+            f.database()
+              .ref("Users/" + messageObject.sender)
+              .once("value")
+              .then(function (user) {
+                var newUser = user.val();
+                console.log(
+                  "The new user is " + newUser + " " + newUser.currentPoints
+                );
+                //setting old points to current pointss
+                var oldPoints = newUser.currentPoints;
+                var currentPoints = newUser.currentPoints + 1;
+                f.database()
+                  .ref("Users/" + messageObject.sender)
+                  .update({
+                    oldPoints: oldPoints,
+                    currentPoints: currentPoints,
+                  });
+              });
+          });
+      });
+    }
   };
 
   selectMediaData = async (url) => {
@@ -499,25 +593,27 @@ class Upload extends React.Component {
 
   addChildMessages = async () => {
     var that = this;
-    f.database()
-      .ref("Messages/" + that.props.route.params.message.id)
-      .once("value")
-      .then(function (message) {
-        var newChildMessageArray = [];
-        if (message.val()) {
-          console.log("We're adding a child to a parent message");
-          var messageObject = message.val();
-          if (messageObject.childMessages) {
-            newChildMessageArray = messageObject.childMessages;
+    if (that.state.parentMessages) {
+      f.database()
+        .ref("Messages/" + that.props.route.params.message.id)
+        .once("value")
+        .then(function (message) {
+          var newChildMessageArray = [];
+          if (message.val()) {
+            console.log("We're adding a child to a parent message");
+            var messageObject = message.val();
+            if (messageObject.childMessages) {
+              newChildMessageArray = messageObject.childMessages;
+            }
+            newChildMessageArray.push(that.state.postID);
+            f.database()
+              .ref("Messages/" + that.props.route.params.message.id)
+              .update({
+                childMessages: newChildMessageArray,
+              });
           }
-          newChildMessageArray.push(that.state.postID);
-          f.database()
-            .ref("Messages/" + that.props.route.params.message.id)
-            .update({
-              childMessages: newChildMessageArray,
-            });
-        }
-      });
+        });
+    }
 
     //updating indvidual message spreadpoint and child messages
   };
@@ -666,7 +762,7 @@ class Upload extends React.Component {
                           title="Send message!"
                           color="#841584"
                           accessibilityLabel="Learn more about this purple button"
-                          onPress={this.uploadNewPost}
+                          onPress={this.findUserByUsername}
                         />
                       )}
                     </View>
