@@ -59,7 +59,7 @@ class basicHomePage extends React.Component {
           }}
           onPress={() =>
             this.props.navigation.navigate("FriendsList", {
-              recipient: this.state.user,
+              recipient: this.state.user, //revisit this tktk--should "recipient" actually be sender?
             })
           }
         >
@@ -82,7 +82,55 @@ class basicHomePage extends React.Component {
             })
           }
         >
-          <Text style={{ textAlign: "center" }}>Browse!</Text>
+          <Text style={{ textAlign: "center" }}>Browse!!</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            marginTop: 10,
+            marginHorizontal: 40,
+            paddingVertical: 20,
+            backgroundColor: "orange",
+            borderRadius: 20,
+            borderColor: "grey",
+            borderWidth: 1.5,
+          }}
+          onPress={() =>
+            this.props.navigation.navigate("FriendsList", {
+              recipient: this.state.user,
+              message: { prefilledMessage: { messageText: "I love you" } },
+            })
+          }
+        >
+          <Text style={{ textAlign: "center" }}>
+            Send this particular message with text "I love you"
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            marginTop: 10,
+            marginHorizontal: 40,
+            paddingVertical: 20,
+            backgroundColor: "orange",
+            borderRadius: 20,
+            borderColor: "grey",
+            borderWidth: 1.5,
+          }}
+          onPress={() =>
+            this.props.navigation.navigate("FriendsList", {
+              recipient: this.state.user,
+              message: {
+                prefilledMessage: {
+                  imageURI: "https://i.pravatar.cc/150?img=7",
+                },
+              },
+            })
+          }
+        >
+          <Text style={{ textAlign: "center" }}>
+            Send this particular message with an image URI
+          </Text>
         </TouchableOpacity>
       </View>
     );

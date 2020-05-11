@@ -29,6 +29,7 @@ class Upload extends React.Component {
       imageSelectedFromDevice: false,
       imageSelectedFromProgram: false,
       imageSelectedURI: "",
+      defaultText: "",
       pictureUploadingProgress: 0,
       postUploadingProgress: 0,
       parentMessages: [],
@@ -110,6 +111,27 @@ class Upload extends React.Component {
         parentMessages: newArray,
         payItForward: true,
       });
+      //prefilled message
+      if (this.props.route.params.message.prefilledMessage) {
+        console.log("There is a prefilled message");
+        if (this.props.route.params.message.prefilledMessage.imageURI) {
+          console.log(
+            "Prefilled message image URI is ... " +
+              this.props.route.params.message.prefilledMessage.imageURI
+          );
+          this.setState({
+            imageSelectedURI: this.props.route.params.message.prefilledMessage
+              .imageURI,
+            imageSelectedFromProgram: true,
+          });
+        }
+        if (this.props.route.params.message.prefilledMessage.messageText) {
+          this.setState({
+            defaultText: this.props.route.params.message.prefilledMessage
+              .messageText,
+          });
+        }
+      }
     }
     // this._checkContactPermissions();
     // Contacts.getAll((err, contacts) => {
@@ -688,7 +710,9 @@ class Upload extends React.Component {
                   }}
                   onChangeText={(text) => {
                     this.setState({ messageText: text });
+                    console.log(this.state.messageText);
                   }}
+                  defaultValue={this.state.defaultText}
                 ></TextInput>
               </View>
               {this.state.imageSelectedFromDevice == false &&
@@ -726,10 +750,10 @@ class Upload extends React.Component {
                     onPress={this.findUserByUsername}
                   />
                   <Button
-                    title="Test button 2 (adding spreadPoints)!"
+                    title="Back!"
                     color="#841584"
                     accessibilityLabel="Learn more about this purple button"
-                    onPress={this.addingPointsToParentMessages}
+                    onPress={() => this.props.navigation.goBack()}
                   />
                 </View>
               ) : (
