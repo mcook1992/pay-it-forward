@@ -20,14 +20,21 @@ class Feed extends React.Component {
   }
 
   componentDidMount = () => {
-    this.loadFeed();
+    var that = this;
+    f.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        that.setState({
+          isLoggedIn: true,
+          userID: user.uid,
+        });
+        that.loadFeed();
+      }
+    });
   };
 
-  addToFlatlist = (notificationsList, data, message) => {
+  add2Flatlist = (notificationsList, messageObj, messageID) => {
     var that = this;
-    var messageObj = data[message];
-
-    console.log("the new message object is " + message);
+    console.log("the new message object is " + messageObj);
     database
       .ref("Users")
       .child(messageObj.sender)
@@ -41,7 +48,7 @@ class Feed extends React.Component {
           // );
 
           notificationsList.push({
-            id: message,
+            id: messageID,
             sender: messageObj.sender,
             type: messageObj.type,
             timeSent: that.timeConverter(messageObj["timeSent"]),
@@ -73,20 +80,34 @@ class Feed extends React.Component {
     var that = this;
 
     database
-      .ref("Messages")
-      .orderByChild("timeSent")
+      .ref("Users/" + that.state.userID)
+      .child("postsReceived")
       .once("value")
       .then(function (snapshot) {
         console.log("made it to the then function");
         if (snapshot.val()) {
-          data = snapshot.val();
+          var messagesReceivedArray = snapshot.val();
           // console.log("The snapshot.val() is " + data[message]);
           //make sure to add in bit about finding users once it's actually based on id--need to do another snapshot and look up users by id, then use that snapshot to get the username
           var notificationsList = that.state.list_of_notifications;
 
-          for (var message in data) {
-            that.addToFlatlist(notificationsList, data, message);
-          }
+          //get an array of the things they've received and and for each of them, add them to the flatlist
+
+          messagesReceivedArray.forEach((element) => {
+            database
+              .ref("Messages/" + element.id)
+              .once("value")
+              .then(function (message) {
+                if (message.val()) {
+                  var messageObj = message.val();
+                  that.add2Flatlist(notificationsList, messageObj, element.id);
+                }
+              });
+          });
+
+          // for (var message in data) {
+          //   that.addToFlatlist(notificationsList, data, message);
+          // }
         }
       })
       .catch((error) => console.log(error));
@@ -227,3 +248,45 @@ class Feed extends React.Component {
 }
 
 export default Feed;
+
+///OLD
+
+// addToFlatlist = (notificationsList, data, message) => {
+//   var that = this;
+//   var messageObj = data[message];
+
+//   console.log("the new message object is " + message);
+//   database
+//     .ref("Users")
+//     .child(messageObj.sender)
+//     .once("value")
+//     .then(function (snapshot2) {
+//       if (snapshot2.val()) {
+//         var userData = snapshot2.val();
+//         // console.log(
+//         //   "this data should pop up twice because the user should be searched twice " +
+//         //     userData
+//         // );
+
+//         notificationsList.push({
+//           id: message,
+//           sender: messageObj.sender,
+//           type: messageObj.type,
+//           timeSent: that.timeConverter(messageObj["timeSent"]),
+//           text: messageObj.text,
+//           spreadPoints: messageObj["spreadPoints"].toString(),
+//           parentMessages: messageObj.parentMessages,
+//           senderAvatar: userData.avatar,
+//           senderName: userData.username,
+//         });
+//         // console.log(message + " and the message type is " + messageObj.type);
+
+//         that.setState({
+//           list_of_notifications: notificationsList,
+//           refresh: false,
+//           loading: true,
+//         });
+//       }
+//     })
+//     .catch((error) => console.log(error));
+// };
