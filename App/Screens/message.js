@@ -101,7 +101,18 @@ class Message extends React.Component {
               }}
               onPress={() =>
                 this.props.navigation.navigate("Upload", {
-                  message: this.props.route.params.message,
+                  message: {
+                    id: this.props.route.params.message.id,
+                    parentMessages: this.props.route.params.message
+                      .parentMessages,
+                    prefilledMessage: {
+                      messageText: "Thank you for your message!",
+                      messageType: "Thank you reply",
+                    },
+                  },
+                  selectedContact: {
+                    contactInfo: this.props.route.params.message.sender,
+                  },
                 })
               }
             >

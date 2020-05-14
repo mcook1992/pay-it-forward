@@ -68,8 +68,10 @@ class Upload extends React.Component {
   componentDidMount = () => {
     var that = this;
     var postID = this.uniqueID();
+    //make sure user still logged in
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
+        //register the contact they selected
         var recipientData = that.props.route.params.selectedContact;
         // console.log(recipientData);
 
@@ -99,7 +101,7 @@ class Upload extends React.Component {
       if (this.props.route.params.message.parentMessages) {
         console.log(
           "Setting pay it forward/thank you info " +
-            this.props.route.params.message.parentMessages[0].id // now we need to make a function that says IF there are aprent messsages to add a spread-point to each parent message and add thsi child message to each parent message
+            this.props.route.params.message.parentMessages[0].id
         );
         this.props.route.params.message.parentMessages.forEach((element) => {
           console.log("Going through parent elements " + element.id);
@@ -111,9 +113,10 @@ class Upload extends React.Component {
         parentMessages: newArray,
         payItForward: true,
       });
-      //prefilled message
+      //if there is a prefilled message
       if (this.props.route.params.message.prefilledMessage) {
         console.log("There is a prefilled message");
+        //if the prefilled message has media attached
         if (this.props.route.params.message.prefilledMessage.imageURI) {
           console.log(
             "Prefilled message image URI is ... " +
@@ -125,10 +128,18 @@ class Upload extends React.Component {
             imageSelectedFromProgram: true,
           });
         }
+        //if the prefilled message has message text attached
         if (this.props.route.params.message.prefilledMessage.messageText) {
           this.setState({
             defaultText: this.props.route.params.message.prefilledMessage
               .messageText,
+          });
+        }
+
+        if (this.props.route.params.message.prefilledMessage.messageType) {
+          this.setState({
+            messageType: this.props.route.params.message.prefilledMessage
+              .messageType,
           });
         }
       }
@@ -305,34 +316,41 @@ class Upload extends React.Component {
   findUserByUsername = () => {
     var that = this;
 
-    f.database()
-      .ref("/Users/")
-      .orderByChild("username")
-      .equalTo(that.state.recipient.contactInfo)
-      .once("value")
-      .then(function (snapshot) {
-        // for (const property in snapshot) {
-        //   console.log(`${property}: ${snapshot[property]}`);
-        // }
-        //if the username exists
-        if (snapshot.val()) {
-          console.log("username exists!");
+    //if the message is a thank you
 
-          var userData = snapshot.val();
-          for (var key in userData) {
-            console.log(
-              "user found by username exists! and the key is... " + key
-            );
-            that.setState({ recipientID: key });
-            console.log("the recipient ID is ... " + that.state.recipientID);
-            //set state here so that the recipient is different
-            that.uploadNewPost();
+    if (this.state.messageType == "Thank you reply") {
+      this.setState({ recipientID: this.state.recipient.contactInfo });
+      this.uploadNewPost();
+    } else {
+      f.database()
+        .ref("/Users/")
+        .orderByChild("username")
+        .equalTo(that.state.recipient.contactInfo)
+        .once("value")
+        .then(function (snapshot) {
+          // for (const property in snapshot) {
+          //   console.log(`${property}: ${snapshot[property]}`);
+          // }
+          //if the username exists
+          if (snapshot.val()) {
+            console.log("username exists!");
+
+            var userData = snapshot.val();
+            for (var key in userData) {
+              console.log(
+                "user found by username exists! and the key is... " + key
+              );
+              that.setState({ recipientID: key });
+              console.log("the recipient ID is ... " + that.state.recipientID);
+              //set state here so that the recipient is different
+              that.uploadNewPost();
+            }
+          } else {
+            console.log("username doesn't exist! Checking phone numbers");
+            that.dealWithPhoneNumber(that.state.recipient.contactInfo);
           }
-        } else {
-          console.log("username doesn't exist! Checking phone numbers");
-          that.dealWithPhoneNumber(that.state.recipient.contactInfo);
-        }
-      });
+        });
+    }
   };
 
   dealWithPhoneNumber = (phoneNumberString) => {
