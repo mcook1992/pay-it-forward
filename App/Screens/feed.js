@@ -8,11 +8,13 @@ import {
   Image,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
+import userAuth from "../../components/userAuth";
 
 class Feed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoggedIn: false,
       list_of_notifications: [],
       refresh: false,
       loading: true,
@@ -168,82 +170,90 @@ class Feed extends React.Component {
   };
 
   render() {
-    return (
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+    if (this.state.isLoggedIn == false) {
+      return (
+        <View style={{ flex: 1, backgroundColor: "orange" }}>
+          <Text>You are not logged in.</Text>
+        </View>
+      );
+    } else {
+      return (
         <View
           style={{
-            height: 70,
-            paddingTop: 30,
-            backgroundColor: "white",
-            borderColor: "lightgrey",
-            justifyContent: "center",
-            alignItems: "center",
-            borderBottomWidth: 0.5,
+            flex: 1,
           }}
         >
-          <Text>Feed</Text>
-        </View>
-        <FlatList
-          refreshing={this.state.refresh}
-          onRefresh={this.loadNew}
-          data={this.state.list_of_notifications}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ flex: 1, backgroundColor: "#eee" }}
-          renderItem={({ item, index }) => (
-            <View
-              style={{
-                borderBottomWidth: 5,
-                borderBottomColor: "lightgrey",
-                // flex: 1,
-                // justifyContent: "center",
-                // alignItems: "center",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                height: 100,
-              }}
-              key={index}
-            >
-              <Image
-                source={{
-                  url: item.senderAvatar,
-                }}
+          <View
+            style={{
+              height: 70,
+              paddingTop: 30,
+              backgroundColor: "white",
+              borderColor: "lightgrey",
+              justifyContent: "center",
+              alignItems: "center",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <Text>Feed</Text>
+          </View>
+          <FlatList
+            refreshing={this.state.refresh}
+            onRefresh={this.loadNew}
+            data={this.state.list_of_notifications}
+            keyExtractor={(item, index) => index.toString()}
+            style={{ flex: 1, backgroundColor: "#eee" }}
+            renderItem={({ item, index }) => (
+              <View
                 style={{
-                  resizeMode: "cover",
-                  width: "10%",
-                  height: 40,
-                  margin: 5,
+                  borderBottomWidth: 5,
+                  borderBottomColor: "lightgrey",
+                  // flex: 1,
+                  // justifyContent: "center",
+                  // alignItems: "center",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  height: 100,
                 }}
-              />
-
-              <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.push("Message", {
-                    messageID: item.id,
-                    message: item,
-                  })
-                }
+                key={index}
               >
-                <Text
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center",
+                <Image
+                  source={{
+                    url: item.senderAvatar,
                   }}
+                  style={{
+                    resizeMode: "cover",
+                    width: "10%",
+                    height: 40,
+                    margin: 5,
+                  }}
+                />
+
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.push("Message", {
+                      messageID: item.id,
+                      message: item,
+                    })
+                  }
                 >
-                  {item.senderName} just sent you a {item.type}
-                </Text>
-              </TouchableOpacity>
-              <Text>{item.timeSent}</Text>
-              <Text> Fire emoji{item.spreadPoints}</Text>
-            </View>
-          )}
-        />
-      </View>
-    );
+                  <Text
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignSelf: "center",
+                    }}
+                  >
+                    {item.senderName} just sent you a {item.type}
+                  </Text>
+                </TouchableOpacity>
+                <Text>{item.timeSent}</Text>
+                <Text> Fire emoji{item.spreadPoints}</Text>
+              </View>
+            )}
+          />
+        </View>
+      );
+    }
   }
 }
 

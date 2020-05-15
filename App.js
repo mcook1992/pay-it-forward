@@ -42,22 +42,6 @@ import ChooseImagesFromPrograms from "./App/Screens/selectPictureFromProgram";
 import friendContactUpload from "./App/Screens/friendsListContacts";
 import basicHomePage from "./App/Screens/baseHomePage";
 
-// function Feed() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Feed!</Text>
-//     </View>
-//   );
-// }
-
-// function Profile() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Profile!</Text>
-//     </View>
-//   );
-// }
-
 function Notifications() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -65,13 +49,6 @@ function Notifications() {
     </View>
   );
 }
-// function UserProfile() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>User Profile</Text>
-//     </View>
-//   );
-// }
 
 const Tab = createBottomTabNavigator();
 
@@ -163,7 +140,7 @@ function MyTabs() {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.login();
+    // this.login();
   }
 
   login = async () => {
