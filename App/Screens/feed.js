@@ -170,7 +170,7 @@ class Feed extends React.Component {
   };
 
   render() {
-    if (this.state.isLoggedIn == false) {
+    if (this.state.isLoggedIn != true) {
       return (
         <View style={{ flex: 1, backgroundColor: "orange" }}>
           <Text>You are not logged in.</Text>

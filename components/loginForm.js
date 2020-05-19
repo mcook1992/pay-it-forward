@@ -9,20 +9,15 @@ import {
 } from "react-native";
 import { f, database, auth, storage } from "../App/Screens/config/config";
 import { TextInput } from "react-native-gesture-handler";
-import LoginForm from "../components/loginForm";
-import SignUpForm from "../components/signUpForm";
-import SignInTest from "../components/testSignIn";
 
-class UserAuth extends React.Component {
+class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      authStep: 0,
-      username: "",
       email: "",
-      phoneNumber: "",
       password: "",
       moveScreen: false,
+      loading: false,
       // parentPostID: this.props.route.params.parentPostId
     };
   }
@@ -59,33 +54,23 @@ class UserAuth extends React.Component {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => this.setState({ authStep: 0 })}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
-        {/* If they're not logged in, give them option to login or sign up */}
-        {this.state.authStep == 0 ? (
-          <View>
-            <Text>Ternary operator equals zero</Text>
-            <TouchableOpacity onPress={() => this.setState({ authStep: 1 })}>
-              <Text>Log in</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.setState({ authStep: 2 })}>
-              <Text>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        ) : // If they click login
-        this.state.authStep == 1 ? (
-          <SignInTest />
-        ) : (
-          // <LoginForm />
-          // If they click sign up
-          <View>
-            <SignUpForm />
-          </View>
-        )}
+        <View>
+          <Text>Auth step 1</Text>
+          <TextInput
+            placeholder="enter email address or username"
+            onChangeText={(text) => this.setState({ email: text })}
+          ></TextInput>
+          <TextInput
+            placeholder="password"
+            onChangeText={(text) => this.setState({ password: text })}
+          ></TextInput>
+          <TouchableOpacity onPress={this.login}>
+            <Text>Log In!</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 }
 
-export default UserAuth;
+export default LoginForm;
