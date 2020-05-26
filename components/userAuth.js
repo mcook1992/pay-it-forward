@@ -12,6 +12,7 @@ import { TextInput } from "react-native-gesture-handler";
 import LoginForm from "../components/loginForm";
 import SignUpForm from "../components/signUpForm";
 import SignInTest from "../components/testSignIn";
+import TestLogIn from "../components/testLogIn";
 
 class UserAuth extends React.Component {
   constructor(props) {
@@ -75,7 +76,8 @@ class UserAuth extends React.Component {
           </View>
         ) : // If they click login
         this.state.authStep == 1 ? (
-          <SignInTest />
+          // <SignInTest />
+          <TestLogIn />
         ) : (
           // <LoginForm />
           // If they click sign up

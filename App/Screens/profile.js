@@ -25,6 +25,8 @@ class Profile extends React.Component {
         that.setState({
           isLoggedIn: true,
         });
+      } else {
+        that.setState({ isLoggedIn: false });
       }
     });
   };

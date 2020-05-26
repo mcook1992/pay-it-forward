@@ -7,10 +7,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  Alert,
 } from "react-native";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import * as firebase from "firebase";
 import { f, database, auth, storage } from "../App/Screens/config/config";
+import filterPhoneNumber from "../App/Screens/functions/filterPhoneNumber";
 // Initialize Firebase JS SDK
 // https://firebase.google.com/docs/web/setup
 /*try {
@@ -35,6 +37,9 @@ export default function SignInTest() {
         }
       : undefined
   );
+  const [inputTextValue, setInputTextValue] = React.useState();
+  //use to make adjustments to the phone number
+  var temporaryPhoneNumber;
 
   return (
     <View style={{ padding: 20, marginTop: 50 }}>
@@ -46,31 +51,49 @@ export default function SignInTest() {
       <TextInput
         style={{ marginVertical: 10, fontSize: 17 }}
         placeholder="+1 999 999 9999"
+        id="phone-number-input"
         autoFocus
         autoCompleteType="tel"
         keyboardType="phone-pad"
         textContentType="telephoneNumber"
-        onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+        value={phoneNumber}
+        onChangeText={(phoneNumber) => {
+          //set the temporary phone number to the user input
+          temporaryPhoneNumber = phoneNumber;
+          console.log(temporaryPhoneNumber);
+        }}
       />
       <Button
         title="Send Verification Code"
-        disabled={!phoneNumber}
+        // disabled={!phoneNumber}
         onPress={async () => {
-          // The FirebaseRecaptchaVerifierModal ref implements the
-          // FirebaseAuthApplicationVerifier interface and can be
-          // passed directly to `verifyPhoneNumber`.
-          try {
-            const phoneProvider = new f.auth.PhoneAuthProvider();
-            const verificationId = await phoneProvider.verifyPhoneNumber(
-              phoneNumber,
-              recaptchaVerifier.current
+          var filteredPhoneNumber = filterPhoneNumber(temporaryPhoneNumber);
+
+          if (filteredPhoneNumber) {
+            console.log(
+              "We have a filtered phone number ... " + filteredPhoneNumber
             );
-            setVerificationId(verificationId);
-            showMessage({
-              text: "Verification code has been sent to your phone.",
-            });
-          } catch (err) {
-            showMessage({ text: `Error: ${err.message}`, color: "red" });
+            setPhoneNumber(filteredPhoneNumber);
+            console.log(phoneNumber);
+
+            // The FirebaseRecaptchaVerifierModal ref implements the
+            // FirebaseAuthApplicationVerifier interface and can be
+            // passed directly to `verifyPhoneNumber`.
+            try {
+              const phoneProvider = new f.auth.PhoneAuthProvider();
+              const verificationId = await phoneProvider.verifyPhoneNumber(
+                phoneNumber,
+                recaptchaVerifier.current
+              );
+              setVerificationId(verificationId);
+              showMessage({
+                text: "Verification code has been sent to your phone.",
+              });
+            } catch (err) {
+              showMessage({ text: `Error: ${err.message}`, color: "red" });
+            }
+          } else {
+            console.log("No filtered number");
           }
         }}
       />

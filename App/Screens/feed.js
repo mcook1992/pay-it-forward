@@ -30,6 +30,8 @@ class Feed extends React.Component {
           userID: user.uid,
         });
         that.loadFeed();
+      } else {
+        that.setState({ isLoggedIn: false });
       }
     });
   };

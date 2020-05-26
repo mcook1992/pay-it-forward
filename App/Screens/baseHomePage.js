@@ -40,6 +40,8 @@ class basicHomePage extends React.Component {
               });
             }
           });
+      } else {
+        that.setState({ isLoggedIn: false });
       }
     });
   };
