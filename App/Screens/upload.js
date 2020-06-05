@@ -9,6 +9,7 @@ import {
   View,
   Image,
   Button,
+  Alert,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 import { Dropdown } from "react-native-material-dropdown";
@@ -18,6 +19,8 @@ import * as ImagePicker from "expo-image-picker";
 // import Contacts from "react-native-contacts";
 import * as Contacts from "expo-contacts";
 import BootstrapStyleSheet from "react-native-bootstrap-styles";
+import getUserPhoneNumberPrefix from "../Screens/functions/getUserPhoneNumberPrefix";
+import filterPhoneNumberForUpload from "../Screens/functions/filterPhoneNumberForUpload";
 //ttt
 
 class Upload extends React.Component {
@@ -41,6 +44,7 @@ class Upload extends React.Component {
       recipientChosen: false,
       contacts: [],
       postID: "",
+      prefix: "",
       showFriendList: false,
       friendsData: ["test-user-2", "test-user-1"],
       messageTypeMenuOptions: [
@@ -59,7 +63,7 @@ class Upload extends React.Component {
       // parentPostID: this.props.route.params.parentPostId
     };
 
-    this.returnData = this.returnData.bind(this);
+    this.setPrefix = this.setPrefix.bind(this);
 
     // alert(this.state.postID);
     // console.log();
@@ -68,13 +72,20 @@ class Upload extends React.Component {
   componentDidMount = () => {
     var that = this;
     var postID = this.uniqueID();
+
     //make sure user still logged in
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
         //register the contact they selected
         var recipientData = that.props.route.params.selectedContact;
-        // console.log(recipientData);
+        //set up the phone number prefix sso that we can effectively reach out to other phone numbers in their contact list
+        that.setPhoneNumberPrefix(user.uid);
 
+        console.log(recipientData);
+
+        //set the state based on the information we've been passed
+
+        //why this set up?TKTKTK
         that.setState(
           {
             isLoggedIn: true,
@@ -144,41 +155,24 @@ class Upload extends React.Component {
         }
       }
     }
-    // this._checkContactPermissions();
-    // Contacts.getAll((err, contacts) => {
-    //   if (err === "denied") {
-    //     // error
-    //   } else {
-    //     console.log("The contacts are ... " + contacts);
-    //   }
-    // });
   };
 
-  returnData = (recipientInfo) => {
-    // var newVar = this.state.recipient;
-    // newArray.push(recipientInfo);
-
-    this.setState(
-      { recipient: recipientInfo, recipientChosen: true },
-      function () {
-        console.log(
-          "The new state recipient info is... " + this.state.recipient
-        );
-      }
-    );
+  //passing this function to the get phone number Prefix function so that the state gets set in this component. This is a sloppy way to do it, but I was encountering bugs in other attempts
+  setPrefix = (prefix) => {
+    this.setState({ prefix: prefix });
+    console.log(this.state.prefix + " is the prefix");
   };
 
-  onSubmitMessage = (e) => {
-    e.preventDefault();
-    console.log(
-      "current state is " +
-        this.state.messageText +
-        " and " +
-        this.state.recipient.contactInfo
-    );
-  };
+  // function for getting the phone number prefix set up so we can effectively reach out to the user's other contacts
 
-  //image/media related functions:
+  setPhoneNumberPrefix = async (uid) => {
+    getUserPhoneNumberPrefix(uid, this.setPrefix);
+    // console.log(
+    //   "In set phone number pre function, pre is ... " + phoneNumberPrefix
+    // );
+    // this.setState({ prefix: phoneNumberPrefix });
+    // console.log(this.state.prefix);
+  };
 
   _checkPermissions = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -247,14 +241,15 @@ class Upload extends React.Component {
     //tktktk
     if (this.state.imageSelectedFromDevice == true) {
       this.uploadImage(this.state.imageSelectedURI);
-
-      // console.log(response);
     } else if (this.state.imageSelectedFromProgram == true) {
+      //slight confusing function name. This just uploads a post with a pre-used image from the program, NOT a phone image
       this.uploadNewPostWithPhoneImage(this.state.imageSelectedURI);
     } else {
       this.uploadNewPostWithPhoneImage("No image selected");
     }
   };
+
+  //uplading an image to Firebase
 
   uploadImage = async (uri) => {
     // var returnValue = "error";
@@ -272,6 +267,7 @@ class Upload extends React.Component {
     const blob = await response.blob();
     var filePath = postID + "." + that.state.currentMediaType;
 
+    //accessing firebase storage
     var imageUploadTask = storage
       .ref("user/" + userID + "/img")
       .child(filePath)
@@ -297,6 +293,7 @@ class Upload extends React.Component {
           pictureUploadingProgress: 100,
           postLodaing: false,
         });
+        //taking the download URL and creating a new post with that
         imageUploadTask.snapshot.ref
           .getDownloadURL()
           .then(function (downloadURL) {
@@ -305,23 +302,20 @@ class Upload extends React.Component {
           });
       }
     );
-
-    // var snapshot = ref.put(blob).on("state_changed", (snapshot) => {
-    //   console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
-    // });
   };
 
-  //tktktk
+  //finding a user
 
   findUserByUsername = () => {
     var that = this;
 
-    //if the message is a thank you
+    //if the message is a thank you and we already know the exact user we're sending to
 
     if (this.state.messageType == "Thank you reply") {
       this.setState({ recipientID: this.state.recipient.contactInfo });
       this.uploadNewPost();
     } else {
+      //find the user based on username
       f.database()
         .ref("/Users/")
         .orderByChild("username")
@@ -346,6 +340,7 @@ class Upload extends React.Component {
               that.uploadNewPost();
             }
           } else {
+            //if it's not a username, then find user based on a phone number
             console.log("username doesn't exist! Checking phone numbers");
             that.dealWithPhoneNumber(that.state.recipient.contactInfo);
           }
@@ -354,38 +349,24 @@ class Upload extends React.Component {
   };
 
   dealWithPhoneNumber = (phoneNumberString) => {
-    var newPhoneNumberArray = [];
-    var counter = 0;
-    console.log(
-      "We'rein the deal with phone number function and the string is " +
-        phoneNumberString
+    //making ssure the phone number has the proper formatting
+    var filteredPhoneNumber = filterPhoneNumberForUpload(
+      phoneNumberString,
+      this.state.prefix
     );
-
-    for (var i = 0; i < phoneNumberString.length; i++) {
-      var element = phoneNumberString.charAt(i);
-      console.log(element);
-      var isItNotANumber = isNaN(element);
-      if (isItNotANumber == false) {
-        console.log("We're in the if loop");
-
-        //dealing with adding array of strings together
-        if (counter == 0) {
-          newPhoneNumberArray[0] = element;
-          counter++;
-        } else {
-          newPhoneNumberArray[0] = newPhoneNumberArray[0] + element;
-          counter++;
-          console.log(
-            newPhoneNumberArray + " is the array and the counter is " + counter
-          );
-          if (counter == phoneNumberString.length) {
-            this.checkForUserByPhoneNumber(newPhoneNumberArray[0]);
-          }
-        }
-      } else {
-        alert("Not a phone number");
-        return;
-      }
+    if (filteredPhoneNumber) {
+      console.log(
+        "the filtered phone number for upload is... " + filteredPhoneNumber
+      );
+      this.checkForUserByPhoneNumber(filteredPhoneNumber);
+      var newRecipientObject = {
+        name: this.state.recipient.name,
+        contactInfo: filteredPhoneNumber,
+      };
+      this.setState({ recipient: newRecipientObject });
+    } else {
+      Alert.alert("Not a phone number");
+      return;
     }
   };
 
@@ -429,9 +410,9 @@ class Upload extends React.Component {
             );
             that.uploadNewPost();
             //this.SendToTwilio
-          } else if (filteredPhoneNumberString.length == 11) {
+          } else if (filteredPhoneNumberString.length > 11) {
             console.log(
-              "This is a real phone number with country code. Send to Twilio with no additions"
+              "This is a real phone number with country code and plus sign. Send to Twilio with no additions"
             );
             that.uploadNewPost();
           } else {

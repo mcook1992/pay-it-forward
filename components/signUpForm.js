@@ -15,7 +15,6 @@ class SignUpForm extends React.Component {
     super(props);
     this.state = {
       email: "",
-      phone: "",
       username: "",
       password: "",
       moveScreen: false,
@@ -26,11 +25,11 @@ class SignUpForm extends React.Component {
 
   componentDidMount = () => {};
 
-  signUp = async (email, password) => {
+  signIn = async () => {
     var that = this;
     this.setState({ loading: true });
-    auth()
-      .createUserWithEmailAndPassword(email, password)
+    f.auth()
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(function (snapshot) {
         if (snapshot.val()) {
           console.log(snapshot.val());
@@ -61,14 +60,14 @@ class SignUpForm extends React.Component {
         <View>
           <Text>Sign Up!</Text>
           <TextInput
-            placeholder="enter phone number"
-            onChangeText={(text) => this.setState({ phone: text })}
+            placeholder="enter email address"
+            onChangeText={(text) => this.setState({ email: text })}
           ></TextInput>
           <TextInput
             placeholder="password"
             onChangeText={(text) => this.setState({ password: text })}
           ></TextInput>
-          <TouchableOpacity onPress={this.signUp}>
+          <TouchableOpacity onPress={this.signIn}>
             <Text>Sign Up!</Text>
           </TouchableOpacity>
         </View>
