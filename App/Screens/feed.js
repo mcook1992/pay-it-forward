@@ -90,6 +90,7 @@ class Feed extends React.Component {
       .then(function (snapshot) {
         console.log("made it to the then function");
         if (snapshot.val()) {
+          console.log("We have a snapshot from posts recieved");
           var messagesReceivedArray = snapshot.val();
           // console.log("The snapshot.val() is " + data[message]);
           //make sure to add in bit about finding users once it's actually based on id--need to do another snapshot and look up users by id, then use that snapshot to get the username
@@ -112,6 +113,8 @@ class Feed extends React.Component {
           // for (var message in data) {
           //   that.addToFlatlist(notificationsList, data, message);
           // }
+        } else {
+          that.setState({ loading: false, refresh: false });
         }
       })
       .catch((error) => console.log(error));
@@ -198,61 +201,67 @@ class Feed extends React.Component {
           >
             <Text>Feed</Text>
           </View>
-          <FlatList
-            refreshing={this.state.refresh}
-            onRefresh={this.loadNew}
-            data={this.state.list_of_notifications}
-            keyExtractor={(item, index) => index.toString()}
-            style={{ flex: 1, backgroundColor: "#eee" }}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  borderBottomWidth: 5,
-                  borderBottomColor: "lightgrey",
-                  // flex: 1,
-                  // justifyContent: "center",
-                  // alignItems: "center",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  height: 100,
-                }}
-                key={index}
-              >
-                <Image
-                  source={{
-                    url: item.senderAvatar,
-                  }}
+          {this.state.list_of_notifications.length > 0 ? (
+            <FlatList
+              refreshing={this.state.refresh}
+              onRefresh={this.loadNew}
+              data={this.state.list_of_notifications}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ flex: 1, backgroundColor: "#eee" }}
+              renderItem={({ item, index }) => (
+                <View
                   style={{
-                    resizeMode: "cover",
-                    width: "10%",
-                    height: 40,
-                    margin: 5,
+                    borderBottomWidth: 5,
+                    borderBottomColor: "lightgrey",
+                    // flex: 1,
+                    // justifyContent: "center",
+                    // alignItems: "center",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    height: 100,
                   }}
-                />
-
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.push("Message", {
-                      messageID: item.id,
-                      message: item,
-                    })
-                  }
+                  key={index}
                 >
-                  <Text
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      alignSelf: "center",
+                  <Image
+                    source={{
+                      url: item.senderAvatar,
                     }}
+                    style={{
+                      resizeMode: "cover",
+                      width: "10%",
+                      height: 40,
+                      margin: 5,
+                    }}
+                  />
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.push("Message", {
+                        messageID: item.id,
+                        message: item,
+                      })
+                    }
                   >
-                    {item.senderName} just sent you a {item.type}
-                  </Text>
-                </TouchableOpacity>
-                <Text>{item.timeSent}</Text>
-                <Text> Fire emoji{item.spreadPoints}</Text>
-              </View>
-            )}
-          />
+                    <Text
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {item.senderName} just sent you a {item.type}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text>{item.timeSent}</Text>
+                  <Text> Fire emoji{item.spreadPoints}</Text>
+                </View>
+              )}
+            />
+          ) : (
+            <View>
+              <Text>No messages to display at this time</Text>
+            </View>
+          )}
         </View>
       );
     }

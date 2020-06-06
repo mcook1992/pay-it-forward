@@ -16,28 +16,35 @@ import { Dropdown } from "react-native-material-dropdown";
 // import { ImagePicker } from "expo";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
+//importing fonts
+import * as Font from "expo-font";
+import { AppLoading } from "expo";
 // import Contacts from "react-native-contacts";
 import * as Contacts from "expo-contacts";
 import BootstrapStyleSheet from "react-native-bootstrap-styles";
 import getUserPhoneNumberPrefix from "../Screens/functions/getUserPhoneNumberPrefix";
 import filterPhoneNumberForUpload from "../Screens/functions/filterPhoneNumberForUpload";
-//ttt
+import createUploadCompletedAlert from "./functions/createUploadCompletedAlert";
+import UploadTextBox from "../../components/uploadTextBox";
 
 class Upload extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoggedIn: false,
+      //info about the message
       messageText: "",
       imageSelectedFromDevice: false,
       imageSelectedFromProgram: false,
       imageSelectedURI: "",
       defaultText: "",
+      //info about image and post uploading
       pictureUploadingProgress: 0,
       postUploadingProgress: 0,
       parentMessages: [],
       childMessages: [],
-      postLodaing: false,
+      postLoading: false,
+      imageLoading: false,
       postUploaded: false,
       recipient: [],
       userID: "",
@@ -46,7 +53,10 @@ class Upload extends React.Component {
       postID: "",
       prefix: "",
       showFriendList: false,
-      friendsData: ["test-user-2", "test-user-1"],
+      textColor: "black",
+      backgroundColor: "blue",
+      fontFamily: "Tahoma",
+      fontSize: 12,
       messageTypeMenuOptions: [
         {
           value: "Compliment",
@@ -64,10 +74,39 @@ class Upload extends React.Component {
     };
 
     this.setPrefix = this.setPrefix.bind(this);
+    this.selectMediaData = this.selectMediaData.bind(this);
+    this.setMessageTextFunction = this.setMessageTextFunction.bind(this);
 
     // alert(this.state.postID);
     // console.log();
   }
+
+  //functions for navigating from "complete" alert
+  navigationFunction1 = () => {
+    this.props.navigation.navigate("Home");
+  };
+
+  navigationFunction2 = () => {
+    this.props.navigation.navigate("FriendsList");
+  };
+
+  //function for connecting the text box to the rest of the message
+  setMessageTextFunction = (
+    text,
+    backgroundColor,
+    textColor,
+    textSize,
+    fontFamily
+  ) => {
+    this.setState({
+      messageText: text,
+      backgroundColor: backgroundColor,
+      // fontFamily: fontFamily,
+      fontSize: textSize,
+      textColor: textColor,
+    });
+    console.log(this.state.messageText);
+  };
 
   componentDidMount = () => {
     var that = this;
@@ -238,7 +277,6 @@ class Upload extends React.Component {
   };
 
   uploadNewPost = async () => {
-    //tktktk
     if (this.state.imageSelectedFromDevice == true) {
       this.uploadImage(this.state.imageSelectedURI);
     } else if (this.state.imageSelectedFromProgram == true) {
@@ -253,7 +291,7 @@ class Upload extends React.Component {
 
   uploadImage = async (uri) => {
     // var returnValue = "error";
-    this.setState({ postLodaing: true });
+    this.setState({ imageLoading: true });
     console.log("Upload image called");
     var that = this;
     var userID = f.auth().currentUser.uid;
@@ -291,7 +329,7 @@ class Upload extends React.Component {
       function () {
         that.setState({
           pictureUploadingProgress: 100,
-          postLodaing: false,
+          imageLoading: false,
         });
         //taking the download URL and creating a new post with that
         imageUploadTask.snapshot.ref
@@ -308,6 +346,7 @@ class Upload extends React.Component {
 
   findUserByUsername = () => {
     var that = this;
+    this.setState({ postLoading: true });
 
     //if the message is a thank you and we already know the exact user we're sending to
 
@@ -322,9 +361,6 @@ class Upload extends React.Component {
         .equalTo(that.state.recipient.contactInfo)
         .once("value")
         .then(function (snapshot) {
-          // for (const property in snapshot) {
-          //   console.log(`${property}: ${snapshot[property]}`);
-          // }
           //if the username exists
           if (snapshot.val()) {
             console.log("username exists!");
@@ -366,6 +402,7 @@ class Upload extends React.Component {
       this.setState({ recipient: newRecipientObject });
     } else {
       Alert.alert("Not a phone number");
+      this.setState({ postLodaing: false });
       return;
     }
   };
@@ -395,31 +432,22 @@ class Upload extends React.Component {
             // console.log("the recipient ID is ... " + that.state.recipientID);
             //set state here so that the recipient is different
             that.uploadNewPost();
+            //add friend to friendslist
             that.addContactToFriendsList();
           }
-
-          //add friend to friendslist
         } else {
-          console.log(
-            " no user with this phone Number existsuser doesn't exist!"
-          );
+          console.log(" no user with this phone Number exists!");
 
-          if (filteredPhoneNumberString.length == 10) {
-            console.log(
-              "This is a real phone number! Send to Twilio with a 1 added in front!"
-            );
+          if (filteredPhoneNumberString.length > 11) {
+            console.log("This is a real phone number! Send to Twilio");
             that.uploadNewPost();
             //this.SendToTwilio
-          } else if (filteredPhoneNumberString.length > 11) {
-            console.log(
-              "This is a real phone number with country code and plus sign. Send to Twilio with no additions"
-            );
-            that.uploadNewPost();
           } else {
+            that.setState({ postLodaing: false });
             console.log(
               "Unfortunately, we can't support this phone number. We can only support phone numbers in the US, with the proper area code"
             );
-            alert("Cannot send! Invalid phonenumber");
+            Alert.alert("Cannot send! Invalid phonenumber");
           }
         }
       });
@@ -444,7 +472,7 @@ class Upload extends React.Component {
           timeSent: timestamp,
           spreadPoints: 1,
         });
-      //tktktktktk
+      //adding the message to that recipients "postsReceived" array
       this.addingPostsToPostsReceived();
     } else {
       f.database()
@@ -462,6 +490,10 @@ class Upload extends React.Component {
     }
     this.addingPointsToParentMessages();
     this.addingPostsToPostsSent();
+    createUploadCompletedAlert(
+      this.navigationFunction1,
+      this.navigationFunction2
+    );
   };
 
   addingPostsToPostsSent = async () => {
@@ -605,12 +637,15 @@ class Upload extends React.Component {
     }
   };
 
+  //function used to set state if user picks media from the program
   selectMediaData = async (url) => {
     this.setState({
       imageSelectedFromProgram: true,
       imageSelectedURI: url,
     });
   };
+
+  //making sure this message is registered as a child message of previous messages
 
   addChildMessages = async () => {
     var that = this;
@@ -701,7 +736,9 @@ class Upload extends React.Component {
                   style={{
                     height: 150,
                     width: 300,
-                    backgroundColor: "white",
+                    backgroundColor: this.state.backgroundColor,
+                    // fontFamily: this.state.fontFamily,
+                    color: this.state.textColor,
                     borderColor: "black",
                     borderWidth: 3,
                     textAlignVertical: "top",
@@ -713,6 +750,10 @@ class Upload extends React.Component {
                   }}
                   defaultValue={this.state.defaultText}
                 ></TextInput>
+                <UploadTextBox
+                  changeStateFunction={this.setMessageTextFunction}
+                  defaultText={this.state.defaultText}
+                />
               </View>
               {this.state.imageSelectedFromDevice == false &&
               this.state.imageSelectedFromProgram == false ? (
