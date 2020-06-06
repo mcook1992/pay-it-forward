@@ -31,6 +31,7 @@ class UploadTextBox extends React.Component {
       defaultText: this.props.defaultText,
       messageText: "",
       fontDataLoaded: false,
+      fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }],
       // parentPostID: this.props.route.params.parentPostId
     };
 
@@ -43,6 +44,9 @@ class UploadTextBox extends React.Component {
       "roboto-bold": require("../assets/fonts/Roboto-Bold.ttf"),
       "roboto-italic": require("../assets/fonts/Roboto-Italic.ttf"),
       "roboto-regular": require("../assets/fonts/Roboto-Regular.ttf"),
+      architectsDaughter: require("../assets/fonts/ArchitectsDaughter-Regular.ttf"),
+      dancingScript: require("../assets/fonts/DancingScript-VariableFont_wght.ttf"),
+      indieFlower: require("../assets/fonts/IndieFlower-Regular.ttf"),
     });
   };
 
@@ -57,30 +61,43 @@ class UploadTextBox extends React.Component {
             }}
           />
         ) : (
-          <TextInput
-            style={{
-              height: 150,
-              width: 300,
-              backgroundColor: this.state.backgroundColor,
-              fontFamily: "roboto-bold",
-              color: this.state.fontColor,
-              borderColor: "black",
-              borderWidth: 3,
-              textAlignVertical: "top",
-              margin: 20,
-            }}
-            onChangeText={(text) => {
-              this.setState({ messageText: text });
+          <View>
+            <TextInput
+              style={{
+                height: 150,
+                width: 300,
+                backgroundColor: this.state.backgroundColor,
+                fontFamily: this.state.fontFamily,
+                color: this.state.fontColor,
+                borderColor: "black",
+                borderWidth: 3,
+                textAlignVertical: "top",
+                margin: 20,
+              }}
+              onChangeText={(text) => {
+                this.setState({ messageText: text });
 
-              this.props.changeStateFunction(
-                text,
-                this.state.backgroundColor,
-                this.state.fontColor,
-                this.state.fontSize
-              );
-            }}
-            defaultValue={this.state.defaultText}
-          ></TextInput>
+                this.props.changeStateFunction(
+                  text,
+                  this.state.backgroundColor,
+                  this.state.fontColor,
+                  this.state.fontSize
+                );
+              }}
+              defaultValue={this.state.defaultText}
+            ></TextInput>
+            <Dropdown
+              style={{ width: 40 }}
+              label="Cnoose a font"
+              data={this.state.fontOptions}
+              onChangeText={(value) => {
+                this.setState({
+                  fontFamily: value,
+                });
+                // console.log(this.state.messageType);
+              }}
+            />
+          </View>
         )}
       </View>
     );
