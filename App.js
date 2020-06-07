@@ -19,6 +19,7 @@
 // const BottomStack = createBottomTabNavigator();
 
 import * as React from "react";
+
 import { FlatList, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -41,6 +42,8 @@ import Message from "./App/Screens/message";
 import ChooseImagesFromPrograms from "./App/Screens/selectPictureFromProgram";
 import friendContactUpload from "./App/Screens/friendsListContacts";
 import basicHomePage from "./App/Screens/baseHomePage";
+import * as Font from "expo-font";
+import { AppLoading } from "expo";
 
 function Notifications() {
   return (
@@ -49,6 +52,17 @@ function Notifications() {
     </View>
   );
 }
+
+// const fetchFonts = () => {
+//   return Font.loadAsync({
+//     "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
+//     "roboto-italic": require("./assets/fonts/Roboto-Italic.ttf"),
+//     "roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
+//     architectsDaughter: require("./assets/fonts/ArchitectsDaughter-Regular.ttf"),
+//     dancingScript: require("./assets/fonts/DancingScript-VariableFont_wght.ttf"),
+//     indieFlower: require("./assets/fonts/IndieFlower-Regular.ttf"),
+//   });
+// };
 
 const Tab = createBottomTabNavigator();
 
@@ -140,8 +154,21 @@ function MyTabs() {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    // this.login();
+    this.state = {
+      fontDataLoaded: false,
+    };
   }
+
+  fetchFonts = () => {
+    return Font.loadAsync({
+      "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
+      "roboto-italic": require("./assets/fonts/Roboto-Italic.ttf"),
+      "roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
+      architectsDaughter: require("./assets/fonts/ArchitectsDaughter-Regular.ttf"),
+      dancingScript: require("./assets/fonts/DancingScript-VariableFont_wght.ttf"),
+      indieFlower: require("./assets/fonts/IndieFlower-Regular.ttf"),
+    });
+  };
 
   login = async () => {
     try {
@@ -155,11 +182,22 @@ export default class App extends React.Component {
   };
 
   render() {
-    return (
-      <NavigationContainer>
-        <MyStack />
-      </NavigationContainer>
-    );
+    if (this.state.fontDataLoaded == false) {
+      return (
+        <AppLoading
+          startAsync={this.fetchFonts}
+          onFinish={() => {
+            this.setState({ fontDataLoaded: true });
+          }}
+        />
+      );
+    } else {
+      return (
+        <NavigationContainer>
+          <MyStack />
+        </NavigationContainer>
+      );
+    }
   }
 }
 

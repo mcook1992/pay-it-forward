@@ -5,6 +5,7 @@ import {
   TextInput,
   FlatList,
   Stylesheet,
+  ScrollView,
   Text,
   View,
   Image,
@@ -55,7 +56,7 @@ class Upload extends React.Component {
       showFriendList: false,
       textColor: "black",
       backgroundColor: "blue",
-      fontFamily: "Tahoma",
+      fontFamily: "System",
       fontSize: 12,
       messageTypeMenuOptions: [
         {
@@ -101,9 +102,9 @@ class Upload extends React.Component {
     this.setState({
       messageText: text,
       backgroundColor: backgroundColor,
-      // fontFamily: fontFamily,
       fontSize: textSize,
       textColor: textColor,
+      fontFamily: fontFamily,
     });
     console.log(this.state.messageText);
   };
@@ -206,11 +207,6 @@ class Upload extends React.Component {
 
   setPhoneNumberPrefix = async (uid) => {
     getUserPhoneNumberPrefix(uid, this.setPrefix);
-    // console.log(
-    //   "In set phone number pre function, pre is ... " + phoneNumberPrefix
-    // );
-    // this.setState({ prefix: phoneNumberPrefix });
-    // console.log(this.state.prefix);
   };
 
   _checkPermissions = async () => {
@@ -471,6 +467,10 @@ class Upload extends React.Component {
           parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
+          fontFamily: this.state.fontFamily,
+          fontSize: this.state.fontSize,
+          textColor: this.state.textColor,
+          backgroundColor: this.state.backgroundColor,
         });
       //adding the message to that recipients "postsReceived" array
       this.addingPostsToPostsReceived();
@@ -486,6 +486,10 @@ class Upload extends React.Component {
           parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
+          fontFamily: this.state.fontFamily,
+          fontSize: this.state.fontSize,
+          textColor: this.state.textColor,
+          backgroundColor: this.state.backgroundColor,
         });
     }
     this.addingPointsToParentMessages();
@@ -704,139 +708,124 @@ class Upload extends React.Component {
           <Text style={{ fontSize: 14 }}>Upload</Text>
         </View>
         {this.state.isLoggedIn == true ? (
-          <View>
-            <Text>Send your message below</Text>
+          <ScrollView>
             <View>
-              <Dropdown
-                style={{ width: 40 }}
-                label="Cnoose a message type"
-                data={this.state.messageTypeMenuOptions}
-                onChangeText={(value) => {
-                  this.setState({
-                    messageType: value,
-                  });
-                  // console.log(this.state.messageType);
-                }}
-              />
-            </View>
-
-            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text>Send your message below</Text>
               <View>
-                <View>
-                  <Text>Recipient: {this.state.recipient.name}</Text>
-                  <TouchableOpacity
-                    onPress={() => this.props.navigation.goBack()}
-                  >
-                    <Text>Change Recipient</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <Text>Enter message below</Text>
-                <TextInput
-                  style={{
-                    height: 150,
-                    width: 300,
-                    backgroundColor: this.state.backgroundColor,
-                    // fontFamily: this.state.fontFamily,
-                    color: this.state.textColor,
-                    borderColor: "black",
-                    borderWidth: 3,
-                    textAlignVertical: "top",
-                    margin: 20,
+                <Dropdown
+                  style={{ width: 40 }}
+                  label="Cnoose a message type"
+                  data={this.state.messageTypeMenuOptions}
+                  onChangeText={(value) => {
+                    this.setState({
+                      messageType: value,
+                    });
+                    // console.log(this.state.messageType);
                   }}
-                  onChangeText={(text) => {
-                    this.setState({ messageText: text });
-                    console.log(this.state.messageText);
-                  }}
-                  defaultValue={this.state.defaultText}
-                ></TextInput>
-                <UploadTextBox
-                  changeStateFunction={this.setMessageTextFunction}
-                  defaultText={this.state.defaultText}
                 />
               </View>
-              {this.state.imageSelectedFromDevice == false &&
-              this.state.imageSelectedFromProgram == false ? (
+
+              <View style={{ flex: 1, alignItems: "center" }}>
                 <View>
-                  <Button
-                    title="Upload media from your phone"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    onPress={this.findNewImage}
-                  />
-                  <Button
-                    title="Use media from our program"
-                    onPress={() =>
-                      this.props.navigation.navigate(
-                        "ChooseImagesFromPrograms",
-                        {
-                          saveImageData: this.selectMediaData.bind(this),
-                        }
-                      )
-                    }
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                  />
-                  <Button
-                    title="Send message!"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    onPress={this.uploadNewPost}
-                  />
-                  <Button
-                    title="Test button!"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    onPress={this.findUserByUsername}
-                  />
-                  <Button
-                    title="Back!"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    onPress={() => this.props.navigation.goBack()}
+                  <View>
+                    <Text>Recipient: {this.state.recipient.name}</Text>
+                    <TouchableOpacity
+                      onPress={() => this.props.navigation.goBack()}
+                    >
+                      <Text>Change Recipient</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text>Enter message below</Text>
+
+                  <UploadTextBox
+                    changeStateFunction={this.setMessageTextFunction}
+                    defaultText={this.state.defaultText}
                   />
                 </View>
-              ) : (
-                <View>
-                  <Text>Image Selected</Text>
+                {this.state.imageSelectedFromDevice == false &&
+                this.state.imageSelectedFromProgram == false ? (
+                  <View>
+                    <Button
+                      title="Upload media from your phone"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={this.findNewImage}
+                    />
+                    <Button
+                      title="Use media from our program"
+                      onPress={() =>
+                        this.props.navigation.navigate(
+                          "ChooseImagesFromPrograms",
+                          {
+                            saveImageData: this.selectMediaData.bind(this),
+                          }
+                        )
+                      }
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                    />
+                    <Button
+                      title="Send message!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={this.uploadNewPost}
+                    />
+                    <Button
+                      title="Test button!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={this.findUserByUsername}
+                    />
+                    <Button
+                      title="Back!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={() => this.props.navigation.goBack()}
+                    />
+                  </View>
+                ) : (
+                  <View>
+                    <Text>Image Selected</Text>
 
-                  {this.imageSelectedURI != "" ? (
-                    <View>
-                      <Image
-                        source={{ uri: this.state.imageSelectedURI }}
-                        style={{ width: 100, height: 100, marginTop: 20 }}
-                      />
-
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            imageSelectedFromDevice: false,
-                            imageSelectedFromProgram: false,
-                            imageSelectedURI: "",
-                          })
-                        }
-                      >
-                        <Text>Remove or Change Image</Text>
-                      </TouchableOpacity>
-
-                      {this.state.postLodaing == true ? (
-                        <ActivityIndicator size="small" color="blue" />
-                      ) : (
-                        <Button
-                          title="Send message!"
-                          color="#841584"
-                          accessibilityLabel="Learn more about this purple button"
-                          onPress={this.findUserByUsername}
+                    {this.imageSelectedURI != "" ? (
+                      <View>
+                        <Image
+                          source={{ uri: this.state.imageSelectedURI }}
+                          style={{ width: 100, height: 100, marginTop: 20 }}
                         />
-                      )}
-                    </View>
-                  ) : (
-                    <Image source={{ url: "http://i.pravatar.cc/300" }} />
-                  )}
-                </View>
-              )}
+
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({
+                              imageSelectedFromDevice: false,
+                              imageSelectedFromProgram: false,
+                              imageSelectedURI: "",
+                            })
+                          }
+                        >
+                          <Text>Remove or Change Image</Text>
+                        </TouchableOpacity>
+
+                        {this.state.postLodaing == true ? (
+                          <ActivityIndicator size="small" color="blue" />
+                        ) : (
+                          <Button
+                            title="Send message!"
+                            color="#841584"
+                            accessibilityLabel="Learn more about this purple button"
+                            onPress={this.findUserByUsername}
+                          />
+                        )}
+                      </View>
+                    ) : (
+                      <Image source={{ url: "http://i.pravatar.cc/300" }} />
+                    )}
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
+          </ScrollView>
         ) : (
           <Text>You're not logged in!</Text>
         )}
