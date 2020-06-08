@@ -25,11 +25,13 @@ class UploadTextBox extends React.Component {
     super(props);
     this.state = {
       fontColor: "black",
-      fontSize: 18,
+      fontSize: 12,
+
       fontFamily: null,
       backgroundColor: "orange",
       defaultText: this.props.defaultText,
       messageText: "",
+      addStyling: false,
       fontDataLoaded: false,
       fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }],
       colorOptions: [
@@ -91,7 +93,7 @@ class UploadTextBox extends React.Component {
         <View>
           <TextInput
             style={{
-              height: 150,
+              height: 300,
               width: 300,
               backgroundColor: this.state.backgroundColor,
               fontFamily: this.state.fontFamily,
@@ -108,55 +110,79 @@ class UploadTextBox extends React.Component {
             }}
             defaultValue={this.state.defaultText}
           ></TextInput>
+          {this.state.addStyling == false ? (
+            <Button
+              title="Style My Message"
+              color="#841584"
+              accessibilityLabel="Learn more about this purple button"
+              onPress={() => {
+                console.log("Button Pressed");
+                this.setState({ addStyling: true });
+              }}
+            />
+          ) : (
+            <View>
+              <Dropdown
+                style={{ width: 50 }}
+                label="Choose a background"
+                data={this.state.colorOptions}
+                onChangeText={(value) => {
+                  this.setState({
+                    backgroundColor: value,
+                  });
+                  this.changeUploadState();
+                  // console.log(this.state.messageType);
+                }}
+              />
 
-          <Dropdown
-            style={{ width: 10 }}
-            label="Choose a background color"
-            data={this.state.colorOptions}
-            onChangeText={(value) => {
-              this.setState({
-                backgroundColor: value,
-              });
-              this.changeUploadState();
-              // console.log(this.state.messageType);
-            }}
-          />
-          <Dropdown
-            style={{ width: 40 }}
-            label="Cnoose a font"
-            data={this.state.fontOptions}
-            onChangeText={(value) => {
-              this.setState({
-                fontFamily: value,
-              });
-              this.changeUploadState();
-              // console.log(this.state.messageType);
-            }}
-          />
-          <Dropdown
-            style={{ width: 40 }}
-            label="Cnoose a font color"
-            data={this.state.colorOptions}
-            onChangeText={(value) => {
-              this.setState({
-                fontColor: value,
-              });
-              this.changeUploadState();
-              // console.log(this.state.messageType);
-            }}
-          />
-          <Dropdown
-            style={{ width: 40 }}
-            label="Cnoose a font size"
-            data={this.state.sizeOptions}
-            onChangeText={(value) => {
-              this.setState({
-                fontSize: value,
-              });
-              this.changeUploadState();
-              // console.log(this.state.messageType);
-            }}
-          />
+              <Dropdown
+                style={{ width: 40, padding: 0, margin: 0 }}
+                label="Cnoose a font"
+                data={this.state.fontOptions}
+                onChangeText={(value) => {
+                  this.setState({
+                    fontFamily: value,
+                  });
+                  this.changeUploadState();
+                  // console.log(this.state.messageType);
+                }}
+              />
+              <Dropdown
+                style={{ width: 40 }}
+                label="Cnoose a font color"
+                data={this.state.colorOptions}
+                onChangeText={(value) => {
+                  this.setState({
+                    fontColor: value,
+                  });
+                  this.changeUploadState();
+                  // console.log(this.state.messageType);
+                }}
+              />
+              <Dropdown
+                style={{ width: 40 }}
+                label="Cnoose a font size"
+                data={this.state.sizeOptions}
+                onChangeText={(value) => {
+                  this.setState({
+                    fontSize: value,
+                  });
+                  this.changeUploadState();
+                  // console.log(this.state.messageType);
+                }}
+              />
+
+              <Button
+                title="Done Styling"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+                onPress={() => {
+                  console.log("Button Pressed");
+                  this.setState({ addStyling: false });
+                }}
+              />
+            </View>
+          )}
         </View>
       </View>
     );
