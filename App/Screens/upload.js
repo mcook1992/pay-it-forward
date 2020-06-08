@@ -685,7 +685,7 @@ class Upload extends React.Component {
         style={{
           flex: 1,
           height: 70,
-          paddingTop: 30,
+
           backgroundColor: "white",
           borderColor: "lightgrey",
           borderBottomWidth: 0.5,
@@ -705,26 +705,11 @@ class Upload extends React.Component {
             margin: 20,
           }}
         >
-          <Text style={{ fontSize: 14 }}>Upload</Text>
+          <Text style={{ fontSize: 14 }}>Send a Message</Text>
         </View>
         {this.state.isLoggedIn == true ? (
-          <ScrollView>
+          <ScrollView style={{ padding: 0, margin: 0 }}>
             <View>
-              <Text>Send your message below</Text>
-              <View>
-                <Dropdown
-                  style={{ width: 40 }}
-                  label="Cnoose a message type"
-                  data={this.state.messageTypeMenuOptions}
-                  onChangeText={(value) => {
-                    this.setState({
-                      messageType: value,
-                    });
-                    // console.log(this.state.messageType);
-                  }}
-                />
-              </View>
-
               <View style={{ flex: 1, alignItems: "center" }}>
                 <View>
                   <View>
@@ -769,19 +754,7 @@ class Upload extends React.Component {
                       title="Send message!"
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
-                      onPress={this.uploadNewPost}
-                    />
-                    <Button
-                      title="Test button!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
                       onPress={this.findUserByUsername}
-                    />
-                    <Button
-                      title="Back!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={() => this.props.navigation.goBack()}
                     />
                   </View>
                 ) : (

@@ -25,23 +25,30 @@ class UploadTextBox extends React.Component {
     super(props);
     this.state = {
       fontColor: "black",
-      fontSize: 12,
+      fontSize: 20,
 
       fontFamily: null,
-      backgroundColor: "orange",
+      backgroundColor: "transparent",
       defaultText: this.props.defaultText,
       messageText: "",
       addStyling: false,
-      fontDataLoaded: false,
       fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }],
       colorOptions: [
         { value: "transparent" },
         { value: "white" },
         { value: "black" },
         { value: "red" },
-        { value: "blue" },
-        { value: "green" },
+        { value: "lightpink" },
+        { value: "pink" },
+        { value: "aquamarine" },
+        { value: "azure" },
+        { value: "lavender" },
+        { value: "lightcyan" },
         { value: "yellow" },
+        { value: "gold" },
+        { value: "plum" },
+        { value: "silver" },
+        { value: "green" },
       ],
       sizeOptions: [
         { value: 12 },
@@ -67,12 +74,23 @@ class UploadTextBox extends React.Component {
   }
 
   changeUploadState = () => {
+    //have to adjust message text so that it is rewritten with new formatting applied by each drop down
+    var messageText = this.state.messageText;
+    this.setState({ messageText: messageText });
+
     this.props.changeStateFunction(
       this.state.messageText,
       this.state.backgroundColor,
       this.state.fontColor,
       this.state.fontSize,
       this.state.fontFamily
+    );
+    console.log(
+      this.state.backgroundColor,
+      this.state.fontColor,
+      this.state.fontSize,
+      this.state.fontFamily,
+      this.state.messageText
     );
   };
 
@@ -103,11 +121,15 @@ class UploadTextBox extends React.Component {
               borderWidth: 3,
               textAlignVertical: "top",
               margin: 20,
+              padding: 15,
             }}
+            multiline={true}
+            value={this.state.messageText}
+            placeholder="You are awesome!"
             onChangeText={(text) => {
               this.setState({ messageText: text });
-              this.changeUploadState();
             }}
+            onEndEditing={this.changeUploadState}
             defaultValue={this.state.defaultText}
           ></TextInput>
           {this.state.addStyling == false ? (
