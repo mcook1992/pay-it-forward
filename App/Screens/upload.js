@@ -26,6 +26,7 @@ import BootstrapStyleSheet from "react-native-bootstrap-styles";
 import getUserPhoneNumberPrefix from "../Screens/functions/getUserPhoneNumberPrefix";
 import filterPhoneNumberForUpload from "../Screens/functions/filterPhoneNumberForUpload";
 import createUploadCompletedAlert from "./functions/createUploadCompletedAlert";
+import createFriendInviteAlert from "./functions/createFriendInviteAlert";
 import UploadTextBox from "../../components/uploadTextBox";
 
 class Upload extends React.Component {
@@ -437,7 +438,11 @@ class Upload extends React.Component {
           if (filteredPhoneNumberString.length > 11) {
             console.log("This is a real phone number! Send to Twilio");
             that.uploadNewPost();
-            //this.SendToTwilio
+            createFriendInviteAlert(
+              filteredPhoneNumberString,
+              that.navigationFunction1,
+              that.navigationFunction2
+            );
           } else {
             that.setState({ postLodaing: false });
             console.log(

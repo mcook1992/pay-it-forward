@@ -28,7 +28,7 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import Feed from "./App/Screens/feed";
 import Profile from "./App/Screens/profile";
 import Upload from "../pay-it-forward/App/Screens/upload";
-import UserProfile from "./App/Screens/userProfile";
+import UserProfile from "../pay-it-forward/App/Screens/userProfile";
 import Contacts_for_Upload from "./App/Screens/contacts-for-upload";
 // import Message from "../pay-it-forward/App/Screens/message";
 import Comments from "./App/Screens/comments";

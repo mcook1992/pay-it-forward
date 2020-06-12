@@ -57,10 +57,15 @@ class Feed extends React.Component {
             type: messageObj.type,
             timeSent: that.timeConverter(messageObj["timeSent"]),
             text: messageObj.text,
+            backgroundColor: messageObj.backgroundColor,
+            textColor: messageObj.textColor,
+            fontFamily: messageObj.fontFamily,
+            fontSize: messageObj.fontSize,
             spreadPoints: messageObj["spreadPoints"].toString(),
             parentMessages: messageObj.parentMessages,
             senderAvatar: userData.avatar,
             senderName: userData.username,
+            name: userData.name,
           });
           // console.log(message + " and the message type is " + messageObj.type);
 

@@ -14,6 +14,10 @@ class Message extends React.Component {
     super(props);
     this.state = {
       loaded: true,
+      fontSize: 18,
+      fontFamily: "System",
+      fontColor: "black",
+      backgroundColor: "white",
 
       // parentPostID: this.props.route.params.parentPostId
     };
@@ -21,6 +25,7 @@ class Message extends React.Component {
 
   componentDidMount = () => {
     var that = this;
+    console.log("Message text is " + this.props.route.params.message.text);
   };
 
   checkParams = () => {
@@ -32,13 +37,6 @@ class Message extends React.Component {
       <View
         style={{
           flex: 1,
-          // height: 70,
-          // paddingTop: 30,
-          // backgroundColor: "white",
-          // borderColor: "lightgrey",
-          // borderBottomWidth: 0.5,
-          // justifyContent: "center",
-          // alignItems: "center"
         }}
       >
         <View
@@ -75,25 +73,45 @@ class Message extends React.Component {
               alignItems: "center",
             }}
           >
-            <Text>Message</Text>
-            <Text>{this.props.route.params.message.id}</Text>
+            <Text>You have a message from </Text>
+
             <TouchableOpacity>
               <Text
-                onPress={() =>
+                onPress={() => {
                   this.props.navigation.push("UserProfile", {
                     user: this.props.route.params.message.sender,
-                  })
-                }
+                  });
+                }}
               >
-                {this.props.route.params.message.sender.username}
+                {this.props.route.params.message.name}
               </Text>
             </TouchableOpacity>
-            <Text>{this.props.route.params.message.text}</Text>
+            <View
+              style={{
+                backgroundColor: this.props.route.params.message
+                  .backgroundColor,
+                width: 300,
+                minHeight: 300,
+                padding: 20,
+                margin: 20,
+              }}
+            >
+              <Text
+                style={{
+                  color: this.props.route.params.message.textColor,
+                  fontFamily: this.props.route.params.message.fontFamily,
+                  fontSize: this.props.route.params.message.fontSize,
+                }}
+              >
+                {this.props.route.params.message.text}
+              </Text>
+            </View>
             <TouchableOpacity
               style={{
                 marginTop: 10,
                 marginHorizontal: 40,
                 paddingVertical: 20,
+                paddingHorizontal: 20,
                 backgroundColor: "orange",
                 borderRadius: 20,
                 borderColor: "grey",
@@ -123,6 +141,7 @@ class Message extends React.Component {
                 marginTop: 10,
                 marginHorizontal: 40,
                 paddingVertical: 20,
+                paddingHorizontal: 20,
                 backgroundColor: "orange",
                 borderRadius: 20,
                 borderColor: "grey",

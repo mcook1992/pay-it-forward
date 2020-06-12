@@ -5,7 +5,7 @@ import {
   Stylesheet,
   Text,
   View,
-  Image
+  Image,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 
@@ -14,7 +14,7 @@ class UserProfile extends React.Component {
     super(props);
     this.state = {
       user: this.props.route.params.user,
-      loading: false
+      loading: false,
     };
   }
 
@@ -36,14 +36,14 @@ class UserProfile extends React.Component {
     var that = this;
     database
       .ref("Users")
-      .child(this.state.user.id) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
+      .child(this.state.user) //in the future, will be messageObj.sender --but for testing, have to do the one user who does exist
       .once("value")
-      .then(function(snapshot) {
+      .then(function (snapshot) {
         if (snapshot.val()) {
           var userData = snapshot.val();
           that.setState({
             username: userData.username,
-            userAvatar: userData.avatar
+            userAvatar: userData.avatar,
           });
         }
       });
@@ -53,7 +53,7 @@ class UserProfile extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
           // height: 70,
           // paddingTop: 30,
           // backgroundColor: "white",
@@ -74,7 +74,7 @@ class UserProfile extends React.Component {
                 borderColor: "lightgrey",
                 justifyContent: "space-between",
                 alignItems: "center",
-                borderBottomWidth: 0.5
+                borderBottomWidth: 0.5,
               }}
             >
               <TouchableOpacity
@@ -93,7 +93,7 @@ class UserProfile extends React.Component {
                 justifyContent: "space-evently",
                 alignItems: "center",
                 flexDirection: "row",
-                paddingVertical: 10
+                paddingVertical: 10,
               }}
             >
               <Image
@@ -102,7 +102,7 @@ class UserProfile extends React.Component {
                   marginLeft: 10,
                   width: 100,
                   height: 100,
-                  borderRadius: 50
+                  borderRadius: 50,
                 }}
               />
               <View style={{ marginLeft: 30 }}>
@@ -119,11 +119,11 @@ class UserProfile extends React.Component {
                   backgroundColor: "orange",
                   borderRadius: 20,
                   borderColor: "grey",
-                  borderWidth: 1.5
+                  borderWidth: 1.5,
                 }}
                 onPress={() =>
                   this.props.navigation.navigate("Upload", {
-                    recipient: this.state.user
+                    recipient: this.state.user,
                   })
                 }
               >
@@ -134,7 +134,7 @@ class UserProfile extends React.Component {
               style={{
                 flex: 1,
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Text>Other stuff</Text>
