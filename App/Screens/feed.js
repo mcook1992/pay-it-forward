@@ -108,7 +108,7 @@ class Feed extends React.Component {
               .ref("Messages/" + element.id)
               .once("value")
               .then(function (message) {
-                if (message.val()) {
+                if (message.val() && !message.val().flagged) {
                   var messageObj = message.val();
                   that.add2Flatlist(notificationsList, messageObj, element.id);
                 }

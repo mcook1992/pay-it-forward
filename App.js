@@ -42,6 +42,7 @@ import Message from "./App/Screens/message";
 import ChooseImagesFromPrograms from "./App/Screens/selectPictureFromProgram";
 import friendContactUpload from "./App/Screens/friendsListContacts";
 import basicHomePage from "./App/Screens/baseHomePage";
+import reportMessage from "./App/Screens/reportMessage";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 
@@ -82,6 +83,7 @@ function MyStack() {
         component={ChooseImagesFromPrograms}
       />
       <Stack.Screen name="basicHomePage" component={basicHomePage} />
+      <Stack.Screen name="reportMessage" component={reportMessage} />
       <Stack.Screen name="Upload" component={Upload} />
     </Stack.Navigator>
   );

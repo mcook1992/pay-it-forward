@@ -155,6 +155,46 @@ class Message extends React.Component {
             >
               <Text style={{ textAlign: "center" }}>Pay it forward</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginHorizontal: 40,
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                backgroundColor: "orange",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5,
+              }}
+              onPress={() => {
+                console.log("Flag Message Pressed");
+                this.props.navigation.navigate("reportMessage", {
+                  id: this.props.route.params.message.id,
+                });
+              }}
+            >
+              <Text style={{ textAlign: "center" }}>Flag Message</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginHorizontal: 40,
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                backgroundColor: "orange",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5,
+              }}
+              onPress={
+                () => console.log("Help Message Pressed")
+                // this.props.navigation.navigate("FriendsList", {
+                //   message: this.props.route.params.message,
+                // })
+              }
+            >
+              <Text style={{ textAlign: "center" }}>Help</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <Text>You're not logged in!</Text>

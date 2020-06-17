@@ -57,7 +57,7 @@ export default async function createFriendInviteAlert(
   } else {
     Alert.alert(
       "Error",
-      "We're sorry, but for some reason texting does not work with this device. Feel free to reach out to our help center or try again later"
+      "Thanks for sending this message! Since the number you used doesn't have an account, you may want to let them know you sent them a message!"
     );
   }
 }
