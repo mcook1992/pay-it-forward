@@ -600,6 +600,7 @@ class Upload extends React.Component {
   addingPointsToParentMessages = async () => {
     var that = this;
     if (that.state.parentMessages) {
+      //for each parent message, add points to the users total
       this.state.parentMessages.forEach((element) => {
         console.log(
           "In the adding points function " + this.state.parentMessages
@@ -634,11 +635,13 @@ class Upload extends React.Component {
                 //setting old points to current pointss
                 var oldPoints = newUser.currentPoints;
                 var currentPoints = newUser.currentPoints + 1;
+                var newSpreadPoints = newUser.spreadPoints + 1;
                 f.database()
                   .ref("Users/" + messageObject.sender)
                   .update({
                     oldPoints: oldPoints,
                     currentPoints: currentPoints,
+                    spreadPoints: newSpreadPoints,
                   });
               });
           });

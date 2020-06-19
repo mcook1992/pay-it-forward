@@ -16,6 +16,9 @@ class basicHomePage extends React.Component {
     super(props);
     this.state = {
       isLoggedIn: false,
+      currentTotalPoints: 0,
+      currentSpreadPoints: 0,
+      newMessageNumber: 0,
     };
   }
 
@@ -35,9 +38,16 @@ class basicHomePage extends React.Component {
           .then(function (snapshot) {
             if (snapshot.val()) {
               var newUser = snapshot.val();
+              var oldMessageNumber = newUser.oldMessageNumber;
+              var currentMessageNumber = newUser.postsReceived.length;
+              var newMessageNumber = currentMessageNumber - oldMessageNumber;
               that.setState({
-                userFirstName: newUser.firstName,
+                userFirstName: newUser.name,
+                newMessageNumber: newMessageNumber,
+                currentTotalPoints: newUser.currentPoints,
+                currentSpreadPoints: newUser.spreadPoints,
               });
+              console.log(that.state);
             }
           });
       } else {
@@ -56,7 +66,7 @@ class basicHomePage extends React.Component {
       );
     } else {
       return (
-        <View>
+        <View style={{ flex: 1 }}>
           <Text>Welcome {this.state.userFirstName}</Text>
           <TouchableOpacity
             style={{
@@ -143,6 +153,20 @@ class basicHomePage extends React.Component {
               Send this particular message with an image URI
             </Text>
           </TouchableOpacity>
+
+          <Text>New message number here {this.state.newMessageNumber}</Text>
+
+          {this.state.currentSpreadPoints > 1 ? (
+            <View>
+              <Text>
+                Your positive messages have spread to{" "}
+                {this.state.currentSpreadPoints} more people
+              </Text>
+              <Text>Click here to see more about what this number means</Text>
+            </View>
+          ) : (
+            <Text>Click here to see more about what this number means</Text>
+          )}
         </View>
       );
     }

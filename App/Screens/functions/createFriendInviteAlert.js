@@ -57,7 +57,7 @@ export default async function createFriendInviteAlert(
   } else {
     Alert.alert(
       "Error",
-      "Thanks for sending this message! Since the number you used doesn't have an account, you may want to let them know you sent them a message!"
+      "Thanks for sending this message! We recommend sending a text message to the recipient to let them know you're message is waiting for them."
     );
   }
 }
