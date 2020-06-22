@@ -1,7 +1,7 @@
 import React from "react";
 import {
   TouchableOpacity,
-  Flatlist,
+  FlatList,
   Stylesheet,
   Text,
   View,
@@ -19,6 +19,7 @@ class basicHomePage extends React.Component {
       currentTotalPoints: 0,
       currentSpreadPoints: 0,
       newMessageNumber: 0,
+      promptData: [{ text: "hello!" }, { text: "hi there!" }],
     };
   }
 
@@ -167,6 +168,67 @@ class basicHomePage extends React.Component {
           ) : (
             <Text>Click here to see more about what this number means</Text>
           )}
+          <View>
+            <Text>Need some inspiration? Check out today's prompts</Text>
+            {/* tktk */}
+
+            <View>
+              <FlatList
+                data={this.state.promptData}
+                keyExtractor={(item, index) => index.toString()}
+                style={{ backgroundColor: "#eee" }}
+                renderItem={({ item, index }) => (
+                  <View
+                    style={{
+                      borderBottomWidth: 5,
+                      borderBottomColor: "lightgrey",
+                      // flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      height: 50,
+                    }}
+                    key={index}
+                  >
+                    {/* <Image
+                    source={{
+                      url: item.senderAvatar,
+                    }}
+                    style={{
+                      resizeMode: "cover",
+                      width: "10%",
+                      height: 40,
+                      margin: 5,
+                    }}
+                  /> */}
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate("FriendsList", {
+                          message: {
+                            prefilledMessage: { messageText: item.text },
+                          },
+                        });
+                      }}
+                    >
+                      <Text
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {item.text}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </View>
+
+            {/* tktkt */}
+          </View>
         </View>
       );
     }

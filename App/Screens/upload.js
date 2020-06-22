@@ -180,8 +180,9 @@ class Upload extends React.Component {
             imageSelectedFromProgram: true,
           });
         }
-        //if the prefilled message has message text attached
+        //if the prefilled message has message text attached tktk
         if (this.props.route.params.message.prefilledMessage.messageText) {
+          console.log("there is prefilled text on the pre message");
           this.setState({
             defaultText: this.props.route.params.message.prefilledMessage
               .messageText,

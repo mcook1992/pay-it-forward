@@ -30,7 +30,7 @@ class UploadTextBox extends React.Component {
       fontFamily: null,
       backgroundColor: "transparent",
       defaultText: this.props.defaultText,
-      messageText: "",
+      messageText: this.props.defaultText,
       addStyling: false,
       fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }],
       colorOptions: [
