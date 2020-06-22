@@ -38,6 +38,7 @@ class basicHomePage extends React.Component {
           .once("value")
           .then(function (snapshot) {
             if (snapshot.val()) {
+              that.getPrompts();
               var newUser = snapshot.val();
               var oldMessageNumber = newUser.oldMessageNumber;
               var currentMessageNumber = newUser.postsReceived.length;
@@ -55,6 +56,22 @@ class basicHomePage extends React.Component {
         that.setState({ isLoggedIn: false });
       }
     });
+  };
+
+  getPrompts = async () => {
+    var that = this;
+    database
+      .ref("Prompts")
+      .child("todaysPrompts")
+      .once("value")
+      .then(function (snapshot) {
+        if (snapshot.val()) {
+          console.log("We haz prompts!");
+          that.setState({ promptData: snapshot.val() });
+        } else {
+          console.log("Couldn't find le prompts");
+        }
+      });
   };
 
   render() {
