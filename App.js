@@ -45,6 +45,7 @@ import basicHomePage from "./App/Screens/baseHomePage";
 import reportMessage from "./App/Screens/reportMessage";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
+import promptDisplayPage from "./App/Screens/promptDisplayPage";
 
 function Notifications() {
   return (
@@ -109,7 +110,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Updates"
-        component={Notifications}
+        component={promptDisplayPage} //change back to notifs tktktk
         options={{
           tabBarLabel: "Updates",
           tabBarIcon: ({ color, size }) => (
