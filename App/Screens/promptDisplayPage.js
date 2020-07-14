@@ -90,15 +90,25 @@ class promptDisplayPage extends React.Component {
           <SectionList
             sections={this.state.promptData}
             keyExtractor={(item, index) => item + index}
-            renderItem={({ item }) => <Item title={item} />}
-            renderSectionHeader={({ section: { title } }) => (
+            renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
-                  console.log(this.state.promptData);
+                  console.log("Pressed");
+                  this.props.navigation.navigate("FriendsList", {
+                    recipient: this.state.user,
+                    message: {
+                      prefilledMessage: { messageText: item },
+                    },
+                  });
                 }}
               >
-                <Text style={styles.header}>{title}</Text>
+                <Item title={item} />
               </TouchableOpacity>
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <View>
+                <Text style={styles.header}>{title}</Text>
+              </View>
             )}
           />
         </SafeAreaView>
