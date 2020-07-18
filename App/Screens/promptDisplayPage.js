@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { f, database, auth, storage } from "./config/config";
 import {
   StyleSheet,
   Text,
@@ -9,6 +10,41 @@ import {
 import Constants from "expo-constants";
 import getCompletePromptData from "../Screens/functions/prompts";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+var initialPromptData = [
+  {
+    title: "Compliments",
+    data: [
+      "You're an amazing listener",
+      "You're awesome",
+      "You always make me smile",
+    ],
+  },
+  {
+    title: "Gratitudes",
+    data: [
+      "Thanks for always listening to me",
+      "Thanks for being a great friend",
+      "Thanks for your help during a hard time",
+    ],
+  },
+  {
+    title: "Thoughtful Messages",
+    data: [
+      "I'm thinking of you",
+      "I hope today brings you joy",
+      "Can't wait until we next see each other",
+    ],
+  },
+  {
+    title: "Messages of Love",
+    data: [
+      "Just wanted to say I'm grateful to have you in my life",
+      "I'm so lucky to know you",
+      "I love you",
+    ],
+  },
+];
 
 var DATA = [
   {
@@ -69,13 +105,44 @@ class promptDisplayPage extends React.Component {
   };
 
   loadData = async () => {
+    var that = this;
     console.log("In this load data");
-    this.setState({ loading: true });
-    const newData = await getCompletePromptData();
-    if (newData) {
-      this.setState({ promptData: newData, loading: false });
-      console.log(newData);
-    }
+    this.setState({ refreshing: true });
+    f.database()
+      .ref("Prompts/todaysPrompts")
+      .once("value")
+      .then(function (snapshot) {
+        if (snapshot.val()) {
+          console.log("We haz prompts!");
+          var todaysPromptsArray = [];
+          snapshot.val().forEach((element) => {
+            // console.log(element);
+            todaysPromptsArray.push(element.text);
+            console.log(todaysPromptsArray);
+          });
+
+          var newPromptsObject = {
+            title: "Today's Prompts",
+            data: todaysPromptsArray,
+          };
+
+          initialPromptData.unshift(newPromptsObject);
+          console.log("newpromptData");
+          console.log(initialPromptData);
+
+          that.setState({ promptData: initialPromptData, refreshing: false });
+        } else {
+          console.log("Couldn't find le prompts");
+        }
+      });
+
+    // const newData = await getCompletePromptData();
+    // console.log("newData =");
+    // console.log(newData);
+    // if (newData) {
+    //   this.setState({ promptData: newData, refreshing: false });
+    //   console.log(newData);
+    // }
   };
   render() {
     if (this.state.refreshing) {

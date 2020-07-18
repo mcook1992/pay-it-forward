@@ -57,12 +57,12 @@ export default async function getCompletePromptData() {
         };
         promptData.unshift(newPromptsObject);
 
+        console.log(promptData);
+
         return promptData;
       } else {
         console.log("Couldn't find le prompts");
         return promptData;
       }
     });
-
-  return promptData;
 }
