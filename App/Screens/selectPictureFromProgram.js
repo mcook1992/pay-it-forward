@@ -29,6 +29,7 @@ class ChooseImagesFromPrograms extends React.Component {
 
   componentDidMount = () => {
     var that = this;
+    this.loadTodaysPhotos();
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
         that.setState({
@@ -36,6 +37,31 @@ class ChooseImagesFromPrograms extends React.Component {
         });
       }
     });
+  };
+
+  loadTodaysPhotos = () => {
+    var that = this;
+    var currentPhotoArray = this.state.photoArray;
+
+    f.database()
+      .ref("Prompts/todaysPhotoPrompts")
+      .once("value")
+      .then(function (snapshot) {
+        if (snapshot.val()) {
+          snapshot.val().forEach((element) => {
+            if (element.link && typeof element.link === "string") {
+              console.log(element.link);
+              currentPhotoArray.unshift(element.link);
+            }
+          });
+          that.setState({ photoArray: currentPhotoArray });
+        } else {
+          console.log("No prompts found");
+          return;
+        }
+      });
+
+    f.database().ref("Prompts/todaysPrompts").once("value").then;
   };
 
   render() {
