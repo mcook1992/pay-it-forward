@@ -26,10 +26,25 @@ class Message extends React.Component {
   componentDidMount = () => {
     var that = this;
     console.log("Message text is " + this.props.route.params.message.text);
+    this.adjustUnreadStatus();
   };
 
   checkParams = () => {
     var that = this;
+  };
+
+  adjustUnreadStatus = () => {
+    var that = this;
+
+    f.database()
+      .ref("Messages/" + this.props.route.params.message.id)
+      .update({ unread: "normal" }, function (error) {
+        if (error) {
+          console.log("Oh no, an error updating unread status");
+        } else {
+          console.log("Great work, successfully updated status");
+        }
+      });
   };
 
   render() {
@@ -186,12 +201,7 @@ class Message extends React.Component {
                 borderColor: "grey",
                 borderWidth: 1.5,
               }}
-              onPress={
-                () => console.log("Help Message Pressed")
-                // this.props.navigation.navigate("FriendsList", {
-                //   message: this.props.route.params.message,
-                // })
-              }
+              onPress={() => console.log("Help Message Pressed")}
             >
               <Text style={{ textAlign: "center" }}>Help</Text>
             </TouchableOpacity>

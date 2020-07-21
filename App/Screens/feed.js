@@ -59,6 +59,7 @@ class Feed extends React.Component {
             text: messageObj.text,
             backgroundColor: messageObj.backgroundColor,
             textColor: messageObj.textColor,
+            unread: messageObj.unread,
             fontFamily: messageObj.fontFamily,
             fontSize: messageObj.fontSize,
             spreadPoints: messageObj["spreadPoints"].toString(),
@@ -252,6 +253,7 @@ class Feed extends React.Component {
                         justifyContent: "center",
                         alignItems: "center",
                         alignSelf: "center",
+                        fontWeight: item.unread,
                       }}
                     >
                       {item.senderName} just sent you a {item.type}
