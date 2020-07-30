@@ -19,8 +19,12 @@
 // const BottomStack = createBottomTabNavigator();
 
 import * as React from "react";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
+//tkttk
 
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -47,7 +51,7 @@ import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import promptDisplayPage from "./App/Screens/promptDisplayPage";
 
-function Notifications() {
+function NotificationPage() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Notifications!</Text>
@@ -160,7 +164,46 @@ export default class App extends React.Component {
     this.state = {
       fontDataLoaded: false,
     };
+    this.registerForPushNotificationsAsync();
   }
+
+  //notifications
+
+  registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      alert(finalStatus);
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      const token = await Notifications.getExpoPushTokenAsync();
+      alert(token);
+      this.setState({ expoPushToken: token });
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.createChannelAndroidAsync("default", {
+        name: "default",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+
+  //fonts
 
   fetchFonts = () => {
     return Font.loadAsync({
