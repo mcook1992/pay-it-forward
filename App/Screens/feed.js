@@ -11,6 +11,9 @@ import {
 import { f, database, auth, storage } from "../Screens/config/config";
 import userAuth from "../../components/userAuth";
 import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+import * as Permissions from "expo-permissions";
 
 class Feed extends React.Component {
   constructor(props) {

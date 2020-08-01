@@ -12,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 
-import { Dropdown } from "react-native-material-dropdown";
+import { Dropdown } from "react-native-material-dropdown-v2";
 // import { ImagePicker } from "expo";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";

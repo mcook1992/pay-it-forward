@@ -13,7 +13,7 @@ import {
   Alert,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
-import { Dropdown } from "react-native-material-dropdown";
+import { Dropdown } from "react-native-material-dropdown-v2";
 // import { ImagePicker } from "expo";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
