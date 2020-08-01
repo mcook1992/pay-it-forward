@@ -6,9 +6,11 @@ import {
   Text,
   View,
   Image,
+  Button,
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 import userAuth from "../../components/userAuth";
+import * as Notifications from "expo-notifications";
 
 class Feed extends React.Component {
   constructor(props) {
@@ -20,6 +22,40 @@ class Feed extends React.Component {
       loading: true,
     };
   }
+
+  showPushToken = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      alert(finalStatus);
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      const token = await Notifications.getExpoPushTokenAsync();
+      alert(token.data);
+      this.setState({ expoPushToken: token });
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.createChannelAndroidAsync("default", {
+        name: "default",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
 
   componentDidMount = () => {
     var that = this;
@@ -206,6 +242,14 @@ class Feed extends React.Component {
             }}
           >
             <Text>Feed</Text>
+            <Button
+              title="test button"
+              color="#841584"
+              accessibilityLabel="Learn more about this purple button"
+              onPress={() => {
+                this.showPushToken();
+              }}
+            />
           </View>
           {this.state.list_of_notifications.length > 0 ? (
             <FlatList
