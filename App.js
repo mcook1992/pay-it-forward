@@ -164,7 +164,7 @@ export default class App extends React.Component {
     this.state = {
       fontDataLoaded: false,
     };
-    this.registerForPushNotificationsAsync();
+    // this.registerForPushNotificationsAsync();
   }
 
   //notifications

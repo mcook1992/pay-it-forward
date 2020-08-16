@@ -28,6 +28,7 @@ import filterPhoneNumberForUpload from "../Screens/functions/filterPhoneNumberFo
 import createUploadCompletedAlert from "./functions/createUploadCompletedAlert";
 import createFriendInviteAlert from "./functions/createFriendInviteAlert";
 import UploadTextBox from "../../components/uploadTextBox";
+import sendPushNotification from "../Screens/functions/sendPushNotifications";
 
 class Upload extends React.Component {
   constructor(props) {
@@ -78,6 +79,7 @@ class Upload extends React.Component {
     this.setPrefix = this.setPrefix.bind(this);
     this.selectMediaData = this.selectMediaData.bind(this);
     this.setMessageTextFunction = this.setMessageTextFunction.bind(this);
+    sendPushNotification("ExponentPushToken[0qsvl3JrKgRwUy7xDk8GD9]");
 
     // alert(this.state.postID);
     // console.log();

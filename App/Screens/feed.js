@@ -26,6 +26,14 @@ class Feed extends React.Component {
     };
   }
 
+  storePushTokenOnFirebase = async (pushToken) => {
+    var that = this;
+
+    database.ref("Users").child(that.state.userID).update({
+      pushToken: pushToken,
+    });
+  };
+
   showPushToken = async () => {
     if (Constants.isDevice) {
       const { status: existingStatus } = await Permissions.getAsync(
@@ -46,6 +54,7 @@ class Feed extends React.Component {
       const token = await Notifications.getExpoPushTokenAsync();
       alert(token.data);
       this.setState({ expoPushToken: token });
+      this.storePushTokenOnFirebase(token.data);
     } else {
       alert("Must use physical device for Push Notifications");
     }
@@ -68,6 +77,7 @@ class Feed extends React.Component {
           isLoggedIn: true,
           userID: user.uid,
         });
+        that.showPushToken();
         that.loadFeed();
       } else {
         that.setState({ isLoggedIn: false });
