@@ -87,6 +87,7 @@ function MyStack() {
         name="ChooseImagesFromPrograms"
         component={ChooseImagesFromPrograms}
       />
+      <Stack.Screen name="PromptDisplayPage" component={promptDisplayPage} />
       <Stack.Screen name="basicHomePage" component={basicHomePage} />
       <Stack.Screen name="reportMessage" component={reportMessage} />
       <Stack.Screen name="Upload" component={Upload} />
@@ -114,7 +115,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Updates"
-        component={promptDisplayPage} //change back to notifs tktktk
+        component={NotificationPage} //change back to notifs tktktk
         options={{
           tabBarLabel: "Updates",
           tabBarIcon: ({ color, size }) => (

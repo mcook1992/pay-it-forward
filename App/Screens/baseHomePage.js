@@ -186,8 +186,14 @@ class basicHomePage extends React.Component {
             <Text>Click here to see more about what this number means</Text>
           )}
           <View>
-            <Text>Need some inspiration? Check out today's prompts</Text>
-            {/* tktk */}
+            <Text>Need some inspiration?</Text>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate("PromptDisplayPage")
+              }
+            >
+              <Text>Check out today's prompts</Text>
+            </TouchableOpacity>
 
             <View>
               <FlatList

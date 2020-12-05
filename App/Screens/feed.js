@@ -200,7 +200,7 @@ class Feed extends React.Component {
     var a = new Date(timestamp);
     var seconds = Math.floor((new Date() - a) / 1000);
 
-    var interval = Math.floor(seconds / 3153600);
+    var interval = Math.floor(seconds / 31557600);
     if (interval > 1) {
       return interval + " year" + this.pluralCheck(interval);
     }

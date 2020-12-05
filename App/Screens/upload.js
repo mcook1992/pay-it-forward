@@ -79,7 +79,8 @@ class Upload extends React.Component {
     this.setPrefix = this.setPrefix.bind(this);
     this.selectMediaData = this.selectMediaData.bind(this);
     this.setMessageTextFunction = this.setMessageTextFunction.bind(this);
-    sendPushNotification("ExponentPushToken[0qsvl3JrKgRwUy7xDk8GD9]");
+
+    // sendPushNotification("ExponentPushToken[0qsvl3JrKgRwUy7xDk8GD9]");
 
     // alert(this.state.postID);
     // console.log();
@@ -542,6 +543,10 @@ class Upload extends React.Component {
         .ref("Users/" + that.state.recipientID)
         .once("value")
         .then(function (user) {
+          if (user.val().pushToken) {
+            console.log("Sending a push token" + user.val().pushToken);
+            sendPushNotification(user.val().pushToken);
+          }
           var newPostsReceivedArray = [];
           //if the user has already received a post...otherwise, don't bother
 
