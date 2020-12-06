@@ -291,6 +291,10 @@ class Profile extends React.Component {
                   alignItems: "center",
                 }}
               >
+                <View> 
+                  <Text>Your sent messages!</Text>
+
+                </View>
                 {this.state.list_of_notifications ? (
                   <FlatList
                     refreshing={this.state.refresh}
