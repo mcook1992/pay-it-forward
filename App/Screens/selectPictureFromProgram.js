@@ -61,6 +61,7 @@ class ChooseImagesFromPrograms extends React.Component {
         }
       });
 
+      //what is this from? necessary? tktk
     f.database().ref("Prompts/todaysPrompts").once("value").then;
   };
 

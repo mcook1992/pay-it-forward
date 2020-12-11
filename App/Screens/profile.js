@@ -16,10 +16,14 @@ class Profile extends React.Component {
     this.state = {
       isLoggedIn: false,
       list_of_posts: [],
+      profileImage: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/stockImages%2Fblank-profile-picture-973460_1280.png?alt=media&token=6d2357d4-18da-419b-9067-9d60191e4d51"
     };
+
+    this.loadProfileImage = this.loadProfileImage.bind(this)
   }
 
   componentDidMount = () => {
+    
     var that = this;
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -28,11 +32,25 @@ class Profile extends React.Component {
           userID: user.uid,
         });
         that.loadFeed()
+        that.loadProfileImage()
       } else {
         that.setState({ isLoggedIn: false });
       }
     });
   };
+
+  loadProfileImage = () => {
+    var that = this
+    database.ref("Users/" + that.state.userID)
+      .child("avatar")
+      .once("value").then(function(snapshot){
+        if(snapshot.val()) {
+          that.setState({
+            profileImage: snapshot.val()
+          })
+        }
+      })
+  }
 
 
 
@@ -219,7 +237,7 @@ class Profile extends React.Component {
                 }}
               >
                 <Image
-                  source={{ url: "http://i.pravatar.cc/300" }}
+                  source={{ url: this.state.profileImage }}
                   style={{
                     marginLeft: 10,
                     width: 100,
