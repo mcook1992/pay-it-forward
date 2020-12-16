@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 import UserAuth from "../../components/userAuth";
+import { Avatar, Accessory } from 'react-native-elements'
 
 class Profile extends React.Component {
   constructor(props) {
@@ -133,7 +134,8 @@ class Profile extends React.Component {
             spreadPoints: messageObj["spreadPoints"].toString(),
             parentMessages: messageObj.parentMessages,
             senderAvatar: userData.avatar,
-            senderName: userData.username,
+            //adjusted so that it shows the real name and not just user name
+            senderName: userData.name,
             name: userData.name,
           });
           // console.log(message + " and the message type is " + messageObj.type);
@@ -228,6 +230,7 @@ class Profile extends React.Component {
               >
                 <Text>Profile</Text>
               </View>
+
               <View
                 style={{
                   justifyContent: "space-evently",
@@ -236,8 +239,20 @@ class Profile extends React.Component {
                   paddingVertical: 10,
                 }}
               >
-                <Image
-                  source={{ url: this.state.profileImage }}
+                {this.state.profileImage == "blank" ? (
+                // <Image
+                //   source={{ url: this.state.profileImage }}
+                //   style={{
+                //     marginLeft: 10,
+                //     width: 100,
+                //     height: 100,
+                //     borderRadius: 50,
+                //   }}
+                // />
+                <Avatar size="xlarge" rounded title="MD" />
+                ) : (
+                  <Image
+                  source={{ url: "http://i.pravatar.cc/300" }}
                   style={{
                     marginLeft: 10,
                     width: 100,
@@ -245,6 +260,9 @@ class Profile extends React.Component {
                     borderRadius: 50,
                   }}
                 />
+
+                )}
+                
                 <View style={{ marginLeft: 30 }}>
                   <Text>Name</Text>
                   <Text>Username</Text>
@@ -334,6 +352,7 @@ class Profile extends React.Component {
                         }}
                         key={index}
                       >
+                        {item.senderAvatar != "blank" ? (
                         <Image
                           source={{
                             url: item.senderAvatar,
@@ -345,7 +364,9 @@ class Profile extends React.Component {
                             margin: 5,
                           }}
                         />
-
+                        ) : (
+                          <Avatar size="small" rounded title={item.senderName.charAt(0)}/>
+                        )} 
                         <TouchableOpacity
                           onPress={() =>
                             this.props.navigation.push("Message", {
