@@ -12,6 +12,8 @@ import { f, database, auth, storage } from "../Screens/config/config";
 import userAuth from "../../components/userAuth";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { Avatar, Accessory } from 'react-native-elements'
+
 
 import * as Permissions from "expo-permissions";
 
@@ -114,7 +116,7 @@ class Feed extends React.Component {
             spreadPoints: messageObj["spreadPoints"].toString(),
             parentMessages: messageObj.parentMessages,
             senderAvatar: userData.avatar,
-            senderName: userData.username,
+            senderName: userData.name,
             name: userData.name,
           });
           // console.log(message + " and the message type is " + messageObj.type);
@@ -285,17 +287,21 @@ class Feed extends React.Component {
                   }}
                   key={index}
                 >
-                  <Image
-                    source={{
-                      url: item.senderAvatar,
-                    }}
-                    style={{
-                      resizeMode: "cover",
-                      width: "10%",
-                      height: 40,
-                      margin: 5,
-                    }}
-                  />
+                {item.senderAvatar != "blank" ? (
+                        <Image
+                          source={{
+                            url: item.senderAvatar,
+                          }}
+                          style={{
+                            resizeMode: "cover",
+                            width: "10%",
+                            height: 40,
+                            margin: 5,
+                          }}
+                        />
+                        ) : (
+                          <Avatar size="small" rounded title={item.senderName.charAt(0)}/>
+                        )} 
 
                   <TouchableOpacity
                     onPress={() =>
