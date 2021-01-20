@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Image,
+  Button
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 import UserAuth from "../../components/userAuth";
@@ -17,6 +18,7 @@ class Profile extends React.Component {
     this.state = {
       isLoggedIn: false,
       list_of_posts: [],
+      name: "TestingName",
       profileImage: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/stockImages%2Fblank-profile-picture-973460_1280.png?alt=media&token=6d2357d4-18da-419b-9067-9d60191e4d51"
     };
 
@@ -191,6 +193,42 @@ class Profile extends React.Component {
     interval = Math.floor(seconds);
 
     return interval + " second" + this.pluralCheck(interval);
+  };
+
+  //IMAGE EDITING
+
+  _checkPermissions = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ camera: status });
+
+    const { statusRoll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ cameraRoll: statusRoll });
+
+    const { contactsStatus } = await Permissions.askAsync(Permissions.CONTACTS);
+    this.setState({ contactsStatus: contactsStatus });
+  };
+
+  findNewImage = async () => {
+    this._checkPermissions();
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "Images",
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      console.log("upload an image");
+      this.setState({
+        imageSelectedFromDevice: true,
+        imageSelectedURI: result.uri,
+      });
+      // this.uploadImage(result.uri);
+    } else {
+      console.log("cancelled");
+    }
   };
 
   render() {
@@ -396,6 +434,18 @@ class Profile extends React.Component {
                     <Text>You haven't sent any messages yet</Text>
                   </View>
                 )}
+                <View> 
+                <Button
+                      title="Edit Profile"
+                      onPress={() =>
+                        this.props.navigation.navigate(
+                          "editProfile", { name: this.state.name, uid: this.state.userID }//tktktk
+                        )
+                      }
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                    />
+                </View>
               </View>
             </View>
           ) : (

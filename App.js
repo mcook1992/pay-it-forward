@@ -50,6 +50,7 @@ import reportMessage from "./App/Screens/reportMessage";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import promptDisplayPage from "./App/Screens/promptDisplayPage";
+import editProfile from "./App/Screens/editProfile"
 
 function NotificationPage() {
   return (
@@ -91,6 +92,7 @@ function MyStack() {
       <Stack.Screen name="basicHomePage" component={basicHomePage} />
       <Stack.Screen name="reportMessage" component={reportMessage} />
       <Stack.Screen name="Upload" component={Upload} />
+      <Stack.Screen name="editProfile" component={editProfile} />
     </Stack.Navigator>
   );
 }
