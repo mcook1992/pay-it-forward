@@ -287,10 +287,10 @@ class Profile extends React.Component {
                 //     borderRadius: 50,
                 //   }}
                 // />
-                <Avatar size="xlarge" rounded title="MD" />
+                <Avatar size="xlarge" rounded title="MS" />
                 ) : (
                   <Image
-                  source={{ url: "http://i.pravatar.cc/300" }}
+                  source={{ url: this.state.profileImage }}
                   style={{
                     marginLeft: 10,
                     width: 100,
