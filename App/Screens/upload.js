@@ -19,7 +19,7 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 //importing fonts
 import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import  AppLoading  from "expo-app-loading";
 // import Contacts from "react-native-contacts";
 import * as Contacts from "expo-contacts";
 import BootstrapStyleSheet from "react-native-bootstrap-styles";

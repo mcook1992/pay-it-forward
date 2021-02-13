@@ -48,7 +48,7 @@ import friendContactUpload from "./App/Screens/friendsListContacts";
 import basicHomePage from "./App/Screens/baseHomePage";
 import reportMessage from "./App/Screens/reportMessage";
 import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import  AppLoading  from "expo-app-loading";
 import promptDisplayPage from "./App/Screens/promptDisplayPage";
 import editProfile from "./App/Screens/editProfile"
 
@@ -238,6 +238,7 @@ export default class App extends React.Component {
           onFinish={() => {
             this.setState({ fontDataLoaded: true });
           }}
+          onError={console.warn}
         />
       );
     } else {

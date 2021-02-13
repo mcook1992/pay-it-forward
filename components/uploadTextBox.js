@@ -18,7 +18,7 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 //importing fonts
 import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import  AppLoading  from "expo-app-loading";
 
 class UploadTextBox extends React.Component {
   constructor(props) {
