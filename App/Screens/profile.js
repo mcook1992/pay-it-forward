@@ -11,6 +11,8 @@ import {
 import { f, database, auth, storage } from "../Screens/config/config";
 import UserAuth from "../../components/userAuth";
 import { Avatar, Accessory } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 
 class Profile extends React.Component {
   constructor(props) {
@@ -55,6 +57,11 @@ class Profile extends React.Component {
       })
   }
 
+  //creating menu icon
+
+  menu_icon = (  
+    <Icon name="bars" size={25} color="#fb3742" onPress={()=>{console.log("Menu Icon Clicked")}} />  
+   );  
 
 
   //main functions for loading sent posts (a lot of tihs is repetitive, eventually should weed out)
@@ -266,7 +273,11 @@ class Profile extends React.Component {
                   borderBottomWidth: 0.5,
                 }}
               >
+                <TouchableOpacity>
+                  {this.menu_icon}
+                </TouchableOpacity>
                 <Text>Profile</Text>
+
               </View>
 
               <View
