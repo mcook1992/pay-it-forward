@@ -60,7 +60,9 @@ class Profile extends React.Component {
   //creating menu icon
 
   menu_icon = (  
-    <Icon name="bars" size={25} color="#fb3742" onPress={()=>{console.log("Menu Icon Clicked")}} />  
+    <Icon name="bars" size={25} color="#fb3742" onPress={()=>{
+      this.props.navigation.navigate("menuPage")
+      console.log("Menu Icon Clicked")}} />  
    );  
 
 
