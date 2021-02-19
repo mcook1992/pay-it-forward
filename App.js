@@ -52,6 +52,7 @@ import  AppLoading  from "expo-app-loading";
 import promptDisplayPage from "./App/Screens/promptDisplayPage";
 import editProfile from "./App/Screens/editProfile"
 import menuPage from "./App/Screens/menu"
+import { MenuProvider } from 'react-native-popup-menu'
 
 function NotificationPage() {
   return (
@@ -95,6 +96,7 @@ function MyStack() {
       <Stack.Screen name="Upload" component={Upload} />
       <Stack.Screen name="editProfile" component={editProfile} />
       <Stack.Screen name="menuPage" component={menuPage} />
+      <Stack.Screen name="Feed" component={Feed} />
 
     </Stack.Navigator>
   );
@@ -246,9 +248,13 @@ export default class App extends React.Component {
       );
     } else {
       return (
+        
         <NavigationContainer>
+          <MenuProvider>
           <MyStack />
+          </MenuProvider>
         </NavigationContainer>
+        
       );
     }
   }

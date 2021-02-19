@@ -12,6 +12,16 @@ import { f, database, auth, storage } from "../Screens/config/config";
 import UserAuth from "../../components/userAuth";
 import { Avatar, Accessory } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import MenuPage from "./menu"
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers
+} from 'react-native-popup-menu'
+
+const { SlideInMenu } = renderers;
 
 
 class Profile extends React.Component {
@@ -275,9 +285,20 @@ class Profile extends React.Component {
                   borderBottomWidth: 0.5,
                 }}
               >
-                <TouchableOpacity>
-                  {this.menu_icon}
-                </TouchableOpacity>
+              <MenuPage navInfo={this.props}/>
+                {/* <TouchableOpacity>
+                  {this.menu_icon} //old menu icon
+                </TouchableOpacity> */}
+                <Menu rendererProps={{ preferredPlacement: 'left' }}>
+                  <MenuTrigger text='Select action' />
+                  <MenuOptions>
+                    <MenuOption onSelect={() => this.props.navigation.navigate("Feed")} text='Save' />
+                    <MenuOption onSelect={() => alert(`Delete`)} >
+                      <Text style={{color: 'red'}}>Delete</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
+                  </MenuOptions>
+               </Menu>
                 <Text>Profile</Text>
 
               </View>
