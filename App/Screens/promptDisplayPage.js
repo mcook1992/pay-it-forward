@@ -3,6 +3,7 @@ import { f, database, auth, storage } from "./config/config";
 import {
   StyleSheet,
   Text,
+  Image,
   View,
   SafeAreaView,
   SectionList,
@@ -10,6 +11,7 @@ import {
 import Constants from "expo-constants";
 import getCompletePromptData from "../Screens/functions/prompts";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 
 var initialPromptData = [
   {
@@ -65,6 +67,21 @@ var DATA = [
   },
 ];
 
+var testPictureData = [
+  {
+    title: "Main dishes",
+    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+  },
+  {
+    title: "Side dishes",
+    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+  },
+  {
+    title: "Funky dishes",
+    data: [{text:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+  }
+];
+
 const Item = ({ title }) => (
   <View style={styles.item}>
     <Text style={styles.title}>{title}</Text>
@@ -96,12 +113,12 @@ class promptDisplayPage extends React.Component {
     super(props);
     this.state = {
       refreshing: false,
-      promptData: DATA,
+      promptData: testPictureData,
     };
   }
 
   componentDidMount = () => {
-    this.loadData();
+    // this.loadData();
   };
 
   loadData = async () => {
@@ -154,22 +171,33 @@ class promptDisplayPage extends React.Component {
     } else {
       return (
         <SafeAreaView style={styles.container}>
+          
           <SectionList
             sections={this.state.promptData}
             keyExtractor={(item, index) => item + index}
             renderItem={({ item }) => (
+              
               <TouchableOpacity
                 onPress={() => {
                   console.log("Pressed");
+                  //making the prefilled message to pass along to other screens
+                  const newMessage = {} 
+                 
                   this.props.navigation.navigate("FriendsList", {
                     recipient: this.state.user,
                     message: {
-                      prefilledMessage: { messageText: item },
+                      prefilledMessage: { messageText: item.text},
                     },
                   });
                 }}
               >
-                <Item title={item} />
+                {item.imageURI ? ( <Image style={{height: 100, width: 100}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.text}</Text>)} 
+                {/* tktktk--add in the if statement and make sure its image if it's not just see the text ALSO make sure even normal texts are nice looking */}
+                {/* <Item title={item.text} /> */}
+                {/* {console.log(item.text, item.image)} */}
+                
+               
+                
               </TouchableOpacity>
             )}
             renderSectionHeader={({ section: { title } }) => (
