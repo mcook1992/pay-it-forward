@@ -24,11 +24,11 @@ class UploadTextBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fontColor: "black",
-      fontSize: 20,
+      fontColor: this.props.fontColor,
+      fontSize: this.props.fontSize,
 
-      fontFamily: null,
-      backgroundColor: "transparent",
+      fontFamily: this.props.fontFamily,
+      backgroundColor: this.props.backgroundColor,
       defaultText: this.props.defaultText,
       messageText: this.props.defaultText,
       addStyling: false,

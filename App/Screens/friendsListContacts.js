@@ -172,7 +172,7 @@ class friendContactUpload extends React.Component {
       //tktk fix array so that it matches new structure of data
       //set up data array so that there is a name and a "contact info"
       //set up this function so that it takes name and contact info
-      console.log("They array holder item is " + item);
+      console.log("The array holder item is " + item);
       const totalItemData = item.name + " " + item.contactInfo;
       const itemData = totalItemData.toUpperCase();
       const textData = text.toUpperCase();
@@ -246,6 +246,7 @@ class friendContactUpload extends React.Component {
                         name: item.name,
                         contactInfo: item.contactInfo,
                       },
+                      //essentially making sure the message that comes in is same as message that goes out
                       message: this.state.anyMessageInfo,
                     });
                   }}

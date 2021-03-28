@@ -70,15 +70,15 @@ var DATA = [
 var testPictureData = [
   {
     title: "Main dishes",
-    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+    data: [{messageText: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
   },
   {
     title: "Side dishes",
-    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+    data: [{messageText: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
   },
   {
     title: "Funky dishes",
-    data: [{text:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+    data: [{messageText:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
   }
 ];
 
@@ -185,13 +185,14 @@ class promptDisplayPage extends React.Component {
                  
                   this.props.navigation.navigate("FriendsList", {
                     recipient: this.state.user,
-                    message: {
-                      prefilledMessage: { messageText: item.text},
+                    message: 
+                    {
+                     prefilledMessage: item
                     },
                   });
                 }}
               >
-                {item.imageURI ? ( <Image style={{height: 100, width: 100}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.text}</Text>)} 
+                {item.imageURI ? ( <Image style={{height: 100, width: 100}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.messageText}</Text>)} 
                 {/* tktktk--add in the if statement and make sure its image if it's not just see the text ALSO make sure even normal texts are nice looking */}
                 {/* <Item title={item.text} /> */}
                 {/* {console.log(item.text, item.image)} */}

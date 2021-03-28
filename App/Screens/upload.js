@@ -147,12 +147,14 @@ class Upload extends React.Component {
         );
       }
     });
-    //if this is based on another message like pay it forward or thank you
+    //if this is based on another message like pay it forward or thank you OR from a prompt
     if (this.props.route.params.message) {
       var newArray = [];
+      //getting the id of the parent message and/or prompt
       newArray.push({ id: this.props.route.params.message.id });
       console.log("Making new array " + newArray);
 
+      //if there's a parent message (or list of parent messages
       if (this.props.route.params.message.parentMessages) {
         console.log(
           "Setting pay it forward/thank you info " +
@@ -189,6 +191,10 @@ class Upload extends React.Component {
           this.setState({
             defaultText: this.props.route.params.message.prefilledMessage
               .messageText,
+            textColor: this.props.route.params.message.prefilledMessage.textColor,
+            backgroundColor: this.props.route.params.message.prefilledMessage.backgroundColor,
+            fontFamily: this.props.route.params.message.prefilledMessage.fontFamily,
+            fontSize: this.props.route.params.message.prefilledMessage.fontSize
           });
         }
 
@@ -742,6 +748,9 @@ class Upload extends React.Component {
                   <UploadTextBox
                     changeStateFunction={this.setMessageTextFunction}
                     defaultText={this.state.defaultText}
+                    fontFamily={this.state.fontFamily}
+                    backgroundColor={this.state.backgroundColor}
+                    fontColor={this.state.fontColor}
                   />
                 </View>
                 {this.state.imageSelectedFromDevice == false &&
