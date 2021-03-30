@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useState } from 'react';
 import {
     TouchableOpacity,
     ActivityIndicator,
@@ -20,24 +20,36 @@ import {
     renderers
   } from 'react-native-popup-menu'
   
-  const { SlideInMenu } = renderers;
 
 
-function menuPage(props) {
+
+  const menuPage = (props) => {
+    const [count, setCount] = useState(0);
+  
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-       <Menu rendererProps={{ preferredPlacement: 'left' }}>
-                  <MenuTrigger text='Select action' />
-                  <MenuOptions>
-                    <MenuOption onSelect={() => props.navInfo.navigation.navigate("Feed")} text='Feed' />
-                    <MenuOption onSelect={() => alert(`Delete`)} >
-                      <Text style={{color: 'red'}}>Delete</Text>
-                    </MenuOption>
-                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
-                  </MenuOptions>
-               </Menu>
-      </View>
+      <View
+      style={{
+        height: 70,
+        paddingTop: 30,
+        backgroundColor: "white",
+        borderColor: "lightgrey",
+        justifyContent: "center",
+        alignItems: "center",
+        borderBottomWidth: 0.5,
+        margin: 20,
+      }}
+      >
+       <Text>Menu Page</Text>
+       <TouchableOpacity
+       onPress={()=>{
+         props.navigation.navigate("Feed")
+       }}
+       >
+         <Text>Feed</Text>
+       </TouchableOpacity>
+       </View>
+      
     );
-  }
+  };
 
   export default menuPage

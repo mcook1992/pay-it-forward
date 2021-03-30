@@ -13,6 +13,8 @@ import UserAuth from "../../components/userAuth";
 import { Avatar, Accessory } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MenuPage from "./menu"
+import { AntDesign } from '@expo/vector-icons'
+import menuPage from "./menu"
 import {
   Menu,
   MenuOptions,
@@ -69,11 +71,11 @@ class Profile extends React.Component {
 
   //creating menu icon
 
-  menu_icon = (  
-    <Icon name="bars" size={25} color="#fb3742" onPress={()=>{
-      this.props.navigation.navigate("menuPage")
-      console.log("Menu Icon Clicked")}} />  
-   );  
+  // menu_icon = (  
+  //   <Icon name="bars" size={25} color="#fb3742" onPress={()=>{
+  //     this.props.navigation.navigate("menuPage")
+  //     console.log("Menu Icon Clicked")}} />  
+  //  );  
 
 
   //main functions for loading sent posts (a lot of tihs is repetitive, eventually should weed out)
@@ -285,20 +287,16 @@ class Profile extends React.Component {
                   borderBottomWidth: 0.5,
                 }}
               >
-              <MenuPage navInfo={this.props}/>
-                {/* <TouchableOpacity>
-                  {this.menu_icon} //old menu icon
-                </TouchableOpacity> */}
-                <Menu rendererProps={{ preferredPlacement: 'left' }}>
-                  <MenuTrigger text='Select action' />
-                  <MenuOptions>
-                    <MenuOption onSelect={() => this.props.navigation.navigate("Feed")} text='Save' />
-                    <MenuOption onSelect={() => alert(`Delete`)} >
-                      <Text style={{color: 'red'}}>Delete</Text>
-                    </MenuOption>
-                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
-                  </MenuOptions>
-               </Menu>
+                
+{/* tktktk */}
+                <TouchableOpacity
+                onPress={()=> {
+                  console.log("Pressed")
+                  this.props.navigation.navigate("menuPage")
+                }}
+                >
+                 <AntDesign name="bars" size={24} color="black" />
+                </TouchableOpacity>
                 <Text>Profile</Text>
 
               </View>
