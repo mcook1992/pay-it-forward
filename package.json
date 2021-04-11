@@ -26,6 +26,7 @@
     "expo-notifications": "~0.8.2",
     "expo-permissions": "~10.0.0",
     "expo-sms": "~8.4.0",
+    "expo-web-browser": "~8.6.0",
     "firebase": "7.9.0",
     "notifications": "^0.2.0",
     "react": "16.13.1",

@@ -54,11 +54,12 @@ import promptDisplayPage from "./App/Screens/promptDisplayPage";
 import editProfile from "./App/Screens/editProfile"
 import menuPage from "./App/Screens/menu"
 import { MenuProvider } from 'react-native-popup-menu'
+import giftPage from "./App/Screens/gifts"
 
 function NotificationPage() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Notifications!</Text>
+      <Text>Notifications</Text>
     </View>
   );
 }
@@ -98,6 +99,7 @@ function MyStack() {
       <Stack.Screen name="editProfile" component={editProfile} />
       <Stack.Screen name="menuPage" component={menuPage} />
       <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen name="giftPage" component={giftPage} />
 
     </Stack.Navigator>
   );
@@ -122,8 +124,8 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Updates"
-        component={NotificationPage} //change back to notifs tktktk
+        name="Gifts"
+        component={giftPage} //change back to notifs tktktk
         options={{
           tabBarLabel: "Updates",
           tabBarIcon: ({ color, size }) => (

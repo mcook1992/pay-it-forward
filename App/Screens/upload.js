@@ -781,6 +781,14 @@ class Upload extends React.Component {
                       accessibilityLabel="Learn more about this purple button"
                       onPress={this.findUserByUsername}
                     />
+                    <Button
+                      title="Add Gift!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={()=> {
+                        this.props.navigation.navigate("giftPage")
+                      }}
+                    />
                   </View>
                 ) : (
                   <View>
