@@ -12,6 +12,7 @@ import {
     Alert,
   } from "react-native"
   import Constants from "expo-constants";
+  import { f, database, auth, storage } from "./config/config";
   import * as WebBrowser from 'expo-web-browser';
   import {
     Menu,
@@ -22,12 +23,105 @@ import {
   } from 'react-native-popup-menu'
   
   
+ const loadData = async () => {
+    var todaysGiftsArray = []
+    console.log("In the load data");
+    f.database()
+      .ref("Gifts/TodaysGifts")
+      .once("value")
+      .then(function (snapshot) {
+        if (snapshot.val()) {
+          console.log("We haz gifts!");
+          var todaysGifts = [];
+          snapshot.val().forEach((element) => {
+            // console.log(element);
+            todaysGiftsArray.push(element);
+            // console.log(todaysPromptsArray);
+          });
+
+          var newGiftsObject = {
+            title: "Today's Gifts",
+            data: todaysGiftsArray
+          };
+
+          var dataArray = testPictureData
+
+          dataArray.unshift(newGiftsObject);
+          console.log("newgiftData");
+          console.log(dataArray);
+
+          return dataArray
+        } else {
+          console.log("Couldn't find le gifts");
+        }
+      });
+
+   
+  };
+
+  var testPictureData = [
+    {
+      title: "Main dishes",
+      data: [{messageText: "pizza", websiteLink: "https://mercercook.com", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+    },
+    {
+      title: "Side dishes",
+      data: [{messageText: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+    },
+    {
+      title: "Funky dishes",
+      data: [{messageText:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+    }
+  ];
+
 
   
 
   const giftPage = (props) => {
-    const [count, setCount] = useState(0);
+   
+    var [data, setData] = useState(null)
 
+    
+    React.useEffect(()=>{
+    
+    var todaysGiftsArray = []
+    console.log("In the load data");
+    f.database()
+      .ref("Gifts/TodaysGifts")
+      .once("value")
+      .then(function (snapshot) {
+        if (snapshot.val()) {
+          console.log("We haz gifts!");
+          var todaysGifts = [];
+          snapshot.val().forEach((element) => {
+            console.log(element);
+            todaysGiftsArray.push(element);
+            // console.log(todaysPromptsArray);
+          });
+
+          var newGiftsObject = {
+            title: "Today's Gifts",
+            data: todaysGiftsArray
+          };
+
+          var dataArray = testPictureData
+
+          dataArray.unshift(newGiftsObject);
+          console.log("newgiftData");
+          console.log(dataArray)
+
+          
+
+          setData(dataArray)
+          
+        } else {
+          console.log("Couldn't find le gifts");
+        }
+
+      })
+
+
+    }, [])
 
     const styles = StyleSheet.create({
       container: {
@@ -50,20 +144,7 @@ import {
     });
 
 
-    var testPictureData = [
-      {
-        title: "Main dishes",
-        data: [{messageText: "pizza", websiteLink: "https://mercercook.com", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
-      },
-      {
-        title: "Side dishes",
-        data: [{messageText: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
-      },
-      {
-        title: "Funky dishes",
-        data: [{messageText:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
-      }
-    ];
+    
   
     return (
 
@@ -92,7 +173,7 @@ import {
 
 
         <SectionList
-            sections={testPictureData}
+            sections={data}
             keyExtractor={(item, index) => item + index}
             renderItem={({ item }) => (
               <View>

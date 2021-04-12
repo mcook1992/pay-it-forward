@@ -118,7 +118,7 @@ class promptDisplayPage extends React.Component {
   }
 
   componentDidMount = () => {
-    // this.loadData();
+    this.loadData();
   };
 
   loadData = async () => {
@@ -134,8 +134,8 @@ class promptDisplayPage extends React.Component {
           var todaysPromptsArray = [];
           snapshot.val().forEach((element) => {
             // console.log(element);
-            todaysPromptsArray.push(element.text);
-            console.log(todaysPromptsArray);
+            todaysPromptsArray.push(element);
+            // console.log(todaysPromptsArray);
           });
 
           var newPromptsObject = {
@@ -143,11 +143,13 @@ class promptDisplayPage extends React.Component {
             data: todaysPromptsArray,
           };
 
-          initialPromptData.unshift(newPromptsObject);
-          console.log("newpromptData");
-          console.log(initialPromptData);
+          var dataArray = that.state.promptData
 
-          that.setState({ promptData: initialPromptData, refreshing: false });
+          dataArray.unshift(newPromptsObject);
+          console.log("newpromptData");
+          // console.log(dataArray);
+
+          that.setState({ promptData: dataArray, refreshing: false });
         } else {
           console.log("Couldn't find le prompts");
         }
