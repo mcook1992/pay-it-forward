@@ -50,13 +50,14 @@ class Upload extends React.Component {
       imageLoading: false,
       postUploaded: false,
       recipient: [],
+      gift: "none",
       userID: "",
       recipientChosen: false,
       contacts: [],
       postID: "",
       prefix: "",
       showFriendList: false,
-      textColor: "black",
+      fontColor: "black",
       backgroundColor: "blue",
       fontFamily: "System",
       fontSize: 12,
@@ -79,6 +80,7 @@ class Upload extends React.Component {
     this.setPrefix = this.setPrefix.bind(this);
     this.selectMediaData = this.selectMediaData.bind(this);
     this.setMessageTextFunction = this.setMessageTextFunction.bind(this);
+    this.selectGift = this.selectGift.bind(this)
 
     // sendPushNotification("ExponentPushToken[0qsvl3JrKgRwUy7xDk8GD9]");
 
@@ -117,6 +119,12 @@ class Upload extends React.Component {
     var that = this;
     var postID = this.uniqueID();
 
+
+    if (this.props.route.params.gift){
+      this.setState({gift: this.props.route.params.gift})
+      console.log("here we are with gift")
+    }
+
     //make sure user still logged in
     f.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -147,6 +155,8 @@ class Upload extends React.Component {
         );
       }
     });
+    
+
     //if this is based on another message like pay it forward or thank you OR from a prompt
     if (this.props.route.params.message) {
       var newArray = [];
@@ -471,6 +481,7 @@ class Upload extends React.Component {
     //if the recipient matches an existing user account
     if (this.state.recipientID) {
       console.log("We're in the recipientID part of uploading a post");
+      console.log("the post id is + " + this.state.postID)
       f.database()
         .ref("Messages/" + that.state.postID)
         .set({
@@ -482,10 +493,11 @@ class Upload extends React.Component {
           parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
-          fontFamily: this.state.fontFamily,
-          fontSize: this.state.fontSize,
-          textColor: this.state.textColor,
-          backgroundColor: this.state.backgroundColor,
+          fontFamily: that.state.fontFamily,
+          fontSize: that.state.fontSize,
+          textColor: that.state.textColor,
+          backgroundColor: that.state.backgroundColor,
+          gift: that.state.gift //tktktk
         });
       //adding the message to that recipients "postsReceived" array
       this.addingPostsToPostsReceived();
@@ -501,10 +513,11 @@ class Upload extends React.Component {
           parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
-          fontFamily: this.state.fontFamily,
-          fontSize: this.state.fontSize,
-          textColor: this.state.textColor,
-          backgroundColor: this.state.backgroundColor,
+          fontFamily: that.state.fontFamily,
+          fontSize: that.state.fontSize,
+          textColor: that.state.textColor,
+          backgroundColor: that.state.backgroundColor,
+          gift: that.state.gift
         });
     }
     this.addingPointsToParentMessages();
@@ -671,6 +684,12 @@ class Upload extends React.Component {
     });
   };
 
+  //function used to set gift tktktk
+  selectGift = async (gift) => {
+    this.setState({gift: gift})
+    console.log(gift)
+  }
+
   //making sure this message is registered as a child message of previous messages
 
   addChildMessages = async () => {
@@ -751,6 +770,7 @@ class Upload extends React.Component {
                     fontFamily={this.state.fontFamily}
                     backgroundColor={this.state.backgroundColor}
                     fontColor={this.state.fontColor}
+                    fontSize={this.state.fontSize}
                   />
                 </View>
                 {this.state.imageSelectedFromDevice == false &&
@@ -781,14 +801,35 @@ class Upload extends React.Component {
                       accessibilityLabel="Learn more about this purple button"
                       onPress={this.findUserByUsername}
                     />
-                    <Button
+
+                    {this.state.gift == "none" ? (
+                      <Button
                       title="Add Gift!"
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
                       onPress={()=> {
-                        this.props.navigation.navigate("giftPage")
+                        this.props.navigation.navigate("giftPage", {
+                          selectGift: this.selectGift.bind(this),
+                          messageExistsAlready: true
+                          //tktktk
+                        })
                       }}
                     />
+
+                    ) : (  //tktktk
+                    <Button
+                      title="Gift already added!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={()=> {
+                        this.props.navigation.navigate("giftPage", {
+                          selectGift: this.selectGift.bind(this),
+                          messageExistsAlready: true
+                          //tktktk
+                        })
+                      }}
+                    />
+                    )}
                   </View>
                 ) : (
                   <View>
@@ -816,12 +857,28 @@ class Upload extends React.Component {
                         {this.state.postLodaing == true ? (
                           <ActivityIndicator size="small" color="blue" />
                         ) : (
+                          <View> 
                           <Button
                             title="Send message!"
                             color="#841584"
                             accessibilityLabel="Learn more about this purple button"
                             onPress={this.findUserByUsername}
                           />
+                          <Button
+                      title="Add Gift!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={()=> {
+                        this.props.navigation.navigate("giftPage", {
+                          selectGift: this.selectGift.bind(this),
+                          messageExistsAlready: true
+                          //tktktk
+                        })
+                      }}
+                    />
+                          
+                          </View>
+
                         )}
                       </View>
                     ) : (

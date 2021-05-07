@@ -80,6 +80,17 @@ import {
   const giftPage = (props) => {
    
     var [data, setData] = useState(null)
+    var[selectGift, setSelectGift] = useState(undefined)
+   
+
+    console.log("the params are" )
+    console.log(props.route.params )
+
+   
+   //de)termining whether we're coming from a message page or not
+   
+
+    //tktktk
 
     
     React.useEffect(()=>{
@@ -108,7 +119,7 @@ import {
 
           dataArray.unshift(newGiftsObject);
           console.log("newgiftData");
-          console.log(dataArray)
+          // console.log(dataArray)
 
           
 
@@ -182,14 +193,7 @@ import {
                   console.log("Pressed");
                   //making the prefilled message to pass along to other screens
                   const newMessage = {} 
-                 
-                  // this.props.navigation.navigate("FriendsList", {
-                  //   recipient: this.state.user,
-                  //   message: 
-                  //   {
-                  //    prefilledMessage: item
-                  //   },
-                  // });
+          
 
                   
                 }}
@@ -205,6 +209,30 @@ import {
               <Button
                   title="Open URL with Expo.WebBrowser"
                   onPress={() => WebBrowser.openBrowserAsync(item.websiteLink)}
+                  
+                />
+                 <Button
+                  title="Go to friendslist"
+                  onPress={() => {
+                  
+                    if (props.route.params){
+                      
+                      props.route.params.selectGift(item)
+                      props.navigation.goBack()
+                      //tktktk
+                    }
+                    else {
+
+            
+                      props.navigation.navigate("FriendsList", {
+                    
+                        gift: item
+                      });
+                     }
+
+                     
+
+                }}
                   
                 />
               </View>

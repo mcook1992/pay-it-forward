@@ -27,6 +27,12 @@ class friendContactUpload extends React.Component {
       this.setState({ anyMessageInfo: this.props.route.params.message });
       console.log("Set new background message info");
     }
+    if (this.props.route.params.gift){
+      console.log("the params " + this.props.route.params.gift)
+      this.setState({ anyGiftInfo: this.props.route.params.gift })
+      console.log("we have gift info")
+
+    }
 
     // this.makeRemoteRequest();
   }
@@ -233,7 +239,7 @@ class friendContactUpload extends React.Component {
           <Text style={{ width: 40 }}></Text>
         </View>
 
-        {this.state.anyMessageInfo != undefined ? (
+        {(this.state.anyMessageInfo != undefined || this.state.anyGiftInfo  != undefined) ? (
           <View>
             <Text>We have some message info</Text>
             <FlatList
@@ -248,6 +254,7 @@ class friendContactUpload extends React.Component {
                       },
                       //essentially making sure the message that comes in is same as message that goes out
                       message: this.state.anyMessageInfo,
+                      gift: this.state.anyGiftInfo
                     });
                   }}
                 >
