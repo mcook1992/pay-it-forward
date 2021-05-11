@@ -795,12 +795,7 @@ class Upload extends React.Component {
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
                     />
-                    <Button
-                      title="Send message!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={this.findUserByUsername}
-                    />
+                    
 
                     {this.state.gift == "none" ? (
                       <Button
@@ -817,19 +812,29 @@ class Upload extends React.Component {
                     />
 
                     ) : (  //tktktk
-                    <Button
-                      title="Gift already added!"
+                      <View> 
+                    <Text>
+                        The gift is {this.state.gift.text}
+                      </Text>
+                    <TouchableOpacity
+                    onPress={() => {
+                      this.setState({gift: "none"})
+                    }}
+                    >
+                      <Text>
+                        Remove or Change Gift
+                      </Text>
+
+                    </TouchableOpacity>
+                    </View>
+                    
+                    )}
+                  <Button
+                      title="Send message!"
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
-                      onPress={()=> {
-                        this.props.navigation.navigate("giftPage", {
-                          selectGift: this.selectGift.bind(this),
-                          messageExistsAlready: true
-                          //tktktk
-                        })
-                      }}
+                      onPress={this.findUserByUsername}
                     />
-                    )}
                   </View>
                 ) : (
                   <View>
