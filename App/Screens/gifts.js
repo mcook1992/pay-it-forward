@@ -62,15 +62,15 @@ import {
   var testPictureData = [
     {
       title: "Main dishes",
-      data: [{messageText: "pizza", websiteLink: "https://mercercook.com", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+      data: [{messageText: "pizza", text: "test1", websiteLink: "https://mercercook.com", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
     },
     {
       title: "Side dishes",
-      data: [{messageText: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+      data: [{messageText: "pizza", text: "test2", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
     },
     {
       title: "Funky dishes",
-      data: [{messageText:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+      data: [{messageText:"you're amazing", text: "test3", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
     }
   ];
 
@@ -207,7 +207,7 @@ import {
                 
               </TouchableOpacity>
               <Button
-                  title="Open URL with Expo.WebBrowser"
+                  title={item.text}
                   onPress={() => WebBrowser.openBrowserAsync(item.websiteLink)}
                   
                 />

@@ -55,6 +55,7 @@ import editProfile from "./App/Screens/editProfile"
 import menuPage from "./App/Screens/menu"
 import { MenuProvider } from 'react-native-popup-menu'
 import giftPage from "./App/Screens/gifts"
+import viewGift from "./App/Screens/viewGift"
 
 function NotificationPage() {
   return (
@@ -100,6 +101,7 @@ function MyStack() {
       <Stack.Screen name="menuPage" component={menuPage} />
       <Stack.Screen name="Feed" component={Feed} />
       <Stack.Screen name="giftPage" component={giftPage} />
+      <Stack.Screen name="viewGift" component={viewGift} />
 
     </Stack.Navigator>
   );

@@ -18,6 +18,7 @@ class Message extends React.Component {
       fontFamily: "System",
       fontColor: "black",
       backgroundColor: "white",
+      gift: null
 
       // parentPostID: this.props.route.params.parentPostId
     };
@@ -26,6 +27,14 @@ class Message extends React.Component {
   componentDidMount = () => {
     var that = this;
     console.log("Message text is " + this.props.route.params.message.text);
+
+    if(this.props.route.params.message.gift.text){
+      console.log("Message gift is " + this.props.route.params.message.gift.text);
+
+    }
+      
+   
+    
     this.adjustUnreadStatus();
   };
 
@@ -121,6 +130,23 @@ class Message extends React.Component {
                 {this.props.route.params.message.text}
               </Text>
             </View>
+            {this.props.route.params.message.gift ? (
+               <View> 
+                <TouchableOpacity
+                onPress={() => this.props.navigation.push("viewGift",
+                {
+                  gift: this.props.route.params.message.gift
+                }
+              )}
+                >
+                  <Text>This message comes with a gift! See gift</Text>
+                </TouchableOpacity>
+               </View>
+
+            ): (
+              <View> </View>
+            )}
+           
             <TouchableOpacity
               style={{
                 marginTop: 10,

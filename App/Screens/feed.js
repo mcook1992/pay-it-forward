@@ -115,6 +115,7 @@ class Feed extends React.Component {
             fontSize: messageObj.fontSize,
             spreadPoints: messageObj["spreadPoints"].toString(),
             parentMessages: messageObj.parentMessages,
+            gift: messageObj.gift,
             senderAvatar: userData.avatar,
             senderName: userData.name,
             name: userData.name,
@@ -162,6 +163,7 @@ class Feed extends React.Component {
               .then(function (message) {
                 if (message.val() && !message.val().flagged) {
                   var messageObj = message.val();
+                  console.log(messageObj.gift.text)
                   that.add2Flatlist(notificationsList, messageObj, element.id);
                 }
               });
