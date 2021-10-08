@@ -30,13 +30,14 @@ const editProfile = (props) => {
 
   const _checkPermissions = async () => {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ camera: status });
+        // this.setState({ camera: status });
     
         const { statusRoll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        this.setState({ cameraRoll: statusRoll });
+        // this.setState({ cameraRoll: statusRoll });
     
         const { contactsStatus } = await Permissions.askAsync(Permissions.CONTACTS);
-        this.setState({ contactsStatus: contactsStatus });
+        // this.setState({ contactsStatus: contactsStatus });
+        //maybe leave these alone
       };
 
      // Dealing with images

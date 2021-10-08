@@ -69,16 +69,13 @@ var DATA = [
 
 var testPictureData = [
   {
-    title: "Main dishes",
-    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
+    title: "Classic Picture Images",
+    data: [{messageText: "you're adorable", text: "you're adorable", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
   },
+  
   {
-    title: "Side dishes",
-    data: [{text: "pizza", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
-  },
-  {
-    title: "Funky dishes",
-    data: [{text:"you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+    title: "Classic Compliments",
+    data: [{messageText:"you're amazing", text: "you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
   }
 ];
 
@@ -167,19 +164,48 @@ class promptDisplayPage extends React.Component {
     if (this.state.refreshing) {
       return (
         <View style={{ flex: 1 }}>
-          <Text>Lading</Text>
+          <Text>Loading</Text>
         </View>
       );
     } else {
       return (
+
+        <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            height: 70,
+            paddingTop: 30,
+            backgroundColor: "white",
+            borderColor: "lightgrey",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottomWidth: 0.5,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <Text style={{ paddingLeft: 10 }}>Back</Text>
+          </TouchableOpacity>
+
+          <Text>Select a Message</Text>
+          <Text style={{ width: 40 }}></Text>
+        </View>
+        
+
         <SafeAreaView style={styles.container}>
           
           <SectionList
             sections={this.state.promptData}
             keyExtractor={(item, index) => item + index}
+            
             renderItem={({ item }) => (
               
               <TouchableOpacity
+              style={{padding: 10, alignItems: "center"}}
                 onPress={() => {
                   console.log("Pressed");
                   //making the prefilled message to pass along to other screens
@@ -194,7 +220,7 @@ class promptDisplayPage extends React.Component {
                   });
                 }}
               >
-                {item.imageURI ? ( <Image style={{height: 100, width: 100}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.text}</Text>)} 
+                {item.imageURI ? ( <Image style={{height: 200, width: 400}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 60, backgroundColor: item.backgroundColor, height: 200, width: 400, fontFamily: item.fontFamily, padding: 10, alignContent: "center", textAlign:"center" }}>{item.text}</Text>)} 
                 {/* tktktk--add in the if statement and make sure its image if it's not just see the text ALSO make sure even normal texts are nice looking */}
                 {/* <Item title={item.text} /> */}
                 {/* {console.log(item.text, item.image)} */}
@@ -210,6 +236,7 @@ class promptDisplayPage extends React.Component {
             )}
           />
         </SafeAreaView>
+        </View>
       );
     }
   }

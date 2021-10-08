@@ -50,6 +50,25 @@ class Profile extends React.Component {
         });
         that.loadFeed()
         that.loadProfileImage()
+        
+        database
+          .ref("Users")
+          .child(user.uid)
+          .once("value")
+          .then(function (snapshot) {
+            if (snapshot.val()) {
+              var newUser = snapshot.val();
+              var oldMessageNumber = newUser.oldMessageNumber;
+              var currentMessageNumber = newUser.postsReceived.length;
+              var newMessageNumber = currentMessageNumber - oldMessageNumber;
+              that.setState({
+                name: newUser.name,
+                newMessageNumber: newMessageNumber,
+                currentTotalPoints: newUser.currentPoints,
+                currentSpreadPoints: newUser.spreadPoints,
+              })
+            }
+          })
       } else {
         that.setState({ isLoggedIn: false });
       }
@@ -297,7 +316,7 @@ class Profile extends React.Component {
                 >
                  <AntDesign name="bars" size={24} color="black" />
                 </TouchableOpacity>
-                <Text>Profile</Text>
+                <Text>Profile REAL</Text>
 
               </View>
 
@@ -334,8 +353,8 @@ class Profile extends React.Component {
                 )}
                 
                 <View style={{ marginLeft: 30 }}>
-                  <Text>Name</Text>
-                  <Text>Username</Text>
+                  <Text> Welcome, {this.state.name}!</Text>
+                  
                 </View>
               </View>
               <View style={{ paddingBottom: 20, borderBottomWidth: 1 }}>
@@ -368,6 +387,11 @@ class Profile extends React.Component {
                     borderColor: "grey",
                     borderWidth: 1.5,
                   }}
+                  onPress={() =>
+                    this.props.navigation.navigate(
+                      "editProfile", { name: this.state.name, uid: this.state.userID }//tktktk
+                    )
+                  }
                 >
                   <Text style={{ textAlign: "center" }}>Update Profile</Text>
                 </TouchableOpacity>
@@ -467,7 +491,7 @@ class Profile extends React.Component {
                   </View>
                 )}
                 <View> 
-                <Button
+                {/* <Button
                       title="Edit Profile"
                       onPress={() =>
                         this.props.navigation.navigate(
@@ -476,7 +500,7 @@ class Profile extends React.Component {
                       }
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
-                    />
+                    /> */}
                 </View>
               </View>
             </View>

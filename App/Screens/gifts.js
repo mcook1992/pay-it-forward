@@ -67,10 +67,6 @@ import {
     {
       title: "Side dishes",
       data: [{messageText: "pizza", text: "test2", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
-    },
-    {
-      title: "Funky dishes",
-      data: [{messageText:"you're amazing", text: "test3", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
     }
   ];
 
@@ -160,26 +156,28 @@ import {
     return (
 
     <SafeAreaView style={styles.container}>
-      <View
-      style={{
-        height: 70,
-        paddingTop: 30,
-        backgroundColor: "white",
-        borderColor: "lightgrey",
-        justifyContent: "center",
-        alignItems: "center",
-        borderBottomWidth: 0.5,
-        margin: 20,
-      }}
-      >
-       <Text>Gifts page!</Text>
-       <TouchableOpacity
-       onPress={()=>{
-         props.navigation.navigate("Feed")
-       }}
-       >
-         <Text>First gift option</Text>
-       </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            height: 70,
+            paddingTop: 30,
+            backgroundColor: "white",
+            borderColor: "lightgrey",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottomWidth: 0.5,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <Text style={{ paddingLeft: 10 }}>Back</Text>
+          </TouchableOpacity>
+
+          <Text>Gift Page</Text>
+          <Text style={{ width: 40 }}></Text>
         </View>
 
 
@@ -189,6 +187,7 @@ import {
             renderItem={({ item }) => (
               <View>
               <TouchableOpacity
+              style={{alignItems: "center", justifyContent: "center", padding: 20}}
                 onPress={() => {
                   console.log("Pressed");
                   //making the prefilled message to pass along to other screens
@@ -198,7 +197,7 @@ import {
                   
                 }}
               >
-                {item.imageURI ? ( <Image style={{height: 100, width: 100}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.text}</Text>)} 
+                {item.imageURI ? ( <Image style={{width: 300, height: 150}} source={{ uri: item.imageURI}} />):(<Text style={{color: item.textColor, fontSize: 20, backgroundColor: item.backgroundColor, height: 100, width: 100, fontFamily: item.fontFamily, padding: 10, alignContent: "center" }}>{item.text}</Text>)} 
                 {/* tktktk--add in the if statement and make sure its image if it's not just see the text ALSO make sure even normal texts are nice looking */}
                 {/* <Item title={item.text} /> */}
                 {/* {console.log(item.text, item.image)} */}

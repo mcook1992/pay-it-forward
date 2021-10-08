@@ -259,14 +259,14 @@ class Feed extends React.Component {
             }}
           >
             <Text>Feed</Text>
-            <Button
+            {/* <Button
               title="test button"
               color="#841584"
               accessibilityLabel="Learn more about this purple button"
               onPress={() => {
                 this.showPushToken();
               }}
-            />
+            /> */}
           </View>
           {this.state.list_of_notifications.length > 0 ? (
             <FlatList
@@ -289,7 +289,21 @@ class Feed extends React.Component {
                   }}
                   key={index}
                 >
+                  <View
+                  style={{
+                    width: "100%",
+                    paddingTop: 5,
+                    paddingRight: 10
+              
+                  }}
+                  >
+                   <Text style={{textAlign: "right"}}>{item.timeSent}</Text>
+                   </View>
+                   
                 {item.senderAvatar != "blank" ? (
+                  <View
+                  style={{padding: 10}}
+                  > 
                         <Image
                           source={{
                             url: item.senderAvatar,
@@ -301,8 +315,15 @@ class Feed extends React.Component {
                             margin: 5,
                           }}
                         />
+                        </View>
                         ) : (
-                          <Avatar size="small" rounded title={item.senderName.charAt(0)}/>
+                          <View
+                          style={{
+                            padding: 10
+                          }}
+                          > 
+                          <Avatar  size="small" containerStyle={{borderColor:"black", borderWidth: 1}} rounded title={item.senderName.charAt(0)}/>
+                          </View>
                         )} 
 
                   <TouchableOpacity
@@ -312,6 +333,11 @@ class Feed extends React.Component {
                         message: item,
                       })
                     }
+                    style={{
+                      justifyContent: "center",
+                        alignItems: "center",
+                        
+                    }}
                   >
                     <Text
                       style={{
@@ -319,13 +345,14 @@ class Feed extends React.Component {
                         alignItems: "center",
                         alignSelf: "center",
                         fontWeight: item.unread,
+                        padding: 15
                       }}
                     >
                       {item.senderName} just sent you a {item.type}
                     </Text>
                   </TouchableOpacity>
-                  <Text>{item.timeSent}</Text>
-                  <Text> Fire emoji{item.spreadPoints}</Text>
+                 
+                  {/* <Text> Fire emoji{item.spreadPoints}</Text> */}
                 </View>
               )}
             />

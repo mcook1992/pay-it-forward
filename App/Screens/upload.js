@@ -180,13 +180,13 @@ class Upload extends React.Component {
         parentMessages: newArray,
         payItForward: true,
       });
-      //if there is a prefilled message
+      //if there is a prefilled message (currently strattling different ways of passing message from prompts display, pay it forward, and thank you pages. Need to streamline)
       if (this.props.route.params.message.prefilledMessage) {
-        console.log("There is a prefilled message");
+        console.log("There is a prefilled message " + this.props.route.params.message.prefilledMessage.messageText);
         //if the prefilled message has media attached
         if (this.props.route.params.message.prefilledMessage.imageURI) {
           console.log(
-            "Prefilled message image URI is ... " +
+            "Prefilled message image URI is ... exists! " +
               this.props.route.params.message.prefilledMessage.imageURI
           );
           this.setState({
@@ -858,6 +858,39 @@ class Upload extends React.Component {
                         >
                           <Text>Remove or Change Image</Text>
                         </TouchableOpacity>
+
+                        {this.state.gift == "none" ? (
+                      <Button
+                      title="Add Gift!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={()=> {
+                        this.props.navigation.navigate("giftPage", {
+                          selectGift: this.selectGift.bind(this),
+                          messageExistsAlready: true
+                          //tktktk
+                        })
+                      }}
+                    />
+
+                    ) : (  //tktktk
+                      <View> 
+                    <Text>
+                        The gift is {this.state.gift.text}
+                      </Text>
+                    <TouchableOpacity
+                    onPress={() => {
+                      this.setState({gift: "none"})
+                    }}
+                    >
+                      <Text>
+                        Remove or Change Gift
+                      </Text>
+
+                    </TouchableOpacity>
+                    </View>
+                    
+                    )}
 
                         {this.state.postLodaing == true ? (
                           <ActivityIndicator size="small" color="blue" />

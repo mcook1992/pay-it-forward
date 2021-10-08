@@ -58,7 +58,7 @@ class SignUpForm extends React.Component {
         }}
       >
         <View>
-          <Text>Sign Up!</Text>
+          <Text>Log In Page!</Text>
           <TextInput
             placeholder="enter email address"
             onChangeText={(text) => this.setState({ email: text })}
@@ -68,7 +68,7 @@ class SignUpForm extends React.Component {
             onChangeText={(text) => this.setState({ password: text })}
           ></TextInput>
           <TouchableOpacity onPress={this.signIn}>
-            <Text>Sign Up!</Text>
+            <Text>Log In</Text>
           </TouchableOpacity>
         </View>
       </View>

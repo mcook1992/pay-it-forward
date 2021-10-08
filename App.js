@@ -22,6 +22,8 @@ import * as React from "react";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
+import * as SplashScreen from 'expo-splash-screen'
+
 //tkttk
 
 import { Text, View } from "react-native";
@@ -203,7 +205,8 @@ export default class App extends React.Component {
       alert(token.data);
       this.setState({ expoPushToken: token });
     } else {
-      alert("Must use physical device for Push Notifications");
+      //to temporarily avoid splash screen issue 
+      console.log("Must use physical device for Push Notifications");
     }
 
     if (Platform.OS === "android") {
@@ -218,7 +221,7 @@ export default class App extends React.Component {
 
   //fonts
 
-  fetchFonts = () => {
+  fetchFonts = async () => {
     return Font.loadAsync({
       "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
       "roboto-italic": require("./assets/fonts/Roboto-Italic.ttf"),

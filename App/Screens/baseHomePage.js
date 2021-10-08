@@ -85,7 +85,36 @@ class basicHomePage extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
-          <Text>Welcome {this.state.userFirstName}</Text>
+
+          <View
+            style={{
+              height: 70,
+              paddingTop: 30,
+              backgroundColor: "white",
+              borderColor: "lightgrey",
+              justifyContent: "center",
+              alignItems: "center",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <Text>Pay It Forward</Text>
+          </View>
+
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 15
+            }}>
+
+            <Text
+              style={{ fontSize: 20 }}
+            >
+              Welcome, {this.state.userFirstName}!
+            </Text>
+
+          </View>
+
           <TouchableOpacity
             style={{
               marginTop: 10,
@@ -105,116 +134,51 @@ class basicHomePage extends React.Component {
             <Text style={{ textAlign: "center" }}>Send a message!</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <View
             style={{
-              marginTop: 10,
-              marginHorizontal: 40,
-              paddingVertical: 20,
-              backgroundColor: "orange",
-              borderRadius: 20,
-              borderColor: "grey",
-              borderWidth: 1.5,
-            }}
-            onPress={() =>
-              this.props.navigation.navigate("Upload", {
-                recipient: this.state.user,
-              })
-            }
-          >
-            <Text style={{ textAlign: "center" }}>Browse!!</Text>
-          </TouchableOpacity>
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 15
+            }}>
 
-          <TouchableOpacity
-            style={{
-              marginTop: 10,
-              marginHorizontal: 40,
-              paddingVertical: 20,
-              backgroundColor: "orange",
-              borderRadius: 20,
-              borderColor: "grey",
-              borderWidth: 1.5,
-            }}
-            onPress={() =>
-              this.props.navigation.navigate("FriendsList", {
-                recipient: this.state.user,
-                message: { prefilledMessage: { messageText: "I love you" } },
-              })
-            }
-          >
-            <Text style={{ textAlign: "center" }}>
-              Send this particular message with text "I love you"
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              marginTop: 10,
-              marginHorizontal: 40,
-              paddingVertical: 20,
-              backgroundColor: "orange",
-              borderRadius: 20,
-              borderColor: "grey",
-              borderWidth: 1.5,
-            }}
-            onPress={() =>
-              this.props.navigation.navigate("FriendsList", {
-                recipient: this.state.user,
-                message: {
-                  prefilledMessage: {
-                    imageURI: "https://i.pravatar.cc/150?img=7",
-                  },
-                },
-              })
-            }
-          >
-            <Text style={{ textAlign: "center" }}>
-              Send this particular message with an image URI
-            </Text>
-          </TouchableOpacity>
-
-          <Text>New message number here {this.state.newMessageNumber}</Text>
-
-          {this.state.currentSpreadPoints > 1 ? (
-            <View>
-              <Text>
-                Your positive messages have spread to{" "}
-                {this.state.currentSpreadPoints} more people
-              </Text>
-              <Text>Click here to see more about what this number means</Text>
-            </View>
-          ) : (
-            <Text>Click here to see more about what this number means</Text>
-          )}
-          <View>
-            <Text>Need some inspiration?</Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("PromptDisplayPage")
-              }
+            <Text
+              style={{ fontSize: 20 }}
             >
-              <Text>Check out today's prompts</Text>
-            </TouchableOpacity>
+              Need some inspiration?
+            </Text>
 
-            <View>
-              <FlatList
-                data={this.state.promptData}
-                keyExtractor={(item, index) => index.toString()}
-                style={{ backgroundColor: "#eee" }}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      borderBottomWidth: 5,
-                      borderBottomColor: "lightgrey",
-                      // flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      height: 50,
-                    }}
-                    key={index}
-                  >
-                    {/* <Image
+            <Text
+
+              style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20, justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+              Check out the sample messages below, and then click to send it to a friend
+            </Text>
+
+          </View>
+
+          {/* TKTKTK The FlatList of Prompts */}
+
+          <View
+            style={{ paddingLeft: "10%", paddingRight: "10%" }}
+          >
+            <FlatList
+              data={this.state.promptData}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ backgroundColor: "#eee" }}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    borderBottomWidth: 3,
+                    borderBottomColor: "lightgrey",
+                    // flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    height: 50,
+                  }}
+                  key={index}
+                >
+                  {/* <Image
                     source={{
                       url: item.senderAvatar,
                     }}
@@ -226,32 +190,61 @@ class basicHomePage extends React.Component {
                     }}
                   /> */}
 
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("FriendsList", {
-                          message: {
-                            prefilledMessage: { messageText: item.text },
-                          },
-                        });
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate("FriendsList", {
+                        message: {
+                          prefilledMessage: { messageText: item.text },
+                        },
+                      });
+                    }}
+                    style={{ justifyContent: "center", alignItems: "center", alignText: "center" }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "center", paddingTop: 15
                       }}
                     >
-                      <Text
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          alignSelf: "center",
-                        }}
-                      >
-                        {item.text}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </View>
-
-            {/* tktkt */}
+                      {item.text}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
           </View>
+
+          <View
+            style={{ alignItems: "center", justifyContent: "center", paddingTop: 30, paddingBottom: 15, }}
+          >
+            <Text style={{ fontSize: 20 }}>Need some more inspiration?</Text>
+
+          </View>
+
+
+
+          <TouchableOpacity
+            style={{
+              marginTop: 10,
+              marginHorizontal: 40,
+              paddingVertical: 20,
+              backgroundColor: "orange",
+              borderRadius: 20,
+              borderColor: "grey",
+              borderWidth: 1.5,
+            }}
+            onPress={() =>
+              this.props.navigation.navigate("PromptDisplayPage")
+            }
+          >
+            <Text style={{ textAlign: "center" }}>See our full list of prompts!</Text>
+          </TouchableOpacity>
+
+
+
+
+
+
+
         </View>
       );
     }

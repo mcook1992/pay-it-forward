@@ -280,6 +280,7 @@ class friendContactUpload extends React.Component {
                     selectedContact: {
                       name: item.name,
                       contactInfo: item.contactInfo,
+                    
                     },
                   });
                 }}

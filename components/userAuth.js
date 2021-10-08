@@ -61,17 +61,17 @@ class UserAuth extends React.Component {
         }}
       >
         <TouchableOpacity onPress={() => this.setState({ authStep: 0 })}>
-          <Text>Cancel</Text>
+         
         </TouchableOpacity>
         {/* If they're not logged in, give them option to login or sign up */}
         {this.state.authStep == 0 ? (
           <View>
-            <Text>Ternary operator equals zero</Text>
+            
             <TouchableOpacity onPress={() => this.setState({ authStep: 1 })}>
-              <Text>Log in</Text>
+              <Text>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.setState({ authStep: 2 })}>
-              <Text>Sign Up</Text>
+              <Text>LogIn</Text>
             </TouchableOpacity>
           </View>
         ) : // If they click login
