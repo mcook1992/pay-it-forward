@@ -505,7 +505,7 @@ class Profile extends React.Component {
               </View>
             </View>
           ) : (
-            <Text>You're not logged in</Text>
+            <Text>You're not in</Text>
           )}
         </View>
       );

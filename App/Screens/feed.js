@@ -13,6 +13,7 @@ import userAuth from "../../components/userAuth";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Avatar, Accessory } from 'react-native-elements'
+import UserAuth from "../../components/userAuth";
 
 
 import * as Permissions from "expo-permissions";
@@ -236,8 +237,9 @@ class Feed extends React.Component {
   render() {
     if (this.state.isLoggedIn != true) {
       return (
-        <View style={{ flex: 1, backgroundColor: "orange" }}>
-          <Text>You are not logged in.</Text>
+        <View style={{ flex: 1 }}>
+          
+          <UserAuth/>
         </View>
       );
     } else {

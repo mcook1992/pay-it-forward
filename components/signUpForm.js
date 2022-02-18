@@ -45,20 +45,9 @@ class SignUpForm extends React.Component {
 
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          height: 70,
-          paddingTop: 30,
-          backgroundColor: "white",
-          borderColor: "lightgrey",
-          borderBottomWidth: 0.5,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      
         <View>
-          <Text>Log In Page!</Text>
+          <Text style={{color: "white", fontSize: 32}}>Log In Page!</Text>
           <TextInput
             placeholder="enter email address"
             onChangeText={(text) => this.setState({ email: text })}
@@ -71,7 +60,7 @@ class SignUpForm extends React.Component {
             <Text>Log In</Text>
           </TouchableOpacity>
         </View>
-      </View>
+    
     );
   }
 }

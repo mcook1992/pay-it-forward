@@ -9,7 +9,7 @@ import {
   Button,
 } from "react-native";
 import { f, database, auth, storage } from "./config/config";
-import userAuth from "../../components/userAuth";
+import UserAuth from "../../components/userAuth";
 
 class basicHomePage extends React.Component {
   constructor(props) {
@@ -78,8 +78,8 @@ class basicHomePage extends React.Component {
     if (this.state.isLoggedIn != true) {
       return (
         <View style={{ flex: 1 }}>
-          <Text>You are not logged in.</Text>
-          {/* Login form */}
+          
+          <UserAuth/>
         </View>
       );
     } else {

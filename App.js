@@ -58,6 +58,7 @@ import menuPage from "./App/Screens/menu"
 import { MenuProvider } from 'react-native-popup-menu'
 import giftPage from "./App/Screens/gifts"
 import viewGift from "./App/Screens/viewGift"
+import UserAuth from "./components/userAuth"
 
 function NotificationPage() {
   return (
@@ -177,7 +178,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fontDataLoaded: false,
+      fontDataLoaded: false
     };
     // this.registerForPushNotificationsAsync();
   }
@@ -232,16 +233,41 @@ export default class App extends React.Component {
     });
   };
 
-  login = async () => {
+  //Old code for auto logging in
+  // login = async () => {
+  //   try {
+  //     let user = await auth.signInWithEmailAndPassword(
+  //       "testuser1@testing.com",
+  //       "fakepassword"
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  checkForUser = async () => {
+    var that = this
     try {
-      let user = await auth.signInWithEmailAndPassword(
-        "testuser1@testing.com",
-        "fakepassword"
-      );
-    } catch (error) {
-      console.log(error);
+      let user = await auth.currentUser
+      if (user) {
+        this.setState({user: user})
+      }
+      else{
+        auth.onAuthStateChanged(function(newUser){
+          if (newUser){
+            that.setState({user: user})
+            
+          }
+        })
+      }
     }
-  };
+    catch (error) {
+      console.log(error)
+    }
+    
+
+  }
+
+  
 
   render() {
     if (this.state.fontDataLoaded == false) {
@@ -254,16 +280,19 @@ export default class App extends React.Component {
           onError={console.warn}
         />
       );
-    } else {
-      return (
+    } 
+    else {
+     
+      
+            return (
         
-        <NavigationContainer>
-          <MenuProvider>
-          <MyStack />
-          </MenuProvider>
-        </NavigationContainer>
-        
-      );
+              <NavigationContainer>
+                <MenuProvider>
+                <MyStack />
+                </MenuProvider>
+              </NavigationContainer>
+              
+            );
     }
   }
 }

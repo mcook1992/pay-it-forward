@@ -45,7 +45,7 @@ class LoginForm extends React.Component {
       <View
         style={{
           flex: 1,
-          height: 70,
+          height: 250,
           paddingTop: 30,
           backgroundColor: "white",
           borderColor: "lightgrey",

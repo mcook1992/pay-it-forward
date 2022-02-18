@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ImageBackground
 } from "react-native";
 import { f, database, auth, storage } from "../App/Screens/config/config";
 import { TextInput } from "react-native-gesture-handler";
@@ -60,24 +61,50 @@ class UserAuth extends React.Component {
           alignItems: "center",
         }}
       >
+        <ImageBackground style={{height: "100%", width: "100%", justifyContent: "center"}} source={require("../assets/sarah.jpg")} resizeMode="cover"> 
+          
+          
         <TouchableOpacity onPress={() => this.setState({ authStep: 0 })}>
          
         </TouchableOpacity>
         {/* If they're not logged in, give them option to login or sign up */}
         {this.state.authStep == 0 ? (
           <View>
+            {/* <Text>userAuth</Text> */}
+            <Text style={{fontSize: 30, padding: 10, textAlign: "center"}}>Welcome to PayItForward!</Text>
+         
             
-            <TouchableOpacity onPress={() => this.setState({ authStep: 1 })}>
-              <Text>Sign Up</Text>
+            <TouchableOpacity style={{
+              marginTop: 10,
+              marginHorizontal: 40,
+              paddingVertical: 20,
+              backgroundColor: "orange",
+              borderRadius: 20,
+              borderColor: "grey",
+              borderWidth: 1.5,
+            }} 
+            onPress={() => this.setState({ authStep: 1 })}>
+              <Text style={{textAlign: "center", fontSize: 20}}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.setState({ authStep: 2 })}>
-              <Text>LogIn</Text>
+            <TouchableOpacity style={{
+              marginTop: 10,
+              marginHorizontal: 40,
+              paddingVertical: 20,
+              backgroundColor: "orange",
+              borderRadius: 20,
+              borderColor: "grey",
+              borderWidth: 1.5,
+            }} 
+            onPress={() => this.setState({ authStep: 2 })}>
+              <Text style={{textAlign: "center", fontSize: 20}}>LogIn</Text>
             </TouchableOpacity>
           </View>
         ) : // If they click login
         this.state.authStep == 1 ? (
           // <SignInTest />
+          <View>
           <TestLogIn />
+          </View>
         ) : (
           // <LoginForm />
           // If they click sign up
@@ -85,6 +112,7 @@ class UserAuth extends React.Component {
             <SignUpForm />
           </View>
         )}
+        </ImageBackground>
       </View>
     );
   }
