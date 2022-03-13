@@ -50,6 +50,10 @@ class Upload extends React.Component {
       imageLoading: false,
       postUploaded: false,
       recipient: [],
+      //new screen phases--maybe not necessary//
+      stylePhase: true,
+      mediaPhase: false,
+      giftPhase: false,
       gift: "none",
       userID: "",
       recipientChosen: false,
@@ -116,10 +120,10 @@ class Upload extends React.Component {
   };
 
   componentDidMount = () => {
+    console.log("we're in comp did mount function")
     var that = this;
     var postID = this.uniqueID();
-
-
+    
     if (this.props.route.params.gift){
       this.setState({gift: this.props.route.params.gift})
       console.log("here we are with gift")
@@ -134,7 +138,7 @@ class Upload extends React.Component {
         that.setPhoneNumberPrefix(user.uid);
 
         console.log(recipientData);
-
+        
         //set the state based on the information we've been passed
 
         //why this set up?TKTKTK
@@ -285,7 +289,8 @@ class Upload extends React.Component {
       console.log("upload an image");
       this.setState({
         imageSelectedFromDevice: true,
-        imageSelectedURI: result.uri,
+        imageSelectedURI: result.uri
+        
       });
       // this.uploadImage(result.uri);
     } else {
@@ -725,28 +730,30 @@ class Upload extends React.Component {
       <View
         style={{
           flex: 1,
-          height: 70,
-
-          backgroundColor: "white",
-          borderColor: "lightgrey",
-          borderBottomWidth: 0.5,
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <View
           style={{
             height: 70,
             paddingTop: 30,
+            flexDirection: "row",
             backgroundColor: "white",
             borderColor: "lightgrey",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
             borderBottomWidth: 0.5,
             margin: 20,
           }}
         >
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <Text style={{ paddingLeft: 10 }}>Back</Text>
+          </TouchableOpacity>
           <Text style={{ fontSize: 14 }}>Send a Message</Text>
+          <Text style={{ width: 40 }}></Text>
         </View>
         {this.state.isLoggedIn == true ? (
           <ScrollView style={{ padding: 0, margin: 0 }}>
@@ -774,7 +781,18 @@ class Upload extends React.Component {
                   />
                 </View>
                 {this.state.imageSelectedFromDevice == false &&
-                this.state.imageSelectedFromProgram == false ? (
+                this.state.imageSelectedFromProgram == false &&
+                this.state.mediaPhase == false ? (
+                  <View>
+                    <Button
+                      title="Add a picture!"
+                      color="#841584"
+                      accessibilityLabel="Learn more about this purple button"
+                      onPress={() => this.setState({mediaPhase: true})}
+                    />
+                    </View>
+                ):(this.state.mediaPhase == true) && (this.state.imageSelectedFromDevice == false) &&
+                  (this.state.imageSelectedFromProgram == false) ? (
                   <View>
                     <Button
                       title="Upload media from your phone"
@@ -795,46 +813,6 @@ class Upload extends React.Component {
                       color="#841584"
                       accessibilityLabel="Learn more about this purple button"
                     />
-                    
-
-                    {this.state.gift == "none" ? (
-                      <Button
-                      title="Add Gift!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={()=> {
-                        this.props.navigation.navigate("giftPage", {
-                          selectGift: this.selectGift.bind(this),
-                          messageExistsAlready: true
-                          //tktktk
-                        })
-                      }}
-                    />
-
-                    ) : (  //tktktk
-                      <View> 
-                    <Text>
-                        The gift is {this.state.gift.text}
-                      </Text>
-                    <TouchableOpacity
-                    onPress={() => {
-                      this.setState({gift: "none"})
-                    }}
-                    >
-                      <Text>
-                        Remove or Change Gift
-                      </Text>
-
-                    </TouchableOpacity>
-                    </View>
-                    
-                    )}
-                  <Button
-                      title="Send message!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={this.findUserByUsername}
-                    />
                   </View>
                 ) : (
                   <View>
@@ -853,46 +831,55 @@ class Upload extends React.Component {
                               imageSelectedFromDevice: false,
                               imageSelectedFromProgram: false,
                               imageSelectedURI: "",
+                              mediaPhase: false
                             })
                           }
                         >
                           <Text>Remove or Change Image</Text>
                         </TouchableOpacity>
-
-                        {this.state.gift == "none" ? (
-                      <Button
-                      title="Add Gift!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={()=> {
-                        this.props.navigation.navigate("giftPage", {
-                          selectGift: this.selectGift.bind(this),
-                          messageExistsAlready: true
-                          //tktktk
-                        })
-                      }}
-                    />
-
-                    ) : (  //tktktk
-                      <View> 
-                    <Text>
-                        The gift is {this.state.gift.text}
-                      </Text>
-                    <TouchableOpacity
-                    onPress={() => {
-                      this.setState({gift: "none"})
-                    }}
-                    >
-                      <Text>
-                        Remove or Change Gift
-                      </Text>
-
-                    </TouchableOpacity>
-                    </View>
-                    
+                      </View>
+                    ) : (
+                      <Image source={{ url: "http://i.pravatar.cc/300" }} />
                     )}
+                  </View>
+                )}
+              </View>
+              {/* // ACTUAL GIFT SECTION */}
+              {this.state.gift == "none" ? (
+                 <Button
+                 title="Add Gift!"
+                 color="#841584"
+                 accessibilityLabel="Learn more about this purple button"
+                 onPress={()=> {
+                   this.props.navigation.navigate("giftPage", {
+                     selectGift: this.selectGift.bind(this),
+                     messageExistsAlready: true
+                     //tktktk
+                   })
+                 }}
+               />
 
-                        {this.state.postLodaing == true ? (
+              ):(
+                
+                <View> 
+                <Text>
+                    The gift is {this.state.gift.text}
+                  </Text>
+                <TouchableOpacity
+                onPress={() => {
+                  this.setState({gift: "none"})
+                }}
+                >
+                  <Text>
+                    Remove or Change Gift
+                  </Text>
+
+                </TouchableOpacity>
+                </View>
+
+              )}
+              <View>
+              {this.state.postLodaing == true ? (
                           <ActivityIndicator size="small" color="blue" />
                         ) : (
                           <View> 
@@ -902,29 +889,11 @@ class Upload extends React.Component {
                             accessibilityLabel="Learn more about this purple button"
                             onPress={this.findUserByUsername}
                           />
-                          <Button
-                      title="Add Gift!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={()=> {
-                        this.props.navigation.navigate("giftPage", {
-                          selectGift: this.selectGift.bind(this),
-                          messageExistsAlready: true
-                          //tktktk
-                        })
-                      }}
-                    />
-                          
                           </View>
-
-                        )}
-                      </View>
-                    ) : (
-                      <Image source={{ url: "http://i.pravatar.cc/300" }} />
-                    )}
-                  </View>
-                )}
+              )}
               </View>
+              
+            
             </View>
           </ScrollView>
         ) : (

@@ -241,7 +241,7 @@ class friendContactUpload extends React.Component {
 
         {(this.state.anyMessageInfo != undefined || this.state.anyGiftInfo  != undefined) ? (
           <View>
-            <Text>We have some message info</Text>
+            {/* <Text>We have some message info</Text> */}
             <FlatList
               data={this.state.data}
               renderItem={({ item }) => (

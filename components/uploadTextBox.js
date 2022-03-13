@@ -145,7 +145,7 @@ class UploadTextBox extends React.Component {
           ) : (
             <View>
               <Dropdown
-                style={{ width: 50 }}
+                
                 label="Choose a background"
                 data={this.state.colorOptions}
                 onChangeText={(value) => {
@@ -158,7 +158,7 @@ class UploadTextBox extends React.Component {
               />
 
               <Dropdown
-                style={{ width: 40, padding: 0, margin: 0 }}
+                
                 label="Cnoose a font"
                 data={this.state.fontOptions}
                 onChangeText={(value) => {
@@ -170,7 +170,7 @@ class UploadTextBox extends React.Component {
                 }}
               />
               <Dropdown
-                style={{ width: 40 }}
+                
                 label="Cnoose a font color"
                 data={this.state.colorOptions}
                 onChangeText={(value) => {
@@ -182,7 +182,7 @@ class UploadTextBox extends React.Component {
                 }}
               />
               <Dropdown
-                style={{ width: 40 }}
+                
                 label="Cnoose a font size"
                 data={this.state.sizeOptions}
                 onChangeText={(value) => {
