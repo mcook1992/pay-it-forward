@@ -11,6 +11,7 @@ import {
   Image,
   Button,
   Alert,
+  StyleSheet
 } from "react-native";
 import { f, database, auth, storage } from "../Screens/config/config";
 import { Dropdown } from "react-native-material-dropdown-v2";
@@ -29,6 +30,8 @@ import createUploadCompletedAlert from "./functions/createUploadCompletedAlert";
 import createFriendInviteAlert from "./functions/createFriendInviteAlert";
 import UploadTextBox from "../../components/uploadTextBox";
 import sendPushNotification from "../Screens/functions/sendPushNotifications";
+import chooseImageSourceAlert from "../Screens/functions/chooseImageSourceAlert";
+
 
 class Upload extends React.Component {
   constructor(props) {
@@ -44,7 +47,7 @@ class Upload extends React.Component {
       //info about image and post uploading
       pictureUploadingProgress: 0,
       postUploadingProgress: 0,
-      parentMessages: [],
+      parentMessages: ["No parent"],
       childMessages: [],
       postLoading: false,
       imageLoading: false,
@@ -62,9 +65,9 @@ class Upload extends React.Component {
       prefix: "",
       showFriendList: false,
       fontColor: "black",
-      backgroundColor: "blue",
+      backgroundColor: "white",
       fontFamily: "System",
-      fontSize: 12,
+      fontSize: 20,
       messageTypeMenuOptions: [
         {
           value: "Compliment",
@@ -105,16 +108,23 @@ class Upload extends React.Component {
   setMessageTextFunction = (
     text,
     backgroundColor,
-    textColor,
-    textSize,
-    fontFamily
+    fontColor,
+    fontSize,
+    fontFamily,
+    messageURI,
+    uploadedFromPhone,
+    uploadedFromProgram
+    
   ) => {
     this.setState({
       messageText: text,
       backgroundColor: backgroundColor,
-      fontSize: textSize,
-      textColor: textColor,
+      fontSize: fontSize,
+      textColor: fontColor,
       fontFamily: fontFamily,
+      imageSelectedURI: messageURI,
+      imageSelectedFromDevice: uploadedFromPhone,
+      imageSelectedFromProgram: uploadedFromProgram
     });
     console.log(this.state.messageText);
   };
@@ -123,6 +133,7 @@ class Upload extends React.Component {
     console.log("we're in comp did mount function")
     var that = this;
     var postID = this.uniqueID();
+    console.log(this.state.backgroundColor + this.state.fontFamily + this.state.fontSize)
     
     if (this.props.route.params.gift){
       this.setState({gift: this.props.route.params.gift})
@@ -205,11 +216,26 @@ class Upload extends React.Component {
           this.setState({
             defaultText: this.props.route.params.message.prefilledMessage
               .messageText,
+            fontColor: this.props.route.params.message.prefilledMessage.textColor,
             textColor: this.props.route.params.message.prefilledMessage.textColor,
             backgroundColor: this.props.route.params.message.prefilledMessage.backgroundColor,
             fontFamily: this.props.route.params.message.prefilledMessage.fontFamily,
             fontSize: this.props.route.params.message.prefilledMessage.fontSize
           });
+        }
+        //if the message doesn't have a needed attribute (should stop anything from appearing as undefined):
+
+        if(!this.props.route.params.message.prefilledMessage.fontFamily){
+          this.setState({fontFamily: "System"})
+        }
+        if(!this.props.route.params.message.prefilledMessage.fontSize){
+          this.setState({fontSize: 20})
+        }
+        if(!this.props.route.params.message.prefilledMessage.backgroundColor){
+          this.setState({backgroundColor: "transparent"})
+        }
+        if(!this.props.route.params.message.prefilledMessage.textColor){
+          this.setState({fontColor: "black"})
         }
 
         if (this.props.route.params.message.prefilledMessage.messageType) {
@@ -495,7 +521,6 @@ class Upload extends React.Component {
           sender: that.state.userID,
           recipient: that.state.recipient.contactInfo,
           imageURL: photoDownloadURL,
-          parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
           fontFamily: that.state.fontFamily,
@@ -504,6 +529,8 @@ class Upload extends React.Component {
           backgroundColor: that.state.backgroundColor,
           gift: that.state.gift //tktktk
         });
+        //if the message has a parent message, add that
+
       //adding the message to that recipients "postsReceived" array
       this.addingPostsToPostsReceived();
     } else {
@@ -515,7 +542,7 @@ class Upload extends React.Component {
           sender: that.state.userID,
           recipient: that.state.recipient.contactInfo,
           imageURL: photoDownloadURL,
-          parentMessages: that.state.parentMessages,
+          // parentMessages: that.state.parentMessages,
           timeSent: timestamp,
           spreadPoints: 1,
           fontFamily: that.state.fontFamily,
@@ -524,6 +551,15 @@ class Upload extends React.Component {
           backgroundColor: that.state.backgroundColor,
           gift: that.state.gift
         });
+    }
+    //if the post has a parent message, add a node to that parent message
+    if (this.state.parentMessages[0].id){
+      f.database()
+    .ref("Messages/" + that.state.postID)
+    .set({
+      parentMessages: that.state.parentMessages
+    });
+
     }
     this.addingPointsToParentMessages();
     this.addingPostsToPostsSent();
@@ -631,7 +667,7 @@ class Upload extends React.Component {
 
   addingPointsToParentMessages = async () => {
     var that = this;
-    if (that.state.parentMessages) {
+    if (that.state.parentMessages[0].id) {
       //for each parent message, add points to the users total
       this.state.parentMessages.forEach((element) => {
         console.log(
@@ -723,6 +759,15 @@ class Upload extends React.Component {
 
     //updating indvidual message spreadpoint and child messages
   };
+
+  findImageFromProgram = () => {
+    this.props.navigation.navigate(
+      "ChooseImagesFromPrograms",
+      {
+        saveImageData: this.selectMediaData.bind(this),
+      }
+    )
+  }
   // tktktk
 
   render() {
@@ -771,6 +816,8 @@ class Upload extends React.Component {
 
                   <Text>Enter message below</Text>
 
+                  {/* tktktk */}
+
                   <UploadTextBox
                     changeStateFunction={this.setMessageTextFunction}
                     defaultText={this.state.defaultText}
@@ -778,54 +825,34 @@ class Upload extends React.Component {
                     backgroundColor={this.state.backgroundColor}
                     fontColor={this.state.fontColor}
                     fontSize={this.state.fontSize}
+                    imageSelectedURI={this.state.imageSelectedURI}
+                    uploadedFromPhone={this.state.imageSelectedFromDevice}
+                    uploadedFromProgram={this.state.imageSelectedFromProgram}
+                    
                   />
                 </View>
+                
                 {this.state.imageSelectedFromDevice == false &&
-                this.state.imageSelectedFromProgram == false &&
-                this.state.mediaPhase == false ? (
-                  <View>
-                    <Button
-                      title="Add a picture!"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={() => this.setState({mediaPhase: true})}
-                    />
-                    </View>
-                ):(this.state.mediaPhase == true) && (this.state.imageSelectedFromDevice == false) &&
-                  (this.state.imageSelectedFromProgram == false) ? (
-                  <View>
-                    <Button
-                      title="Upload media from your phone"
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                      onPress={this.findNewImage}
-                    />
-                    <Button
-                      title="Use media from our program"
-                      onPress={() =>
-                        this.props.navigation.navigate(
-                          "ChooseImagesFromPrograms",
-                          {
-                            saveImageData: this.selectMediaData.bind(this),
-                          }
-                        )
-                      }
-                      color="#841584"
-                      accessibilityLabel="Learn more about this purple button"
-                    />
-                  </View>
-                ) : (
-                  <View>
-                    <Text>Image Selected</Text>
+                this.state.imageSelectedFromProgram == false ? (
+               
+                
+                <View>
 
-                    {this.imageSelectedURI != "" ? (
-                      <View>
-                        <Image
-                          source={{ uri: this.state.imageSelectedURI }}
-                          style={{ width: 100, height: 100, marginTop: 20 }}
-                        />
-
-                        <TouchableOpacity
+              <TouchableOpacity
+               style={styles.button}
+               //tktktk
+               onPress={() => {
+                chooseImageSourceAlert(this.findNewImage, this.findImageFromProgram)}}
+             >
+               <Text style={{ textAlign: "center" }}>Add Picture</Text>
+             </TouchableOpacity>
+                </View>
+                ):(
+                  <View>
+                    {this.imageSelectedURI != "" && this.imageSelectedURI ? (
+                      <View style={{alignItems: "center"}}>
+                       <TouchableOpacity
+                          style={styles.pictureButton}
                           onPress={() =>
                             this.setState({
                               imageSelectedFromDevice: false,
@@ -835,7 +862,7 @@ class Upload extends React.Component {
                             })
                           }
                         >
-                          <Text>Remove or Change Image</Text>
+                          <Text style={{color: "blue", backgroundColor: "#ccccff"}}>Remove Image</Text>
                         </TouchableOpacity>
                       </View>
                     ) : (
@@ -844,25 +871,28 @@ class Upload extends React.Component {
                   </View>
                 )}
               </View>
-              {/* // ACTUAL GIFT SECTION */}
+              {/* // ACTUAL GIFT SECTION--add a view around the Touchable Opcity */}
               {this.state.gift == "none" ? (
-                 <Button
-                 title="Add Gift!"
-                 color="#841584"
-                 accessibilityLabel="Learn more about this purple button"
-                 onPress={()=> {
-                   this.props.navigation.navigate("giftPage", {
-                     selectGift: this.selectGift.bind(this),
-                     messageExistsAlready: true
-                     //tktktk
-                   })
-                 }}
-               />
+
+              <View style={{alignItems: "center"}}>
+               <TouchableOpacity
+               style={styles.button}
+               onPress={()=> {
+                this.props.navigation.navigate("giftPage", {
+                  selectGift: this.selectGift.bind(this),
+                  messageExistsAlready: true
+                  //tktktk
+                })
+              }}
+             >
+               <Text style={{ textAlign: "center" }}>Add Gift</Text>
+             </TouchableOpacity>
+              </View> 
 
               ):(
                 
-                <View> 
-                <Text>
+                <View style={{alignContent: "center", alignItems: "center", margin: 15}}> 
+                <Text style={{fontSize: 20, alignSelf: "center"}}>
                     The gift is {this.state.gift.text}
                   </Text>
                 <TouchableOpacity
@@ -870,8 +900,8 @@ class Upload extends React.Component {
                   this.setState({gift: "none"})
                 }}
                 >
-                  <Text>
-                    Remove or Change Gift
+                  <Text style={{color: "blue", backgroundColor: "#ccccff" }}>
+                    Remove Gift
                   </Text>
 
                 </TouchableOpacity>
@@ -879,17 +909,18 @@ class Upload extends React.Component {
 
               )}
               <View>
-              {this.state.postLodaing == true ? (
+              {this.state.postLoading == true ? (
                           <ActivityIndicator size="small" color="blue" />
                         ) : (
-                          <View> 
-                          <Button
-                            title="Send message!"
-                            color="#841584"
-                            accessibilityLabel="Learn more about this purple button"
-                            onPress={this.findUserByUsername}
-                          />
-                          </View>
+                          <View styles={{ flex: 1, alignItems: "center", backgroundColor: "black"}}> 
+
+                         <TouchableOpacity
+                          style={styles.sendButton}
+                          onPress={this.findUserByUsername}
+                          >
+                        <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}>Send Message</Text>
+                         </TouchableOpacity>     
+                        </View>
               )}
               </View>
               
@@ -903,5 +934,41 @@ class Upload extends React.Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 50,
+  },
+  button: {
+    marginTop: 10,
+    marginHorizontal: 40,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    backgroundColor: "#ccccff",
+    borderRadius: 20,
+    borderColor: "grey",
+    borderWidth: 1.5,
+    width: "30%" 
+  },
+  pictureButton: {
+    marginTop: 10,
+    marginHorizontal: 40,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    backgroundColor: "#ccccff",
+    borderRadius: 20,
+    borderColor: "grey",
+    borderWidth: 1.5,
+  },
+  sendButton: {
+    margin: 20,
+    marginHorizontal: 40,
+    paddingVertical: 25,
+    paddingHorizontal: 15,
+    backgroundColor: "orange",
+    borderRadius: 20,
+    borderColor: "grey",
+    borderWidth: 1.5
+  },
+});
 
 export default Upload;

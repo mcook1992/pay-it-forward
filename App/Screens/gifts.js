@@ -61,11 +61,11 @@ import {
 
   var testPictureData = [
     {
-      title: "Main dishes",
+      title: "Classic gifts",
       data: [{messageText: "pizza", text: "test1", websiteLink: "https://mercercook.com", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
     },
     {
-      title: "Side dishes",
+      title: "Special Gifts",
       data: [{messageText: "pizza", text: "test2", imageURI: "https://firebasestorage.googleapis.com/v0/b/pay-it-forward-b148c.appspot.com/o/prefilledImages%2FallPrompts%2FTop-50-Funniest-Memes-Collection-meme-awesome.jpg?alt=media&token=c8bec5f2-60aa-4002-97ba-46b8ef0651b8"}],
     }
   ];
@@ -170,7 +170,7 @@ import {
         >
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.goBack();
+              props.navigation.goBack();
             }}
           >
             <Text style={{ paddingLeft: 10 }}>Back</Text>
@@ -211,7 +211,7 @@ import {
                   
                 />
                  <Button
-                  title="Go to friendslist"
+                  title="Add to message"
                   onPress={() => {
                   
                     if (props.route.params){

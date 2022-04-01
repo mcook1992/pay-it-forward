@@ -75,7 +75,7 @@ var testPictureData = [
   
   {
     title: "Classic Compliments",
-    data: [{messageText:"you're amazing", text: "you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter"}]
+    data: [{messageText:"you're amazing", text: "you're amazing", backgroundColor: "red", textColor: "white", fontFamily: "architectsDaughter", fontSize: 30}]
   }
 ];
 

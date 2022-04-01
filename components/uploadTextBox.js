@@ -31,8 +31,9 @@ class UploadTextBox extends React.Component {
       backgroundColor: this.props.backgroundColor,
       defaultText: this.props.defaultText,
       messageText: this.props.defaultText,
+      imageSelectedURI: this.props.imageSelectedURI,
       addStyling: false,
-      fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }],
+      fontOptions: [{ value: "roboto-bold" }, { value: "architectsDaughter" }, {value: "System"}],
       colorOptions: [
         { value: "transparent" },
         { value: "white" },
@@ -73,7 +74,26 @@ class UploadTextBox extends React.Component {
     // console.log();
   }
 
+  componentDidMount = () => {
+    // console.log(this.props)
+
+   //dealing with weird edge case that appears sometimes and making sure that, if anything comes in undefined, the system doesn't break
+
+  //  console.log(this.state)
+
+    // this.setState({
+    //   fontColor: this.props.fontColor,
+    //   fontSize: this.props.fontSize,
+    //   fontFamily: this.props.fontFamily,
+    //   backgroundColor: this.props.backgroundColor,
+    //   defaultText: this.props.defaultText,
+    //   messageText: this.props.defaultText,
+
+    // })
+  }
+
   changeUploadState = () => {
+    console.log("in the change upload state function")
     //have to adjust message text so that it is rewritten with new formatting applied by each drop down
     var messageText = this.state.messageText;
     this.setState({ messageText: messageText });
@@ -83,15 +103,15 @@ class UploadTextBox extends React.Component {
       this.state.backgroundColor,
       this.state.fontColor,
       this.state.fontSize,
-      this.state.fontFamily
-    );
-    console.log(
-      this.state.backgroundColor,
-      this.state.fontColor,
-      this.state.fontSize,
       this.state.fontFamily,
-      this.state.messageText
     );
+    // console.log(
+    //   this.state.backgroundColor,
+    //   this.state.fontColor,
+    //   this.state.fontSize,
+    //   this.state.fontFamily,
+    //   this.state.messageText
+    // );
   };
 
   //   fetchFonts = () => {
@@ -111,7 +131,7 @@ class UploadTextBox extends React.Component {
         <View>
           <TextInput
             style={{
-              height: 300,
+              height: 200,
               width: 300,
               backgroundColor: this.state.backgroundColor,
               fontFamily: this.state.fontFamily,
@@ -120,7 +140,9 @@ class UploadTextBox extends React.Component {
               borderColor: "black",
               borderWidth: 3,
               textAlignVertical: "top",
+              textAlign: "center",
               margin: 20,
+              marginBottom: 10,
               padding: 15,
             }}
             multiline={true}
@@ -132,21 +154,67 @@ class UploadTextBox extends React.Component {
             onEndEditing={this.changeUploadState}
             defaultValue={this.state.defaultText}
           ></TextInput>
+
+            {this.props.imageSelectedURI != "" &&
+                <View>
+                  <View style={{alignItems: "center"}}>
+                        <Image
+                          source={{ uri: this.props.imageSelectedURI }}
+                          style={{minWidth: 300, minHeight: 200, marginBottom: 20, resizeMode: "cover" }}
+                        />
+                      </View>
+                </View>
+              }
           {this.state.addStyling == false ? (
-            <Button
-              title="Style My Message"
-              color="#841584"
-              accessibilityLabel="Learn more about this purple button"
+            
+            
+            <TouchableOpacity
               onPress={() => {
                 console.log("Button Pressed");
                 this.setState({ addStyling: true });
               }}
-            />
+              style={{
+                marginHorizontal: 40,
+                paddingVertical: 15,
+                paddingHorizontal: 15,
+                backgroundColor: "#ccccff",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5,
+                alignSelf: "center",
+                alignItems: "center"
+              }}
+            >
+
+              
+              <Text>Style My Message</Text>
+
+            </TouchableOpacity>
+
+            // <Button
+            //   title="Style My Message"
+            //   style={{
+            //     alignItems: 'center',
+            //     justifyContent: 'center',
+            //     paddingVertical: 12,
+            //     paddingHorizontal: 32,
+            //     borderRadius: 4,
+            //     elevation: 3,
+            //     backgroundColor: 'black'}}
+            //   color="#841584"
+            //   accessibilityLabel="Learn more about this purple button"
+            //   onPress={() => {
+            //     console.log("Button Pressed");
+            //     this.setState({ addStyling: true });
+            //   }}
+            // />
+            
           ) : (
             <View>
               <Dropdown
                 
-                label="Choose a background"
+                label="Choose a background color"
+                style={{height: 50, fontSize: 20, margin: 10}}
                 data={this.state.colorOptions}
                 onChangeText={(value) => {
                   this.setState({
@@ -160,6 +228,7 @@ class UploadTextBox extends React.Component {
               <Dropdown
                 
                 label="Cnoose a font"
+                style={{height: 50, fontSize: 20, margin: 10}}
                 data={this.state.fontOptions}
                 onChangeText={(value) => {
                   this.setState({
@@ -172,6 +241,7 @@ class UploadTextBox extends React.Component {
               <Dropdown
                 
                 label="Cnoose a font color"
+                style={{height: 50, fontSize: 20, margin: 10}}
                 data={this.state.colorOptions}
                 onChangeText={(value) => {
                   this.setState({
@@ -182,8 +252,8 @@ class UploadTextBox extends React.Component {
                 }}
               />
               <Dropdown
-                
                 label="Cnoose a font size"
+                style={{height: 50, fontSize: 20, margin: 10, marginBottom: 20}}
                 data={this.state.sizeOptions}
                 onChangeText={(value) => {
                   this.setState({
@@ -194,15 +264,26 @@ class UploadTextBox extends React.Component {
                 }}
               />
 
-              <Button
-                title="Done Styling"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-                onPress={() => {
-                  console.log("Button Pressed");
-                  this.setState({ addStyling: false });
-                }}
-              />
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({ addStyling: false });
+              }}
+              style={{
+                marginHorizontal: 40,
+                paddingVertical: 15,
+                paddingHorizontal: 15,
+                backgroundColor: "#ccccff",
+                borderRadius: 20,
+                borderColor: "grey",
+                borderWidth: 1.5,
+                alignSelf: "center",
+                alignItems: "center",
+                
+              }}
+            >
+              <Text>Done Styling</Text>
+
+            </TouchableOpacity>
             </View>
           )}
         </View>
@@ -210,4 +291,5 @@ class UploadTextBox extends React.Component {
     );
   }
 }
+
 export default UploadTextBox;
